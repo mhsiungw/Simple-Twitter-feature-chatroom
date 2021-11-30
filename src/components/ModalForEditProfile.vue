@@ -16,37 +16,25 @@
         </div>
 
         <div class="modal-body">
-          <div
-            class="background-photo"
-            :style="{ background: `url(${user.cover}) no-repeat center/cover` }"
-          ></div>
-          <div
-            class="photo"
-            :style="{
-              background: `url(${user.avatar}) no-repeat center/cover`,
-            }"
-          ></div>
+          <div class="background-photo"></div>
+          <div class="photo"></div>
           <div class="for-inputs">
             <input
               class="tweet-content name"
-              v-model="user.name"
               type="text"
               placeholder=""
               name="name"
             />
-            <span class="word-count"
-              >{{ user.name ? user.name.length : 0 }}/50</span
-            >
+            <span class="word-count">{{ user.name ? user.length : 0 }}/50</span>
 
             <textarea
               class="tweet-content intro"
-              v-model="user.introduction"
               type="textarea"
               placeholder=""
               name="introduction"
             ></textarea>
             <span class="word-count"
-              >{{ user.introduction ? user.introduction.length : 0 }}/160</span
+              >{{ user.description ? user.description.length : 0 }}/160</span
             >
           </div>
           <div class="icon camera-two">
@@ -69,22 +57,18 @@
               type="file"
             />
           </div>
-          <img
-            class="icon camera-two"
-            src="/src/assets/imgs/camera.png"
-            alt=""
-          />
+          <img class="icon camera-two" src="../assets/imgs/camera.png" alt="" />
           <img
             class="icon inside-one"
-            src="/src/assets/imgs/camera_inside.png"
+            src="../assets/imgs/camera_inside.png"
             alt=""
           />
           <img
             class="icon inside-two"
-            src="/src/assets/imgs/camera_inside.png"
+            src="../assets/imgs/camera_inside.png"
             alt=""
           />
-          <img class="icon cross" src="/src/assets/imgs/cross.png" alt="" />
+          <img class="icon cross" src="../assets/imgs/cross.png" alt="" />
           <span class="name tag">名稱</span>
           <span class="self-intro tag">自我介紹</span>
         </div>
@@ -95,14 +79,18 @@
 
 <script>
 export default {
-  name: "Modal",
-  computed: {},
-  created() {
-    this.user = this.currentUser;
+  name: "ModalForEditProfile",
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
   },
+  computed: {},
+  created() {},
   methods: {
     cancelModalClick() {
-      console.log("cancelModalClick");
+      this.$emit("after-click-cross");
     },
     coverChange() {
       console.log("coverChange");
