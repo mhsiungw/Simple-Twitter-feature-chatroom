@@ -34,6 +34,8 @@
 </template>
 
 <script>
+
+
 const dummyData = {
   users: [
     {
@@ -77,6 +79,7 @@ const dummyData = {
 
 export default {
   name: "PopularUsers",
+
   data() {
     return {
       popularUsers: [],
@@ -91,7 +94,7 @@ export default {
       try {
         const { users } = { ...dummyData };
         this.popularUsers = users;
-        console.log(this.popularUsers);
+        //console.log(this.popularUsers);
       } catch (error) {
         console.log(error);
       }
@@ -125,6 +128,7 @@ $bitdark: #657786;
 $divider: #e6ecf0;
 .recommend-users {
   width: 100%;
+  min-width: 350px;
   max-width: 350px;
   height: 517px;
   margin: 15px 82px 0 30px;
