@@ -196,8 +196,9 @@ const dummyData = {
         avatar:
           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
         account: "@william",
-        description: "testw1ew12e2",
+        description: "voluptatem eligendi dolores1233",
         type: "reply",
+        createdAt: new Date(),
       },
       {
         id: 23,
@@ -209,8 +210,9 @@ const dummyData = {
         avatar:
           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
         account: "@william",
-        description: "testw1ew12e2",
+        description: "voluptatem eligendi dolores123332312s",
         type: "reply",
+        createdAt: new Date(),
       },
 
       {
@@ -223,8 +225,9 @@ const dummyData = {
         avatar:
           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
         account: "@william",
-        description: "testw1ew12e2",
+        description: "voluptatem eligendi dolores123332312s",
         type: "reply",
+        createdAt: new Date(),
       },
     ],
   },
@@ -240,7 +243,7 @@ const dummyUserLikesData = {
         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
       account: "@william",
       createdAt: new Date(),
-      description: new Date(),
+      description: "voluptatem eligendi dolores123332312s",
       likeTweetCount: 45,
       replyTweetCount: 67,
       isLiked: false,
@@ -254,7 +257,7 @@ const dummyUserLikesData = {
         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
       account: "@william",
       createdAt: new Date(),
-      description: new Date(),
+      description: "voluptatem eligendi dolores123332312s",
       likeTweetCount: 45,
       replyTweetCount: 67,
       isLiked: false,
@@ -269,7 +272,7 @@ const dummyUserLikesData = {
         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
       account: "@LIN CH",
       createdAt: new Date(),
-      description: new Date(),
+      description: "voluptatem eligendi dolores123332312s",
       likeTweetCount: 45,
       replyTweetCount: 67,
       isLiked: true,
@@ -317,12 +320,10 @@ export default {
       try {
         const { data } = { ...dummyData };
         this.user = { ...data };
-        console.log("this.user==>", this.user);
 
-        this.user.tweets = { ...data.user.tweets };
-        this.userReplies = { ...data.replies };
-        console.log("this.userReplies==>", this.userReplies);
-        this.userLikes = { ...dummyUserLikesData.data };
+        this.user.tweets = [...data.user.tweets];
+        this.userReplies = [...data.replies];
+        this.userLikes = [...dummyUserLikesData.data];
       } catch (error) {
         console.log(error);
       }
