@@ -7,11 +7,11 @@
     <form @submit.prevent.stop="handleSubmit" class="sign-in-form">
       <div class="input email-input">
         <label for="email">Email</label>
-        <input type="email" id="email" />
+        <input v-model="email" type="email" id="email" />
       </div>
       <div class="input password-input">
         <label for="password">密碼</label>
-        <input type="text" id="password" />
+        <input v-model="password" type="password" id="password" />
       </div>
       <button class="sign-in-button" type="submit">登入</button>
       <div class="other-links">
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import authorizationAPI from "../apis/authorization";
+
 export default {
   data() {
     return {
@@ -37,21 +39,22 @@ export default {
     };
   },
   watch: {
-    $route(to, from) {
-      console.log(to, from);
+    $route() {
       this.isAdminLogin = this.$route.path === "/admin/login";
     },
   },
-  created() {
-    console.log(this.$route.path === "/admin/login");
-  },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.email || !this.password) {
         window.alert("please enter input");
         return;
       }
-      //串接 API
+      // 串接 API
+      let response = await authorizationAPI.logIn({
+        email: this.email,
+        password: this.password,
+      });
+      console.log(response);
     },
   },
 };
