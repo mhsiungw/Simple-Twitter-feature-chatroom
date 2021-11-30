@@ -7,7 +7,7 @@
     <form @submit.stop.prevent="handleSubmit" class="register-form">
       <div class="input">
         <label for="email">帳號</label>
-        <input v-model="acountName" type="text" id="acount-name" />
+        <input v-model="acount" type="text" id="acount-name" />
       </div>
       <div class="input">
         <label for="email">名稱</label>
@@ -23,7 +23,7 @@
       </div>
       <div class="input">
         <label for="email">密碼確認</label>
-        <input v-model="passwordCheck" type="password" id="password-check" />
+        <input v-model="checkPassword" type="password" id="password-check" />
       </div>
       <button class="submit-button" type="submit">註冊</button>
       <button class="cancel-button" type="submit">取消</button>
@@ -35,24 +35,24 @@
 export default {
   data() {
     return {
-      acountName: "",
+      acount: "",
       name: "",
       email: "",
       password: "",
-      passwordCheck: "",
+      checkPassword: "",
     };
   },
   methods: {
     handleSubmit() {
-      if (this.password !== this.passwordCheck) {
+      if (this.password !== this.checkPassword) {
         window.alert("unmatched passwords");
       }
       if (
-        !this.acountName ||
+        !this.account ||
         !this.name ||
         !this.email ||
         !this.password ||
-        !this.passwordCheck
+        !this.checkPassword
       ) {
         window.alert("please fill out the form");
       }
