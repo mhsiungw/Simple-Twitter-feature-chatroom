@@ -11,9 +11,24 @@ const routes = [
     component: MainPage
   },
   {
+    path: '/reply_list/:id',
+    name: 'Tweet',
+    component: () => import('../views/Tweet.vue')
+  },
+  {
     path: '/userpage',
-    name: 'Userpage',
+    name: 'UserPage',
     component: () => import('../views/UserPage.vue')
+  },
+  {
+    path: '/user/followings',
+    name: 'FollowingPage',
+    component: () => import('../views/FollowingPage.vue'),
+  },
+  {
+    path: '/user/followers',
+    name: 'FollowingPage',
+    component: () => import('../views/FollowingPage.vue'),
   },
   {
     path: '/login',
