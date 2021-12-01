@@ -46,17 +46,20 @@ export default {
   methods: {
     async handleSubmit() {
       if (!this.email || !this.password) {
-        window.alert("please enter input");
-        return;
+        return window.alert("please enter input");
       }
       // 串接 API
-      const response = await authorizationAPI.logIn({
+      let { data } = await authorizationAPI.logIn({
         email: this.email,
         password: this.password,
       });
-      // 將 token 存放在 localStorage 內
-      localStorage.setItem("simpleTwitter-token", response.data.token);
-      // 成功登入後轉址到餐廳首頁
+      if (data.status !== "success") {
+        this.email = "";
+        this.password = "";
+        return window.alert("Login failed");
+      }
+      // 存取 token 並轉到 MainPage
+      localStorage.setItem("token", data.token);
       this.$router.push("/");
     },
   },
@@ -67,19 +70,21 @@ export default {
 $orange: #ff6600;
 
 .sign-in-section {
-  margin: 200px auto;
+  margin: 100px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   .title {
     text-align: center;
+    margin-bottom: 40px;
     img {
       width: 40px;
       height: 40px;
     }
     h4 {
       font-size: 23px;
+      margin-top: 25px;
     }
   }
   .sign-in-form {

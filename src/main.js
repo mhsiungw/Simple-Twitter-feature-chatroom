@@ -1,19 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import moment from 'moment'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCog, faUser, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCog, faUser, faHome)
-
-Vue.filter('fromNow', function (datetime) {
-  if (!datetime) {
-    return '-'
-  }
-  return moment(datetime).fromNow()
-})
+library.add(faCog, faUser, faHome, faComment, faHeart)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

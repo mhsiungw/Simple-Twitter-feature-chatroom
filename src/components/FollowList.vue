@@ -4,7 +4,7 @@
       <img
         class="arrow"
         @click="$router.go(-1)"
-        src="../assets/imgs/Vector@2x.png"
+        src="../assets/imgs/vector@2x.png"
         alt=""
       />
       <div class="title">

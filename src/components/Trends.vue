@@ -34,8 +34,6 @@
 </template>
 
 <script>
-
-
 const dummyData = {
   users: [
     {
@@ -131,9 +129,10 @@ $divider: #e6ecf0;
   min-width: 350px;
   max-width: 350px;
   height: 517px;
-  margin: 15px 82px 0 30px;
   border-radius: 14px;
   background: $lightgray;
+  //min
+  margin-top: 15px;
   .title {
     margin-top: 10px;
     text-align: left;

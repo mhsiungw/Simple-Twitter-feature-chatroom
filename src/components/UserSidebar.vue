@@ -34,13 +34,13 @@
 <style lang="scss" scoped>
 $orange: #ff6600;
 .sidebar-section {
+  margin-top: 15px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   /** 高還不確定要寫絕對還是相對% **/
-  height: 800px;
+  height: 98vh;
   width: 235px;
-  border: 1px solid black;
 }
 
 .action-wrapper {
