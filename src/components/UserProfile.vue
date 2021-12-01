@@ -323,9 +323,11 @@ export default {
       try {
         const { data } = { ...dummyData };
         this.user = { ...data };
-
+        //addfollowedpage
         console.log("this.user====>", this.user);
 
+
+        console.log("this.user====>", this.user);
 
         this.user.tweets = [...data.user.tweets];
         this.userReplies = [...data.replies];
