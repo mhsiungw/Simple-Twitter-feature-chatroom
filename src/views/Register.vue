@@ -26,12 +26,18 @@
         <input v-model="checkPassword" type="password" id="password-check" />
       </div>
       <button class="submit-button" type="submit">註冊</button>
-      <button class="cancel-button" type="submit">取消</button>
+      <button
+        @click.stop.prevent="$router.push('/login')"
+        class="cancel-button"
+      >
+        取消
+      </button>
     </form>
   </div>
 </template>
 
 <script>
+import authorizationAPI from "../apis/authorization";
 export default {
   data() {
     return {
@@ -43,9 +49,35 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {
-      if (this.password !== this.checkPassword) {
-        window.alert("unmatched passwords");
+    async handleSubmit() {
+      try {
+        if (this.password !== this.checkPassword) {
+          return window.alert("unmatched passwords");
+        }
+        if (
+          this.account === "" ||
+          this.name === "" ||
+          this.email === "" ||
+          this.password === "" ||
+          this.checkPassword === ""
+        ) {
+          return window.alert("please fill out the form");
+        }
+        //串 API
+        let { data } = await authorizationAPI.register({
+          account: this.account,
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          checkPassword: this.checkPassword,
+        });
+        if (data.status === "success") {
+          window.alert(data.message);
+          this.$router.push({ name: "Login" });
+        }
+      } catch (error) {
+        console.log(error);
+        return window.alert("無法註冊，請稍後再試");
       }
       if (
         !this.account ||

@@ -4,9 +4,10 @@ import router from './router'
 import moment from 'moment'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCog, faUser, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCog, faUser, faHome)
+library.add(faCog, faUser, faHome, faComment, faHeart)
 
 Vue.filter('fromNow', function (datetime) {
   if (!datetime) {
