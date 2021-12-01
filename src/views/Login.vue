@@ -15,7 +15,7 @@
       </div>
       <button class="sign-in-button" type="submit">登入</button>
       <div class="other-links">
-        <router-link v-if="!isAdminLogin" to="/regist"
+        <router-link v-if="!isAdminLogin" to="/register"
           >註冊 Alphitter</router-link
         >
         <span class="dot">．</span>

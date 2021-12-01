@@ -7,7 +7,7 @@
     <form @submit.stop.prevent="handleSubmit" class="register-form">
       <div class="input">
         <label for="email">帳號</label>
-        <input v-model="acount" type="text" id="acount-name" />
+        <input v-model="account" type="text" id="account-name" />
       </div>
       <div class="input">
         <label for="email">名稱</label>
@@ -35,7 +35,7 @@
 export default {
   data() {
     return {
-      acount: "",
+      account: "",
       name: "",
       email: "",
       password: "",
@@ -57,7 +57,7 @@ export default {
         window.alert("please fill out the form");
       }
       //串 API
-      window.alert("regist successfully");
+      window.alert("register successfully");
       this.$router.push({ name: "Login" });
     },
   },
