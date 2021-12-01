@@ -3,7 +3,7 @@
     <div class="upper">
       <img
         class="arrow"
-        src="../assets/imgs/Vector@2x.png"
+        src="../assets/imgs/vector@2x.png"
         alt="Vector"
         @click="$router.go(-1)"
       />
@@ -43,7 +43,7 @@
           >
         </div>
       </div>
-      <p class="tweet-content">{{ tweet.User.description }}</p>
+      <p class="tweet-content">{{ tweet.description }}</p>
       <span class="time">{{ tweet.User.createdAt | fromNow }}</span>
     </div>
     <hr />
@@ -75,7 +75,7 @@
     <div class="replies">
       <div class="single-reply" v-for="row in replies" :key="row.id">
         <img
-          :src="row ? row.avatar : ''"
+          :src="row.User ? row.User.avatar : ''"
           @click="
             $router.push(`/user/other/${row.id ? row.id : '/'}`).catch(() => {})
           "
@@ -125,99 +125,100 @@
 <script>
 import ModalForReplyTweet from "./../components/ModalForReplyTweet";
 import { Toast } from "@/utils/helpers";
+import tweetsAPI from "@/apis/tweets";
 
-const dummyTweet = {
-  data: {
-    tweet: {
-      User: {
-        id: 23,
-        userId: 44,
-        name: "test332412",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@minhsung",
-        createdAt: new Date(),
-        description: "testXDDDDDDQQQQQ2222Q",
-        likeTweetCount: 16,
-        replyTweetCount: 57,
-        isLiked: true,
-      },
-    },
-    replies: [
-      {
-        id: 23,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-        account: "@william",
-        description: "vdolores1233olues1233",
-        type: "reply",
-        createdAt: new Date(),
-      },
-      {
-        id: 14,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@chhhh",
-        description: "volupts12333atem eligs123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
-      {
-        id: 55,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolorestatem elige",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@ddddlin",
-        description: "volupti dolores123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
-      {
-        id: 33,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-        account: "@william",
-        description: "vdolores1233olues1233",
-        type: "reply",
-        createdAt: new Date(),
-      },
+// const dummyTweet = {
+//   data: {
+//     tweet: {
+//       User: {
+//         id: 23,
+//         userId: 44,
+//         name: "test332412",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@minhsung",
+//         createdAt: new Date(),
+//         description: "testXDDDDDDQQQQQ2222Q",
+//         likeTweetCount: 16,
+//         replyTweetCount: 57,
+//         isLiked: true,
+//       },
+//     },
+//     replies: [
+//       {
+//         id: 23,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
+//         account: "@william",
+//         description: "vdolores1233olues1233",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//       {
+//         id: 14,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@chhhh",
+//         description: "volupts12333atem eligs123332312s",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//       {
+//         id: 55,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolorestatem elige",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@ddddlin",
+//         description: "volupti dolores123332312s",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//       {
+//         id: 33,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
+//         account: "@william",
+//         description: "vdolores1233olues1233",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
 
-      {
-        id: 88,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U01U2ETD2PR-8a609bd1a942-512",
-        account: "@william",
-        description: "vdolores1233olues1233",
-        type: "reply",
-        createdAt: new Date(),
-      },
-    ],
-  },
-};
+//       {
+//         id: 88,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U01U2ETD2PR-8a609bd1a942-512",
+//         account: "@william",
+//         description: "vdolores1233olues1233",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//     ],
+//   },
+// };
 
 export default {
   components: {
@@ -235,8 +236,10 @@ export default {
   },
   watch: {},
   computed: {},
-  mounted() {
-    this.fetchTweet();
+  mounted() {},
+  created() {
+    this.tweetId = this.$route.params.id;
+    this.fetchTweet(this.tweetId);
   },
   methods: {
     afterClickCross() {
@@ -246,13 +249,15 @@ export default {
       this.showNewReplyModal = true;
     },
 
-    async fetchTweet() {
+    async fetchTweet(tweetId) {
       try {
-        const { data } = { ...dummyTweet };
-        this.tweet = { ...data.tweet };
-        this.replies = { ...data.replies };
+        const { data } = await tweetsAPI.getTweet({ tweetId });
+
+        this.tweet = { ...data };
         console.log("this.tweet===>", this.tweet);
-        console.log("this.replies===>", this.replies);
+
+        this.replies = { ...data.Replies };
+
         Toast.fire({ icon: "success", title: "test" });
       } catch (error) {
         Toast.fire({
@@ -476,6 +481,7 @@ $divider: #e6ecf0;
       flex-direction: row;
       border-bottom: 1px solid #e6ecf0;
       img {
+        min-width: 50px;
         height: 50px;
         width: 50px;
         border-radius: 50%;

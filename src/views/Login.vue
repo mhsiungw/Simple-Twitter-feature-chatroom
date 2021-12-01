@@ -50,11 +50,14 @@ export default {
         return;
       }
       // 串接 API
-      let response = await authorizationAPI.logIn({
+      const response = await authorizationAPI.logIn({
         email: this.email,
         password: this.password,
       });
-      console.log(response);
+      // 將 token 存放在 localStorage 內
+      localStorage.setItem("simpleTwitter-token", response.data.token);
+      // 成功登入後轉址到餐廳首頁
+      this.$router.push("/");
     },
   },
 };

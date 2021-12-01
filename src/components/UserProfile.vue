@@ -5,23 +5,33 @@
         <div @click="$router.go(-1)" class="icon back"></div>
       </div>
       <div class="simple-info">
-        <div class="name">{{ user.user ? user.user.name : user.name }}</div>
+        <div class="name">{{ user.name ? user.name : "" }}</div>
         <div class="tweet-count">
           {{ user.tweets ? user.tweets.length : 0 }} 推文
         </div>
       </div>
     </div>
     <div class="user-info">
-      <div class="cover-photo"></div>
-      <div class="avatar"></div>
+      <div
+        class="cover-photo"
+        :style="{
+          background: `url(${user ? user.cover : ''}) no-repeat center/cover`,
+        }"
+      ></div>
+      <div
+        class="avatar"
+        :style="{
+          background: `url(${user ? user.avatar : ''}) no-repeat center/cover`,
+        }"
+      ></div>
       <button class="btn-edit" @click="afterClickEditProfile">
         編輯個人資料
       </button>
       <div class="other-button-wrapper">
         <div class="btn-messege">
-          <a v-if="user.user"><div class="icon messege"></div></a>
+          <a v-if="user"><div class="icon messege"></div></a>
         </div>
-        <div v-if="user.user">
+        <div v-if="user">
           <div
             v-if="!user.isSubscribed"
             class="btn-noti"
@@ -53,9 +63,9 @@
         </button>
       </div>
 
-      <div class="name">{{ user.user ? user.user.name : user.name }}</div>
-      <div class="account">{{ user.user ? user.user.account : "" }}</div>
-      <div class="intro">{{ user.user ? user.user.introduction : "" }}</div>
+      <div class="name">{{ user ? user.name : "no name field" }}</div>
+      <div class="account">{{ user ? user.account : "no acc field" }}</div>
+      <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
           <span @click="$router.push('/user/self/following')" class="followings"
@@ -125,116 +135,117 @@
 <script>
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
+import usersAPI from "@/apis/users";
 
-const dummyData = {
-  data: {
-    user: {
-      tweets: [
-        {
-          id: 23,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 16,
-          replyTweetCount: 57,
-          isLiked: true,
-        },
-        {
-          id: 23,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 13,
-          replyTweetCount: 99,
-          isLiked: true,
-        },
-        {
-          id: 23,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 22,
-          replyTweetCount: 33,
-          isLiked: true,
-        },
-      ],
-      id: 1,
-      userId: 11,
-      name: "test123",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@minhsung",
-      createdAt: new Date(),
-      description: "testXDDDDDD",
-      likeTweetCount: 13,
-      replyTweetCount: 12,
-      isLiked: true,
-    },
-    follower: {
-      count: 14,
-    },
-    following: {
-      count: 201,
-    },
-    replies: [
-      {
-        id: 23,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores1233",
-        type: "reply",
-        createdAt: new Date(),
-      },
-      {
-        id: 23,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
+// const dummyData = {
+//   data: {
+//     user: {
+//       tweets: [
+//         {
+//           id: 23,
+//           userId: 44,
+//           name: "test332412",
+//           avatar:
+//             "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//           account: "@minhsung",
+//           createdAt: new Date(),
+//           description: "testXDDDDDD",
+//           likeTweetCount: 16,
+//           replyTweetCount: 57,
+//           isLiked: true,
+//         },
+//         {
+//           id: 23,
+//           userId: 44,
+//           name: "test332412",
+//           avatar:
+//             "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
+//           account: "@minhsung",
+//           createdAt: new Date(),
+//           description: "testXDDDDDD",
+//           likeTweetCount: 13,
+//           replyTweetCount: 99,
+//           isLiked: true,
+//         },
+//         {
+//           id: 23,
+//           userId: 44,
+//           name: "test332412",
+//           avatar:
+//             "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
+//           account: "@minhsung",
+//           createdAt: new Date(),
+//           description: "testXDDDDDD",
+//           likeTweetCount: 22,
+//           replyTweetCount: 33,
+//           isLiked: true,
+//         },
+//       ],
+//       id: 1,
+//       userId: 11,
+//       name: "test123",
+//       avatar:
+//         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//       account: "@minhsung",
+//       createdAt: new Date(),
+//       description: "testXDDDDDD",
+//       likeTweetCount: 13,
+//       replyTweetCount: 12,
+//       isLiked: true,
+//     },
+//     follower: {
+//       count: 14,
+//     },
+//     following: {
+//       count: 201,
+//     },
+//     replies: [
+//       {
+//         id: 23,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@william",
+//         description: "voluptatem eligendi dolores1233",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//       {
+//         id: 23,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@william",
+//         description: "voluptatem eligendi dolores123332312s",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
 
-      {
-        id: 23,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
-    ],
-  },
-};
+//       {
+//         id: 23,
+//         UserId: 14,
+//         TweetId: 11,
+//         comment: "voluptatem eligendi dolores",
+//         replyTo: "1232412",
+//         name: "test123",
+//         avatar:
+//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+//         account: "@william",
+//         description: "voluptatem eligendi dolores123332312s",
+//         type: "reply",
+//         createdAt: new Date(),
+//       },
+//     ],
+//   },
+// };
 
 const dummyUserLikesData = {
   data: [
@@ -320,12 +331,20 @@ export default {
       }
     },
     async fetchProfile() {
+      const userId =
+        this.$route.path === "/userpage"
+          ? this.currentUser.id
+          : this.$route.params.id;
+      console.log(userId);
       try {
-        const { data } = { ...dummyData };
+        const { data } = await usersAPI.getProfile({ userId });
         this.user = { ...data };
+
+        const userTweets = await usersAPI.getUserTweets({ userId });
+        this.user.tweets = Array.from(userTweets.data);
+        console.log("this.user.tweets====>", this.user.tweets);
         console.log("this.user====>", this.user);
-        this.user.tweets = [...data.user.tweets];
-        this.userReplies = [...data.replies];
+
         this.userLikes = [...dummyUserLikesData.data];
       } catch (error) {
         console.log(error);
