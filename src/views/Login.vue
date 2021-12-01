@@ -129,7 +129,7 @@ $orange: #ff6600;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
     .dot {
       color: #0099ff;
     }
