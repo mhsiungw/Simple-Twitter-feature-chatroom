@@ -14,7 +14,9 @@
     <div class="user-info">
       <div class="cover-photo"></div>
       <div class="avatar"></div>
-      <button class="btn-edit">編輯個人資料</button>
+      <button class="btn-edit" @click="afterClickEditProfile">
+        編輯個人資料
+      </button>
       <div class="other-button-wrapper">
         <div class="btn-messege">
           <a v-if="user.user"><div class="icon messege"></div></a>
@@ -112,6 +114,7 @@
       :isReply="false"
     ></TweetList>
     <ModalForEditProfile
+      :user="user.user"
       v-if="showEditProfileModal"
       @after-click-cross="afterClickCross"
       @completeEdit="completeEdit"
@@ -321,6 +324,9 @@ export default {
         const { data } = { ...dummyData };
         this.user = { ...data };
 
+        console.log("this.user====>", this.user);
+
+
         this.user.tweets = [...data.user.tweets];
         this.userReplies = [...data.replies];
         this.userLikes = [...dummyUserLikesData.data];
@@ -372,15 +378,7 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit(modalData) {
-      this.user.user = Object.assign({}, modalData);
-      this.user.tweets = this.user.tweets.map((tweet) => ({
-        ...tweet,
-        name: modalData.name,
-        avatar: modalData.avatar,
-        description: modalData.description,
-      }));
-    },
+    completeEdit() {},
   },
 };
 </script>
