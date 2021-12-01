@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { fromNowFilter } from "../utils/mixins.js";
+
 export default {
   name: "TweetList",
   props: {
@@ -74,6 +76,7 @@ export default {
     isReply: Boolean,
   },
   computed: {},
+  mixins: [fromNowFilter],
   methods: {
     tweetDetail() {
       console.log("tweetDetail");

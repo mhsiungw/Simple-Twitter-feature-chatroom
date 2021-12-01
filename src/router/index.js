@@ -16,7 +16,7 @@ const routes = [
     component: () => import('../views/Tweet.vue')
   },
   {
-    path: '/userpage',
+    path: '/userpage/:id',
     name: 'UserPage',
     component: () => import('../views/UserPage.vue')
   },
@@ -27,7 +27,7 @@ const routes = [
   },
   {
     path: '/user/followers',
-    name: 'FollowingPage',
+    name: 'FollowerPage',
     component: () => import('../views/FollowingPage.vue'),
   },
   {

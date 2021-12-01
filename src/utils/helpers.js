@@ -13,6 +13,8 @@ export const Toast = Swal.mixin({
   showConfirmButton: false,
   timer: 3000
 })
+
+
 axiosInstance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
