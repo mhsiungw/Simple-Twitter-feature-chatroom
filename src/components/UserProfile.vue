@@ -109,7 +109,7 @@
       </div>
     </div>
     <TweetList
-      v-if="tabOption === '推文'"
+      v-if="tabOption === '推文' && user.tweets"
       :tweets="user.tweets"
       :isReply="false"
     ></TweetList>
@@ -310,11 +310,11 @@ export default {
       userReplies: [],
     };
   },
+  watch: {},
+  computed: {},
   created() {
     this.fetchProfile();
   },
-  watch: {},
-  computed: {},
   methods: {
     selectTab(event) {
       this.tabOption = event.target.children[0]
@@ -337,15 +337,17 @@ export default {
           : this.$route.params.id;
       console.log(userId);
       try {
-        const { data } = await usersAPI.getProfile({ userId });
-        this.user = { ...data };
+        const getProfile = await usersAPI.getProfile({ userId });
+        this.user = { ...getProfile.data };
 
         const userTweets = await usersAPI.getUserTweets({ userId });
         this.user.tweets = Array.from(userTweets.data);
+
         console.log("this.user.tweets====>", this.user.tweets);
         console.log("this.user====>", this.user);
 
         this.userLikes = [...dummyUserLikesData.data];
+        await Promise.all([getProfile], [userTweets]); //有點非同步問題，第一次不會render
       } catch (error) {
         console.log(error);
       }
