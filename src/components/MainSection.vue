@@ -2,11 +2,7 @@
   <div class="main-section">
     <div class="title">首頁</div>
     <div class="part tweet-part">
-      <img
-        class="avatar"
-        src="https://cdn.vox-cdn.com/thumbor/JgCPp2BBxETY596wCp50ccosCfE=/0x0:2370x1574/1200x800/filters:focal(996x598:1374x976)/cdn.vox-cdn.com/uploads/chorus_image/image/68870438/Screen_Shot_2020_07_21_at_9.38.25_AM.0.png"
-        alt="avatar"
-      />
+      <img class="avatar" :src="currentUser.avatar" alt="avatar" />
       <form @submit.stop.prevent="handleSubmit" class="tweet-form">
         <textarea
           v-model="tweetInput"
@@ -63,6 +59,14 @@ export default {
       type: Array,
       required: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
+    isAuthenticated: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -80,6 +84,9 @@ export default {
     },
     handleSubmit() {
       console.log("handleSubmit");
+      if (this.tweetInput === "") {
+        return;
+      }
       this.$emit("after-tweet-submit", this.tweetInput);
       this.tweetInput = "";
     },
