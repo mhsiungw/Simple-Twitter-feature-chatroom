@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex">
-    <UserSidebar />
+  <div class="mainPage-container">
+    <UserSidebar class="user-sidebar" />
     <div class="main">
       <UserProfile />
     </div>
-    <Trends />
+    <Trends class="trend-section" />
   </div>
 </template>
 
@@ -22,3 +22,24 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.mainPage-container {
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  border: 1px solid red;
+  .trend-section,
+  .user-sidebar {
+    position: fixed;
+  }
+  .trend-section {
+    right: 12px;
+  }
+
+  .user-sidebar {
+    left: 100px;
+  }
+}
+</style>

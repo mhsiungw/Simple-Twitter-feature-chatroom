@@ -8,25 +8,23 @@
     >
       <div
         class="avatar"
-        :style="{ background: `url(${tweet.avatar}) no-repeat center/cover` }"
-        @click.stop="
-          $router.push(`/user/other/${tweet.userId}`).catch(() => {})
-        "
+        :style="{
+          background: `url(${tweet.avatar}) no-repeat center/cover`,
+        }"
+        @click.stop="$router.push(`/users/${tweet.userId}`).catch(() => {})"
       ></div>
       <div class="tweet-wrapper">
         <div class="info">
           <div
             class="name"
-            @click="$router.push(`/user/other/${tweet.userId}`).catch(() => {})"
+            @click="$router.push(`/users/${tweet.userId}`).catch(() => {})"
           >
             {{ tweet.name }}
           </div>
           <div class="account-and-post-time">
             <span
               class="account"
-              @click="
-                $router.push(`/user/other/${tweet.userId}`).catch(() => {})
-              "
+              @click="$router.push(`/users/${tweet.userId}`).catch(() => {})"
               >{{ tweet.account }} </span
             >&bull;
             <span>{{ tweet.createdAt | fromNow }}</span>
@@ -66,6 +64,7 @@ import { fromNowFilter } from "../utils/mixins.js";
 
 export default {
   name: "TweetList",
+  mixins: [fromNowFilter],
   props: {
     tweets: {
       type: Array,
@@ -75,8 +74,6 @@ export default {
     },
     isReply: Boolean,
   },
-  computed: {},
-  mixins: [fromNowFilter],
   methods: {
     tweetDetail() {
       console.log("tweetDetail");
