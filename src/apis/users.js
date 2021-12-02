@@ -17,4 +17,10 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
+  getUserLikes({ userId }) {
+    return apiHelper.get(`/users/${userId}/likes`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+
+    })
+  },
 }

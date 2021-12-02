@@ -148,9 +148,6 @@ export default {
       replyCount: 0,
     };
   },
-  watch: {},
-  computed: {},
-  mounted() {},
   created() {
     this.tweetId = this.$route.params.id;
     this.fetchTweet(this.tweetId);

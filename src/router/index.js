@@ -16,11 +16,6 @@ const routes = [
     component: () => import('../views/Tweet.vue')
   },
   {
-    path: '/users/:id',
-    name: 'UserPage',
-    component: () => import('../views/UserPage.vue')
-  },
-  {
     path: '/users/followings',
     name: 'FollowingPage',
     component: () => import('../views/FollowingPage.vue'),
@@ -30,6 +25,12 @@ const routes = [
     name: 'FollowerPage',
     component: () => import('../views/FollowingPage.vue'),
   },
+  {
+    path: '/users/:id',
+    name: 'UserPage',
+    component: () => import('../views/UserPage.vue')
+  },
+
   {
     path: '/login',
     name: 'Login',

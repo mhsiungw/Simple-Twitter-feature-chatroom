@@ -1,10 +1,8 @@
 <template>
-  <div class="mainPage-container">
-    <UserSidebar class="user-sidebar" />
-    <div class="main">
-      <UserProfile />
-    </div>
-    <Trends class="trend-section" />
+  <div class="row page-container">
+    <UserSidebar class="col-3" />
+    <UserProfile />
+    <Trends class="col-4 ml-4" />
   </div>
 </template>
 
@@ -29,17 +27,5 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  border: 1px solid red;
-  .trend-section,
-  .user-sidebar {
-    position: fixed;
-  }
-  .trend-section {
-    right: 12px;
-  }
-
-  .user-sidebar {
-    left: 100px;
-  }
 }
 </style>
