@@ -7,11 +7,13 @@
         src="https://cdn.vox-cdn.com/thumbor/JgCPp2BBxETY596wCp50ccosCfE=/0x0:2370x1574/1200x800/filters:focal(996x598:1374x976)/cdn.vox-cdn.com/uploads/chorus_image/image/68870438/Screen_Shot_2020_07_21_at_9.38.25_AM.0.png"
         alt="avatar"
       />
-      <form class="tweet-form">
+      <form @submit.stop.prevent="handleSubmit" class="tweet-form">
         <textarea
+          v-model="tweetInput"
           name="tweet"
           id="tweet-input"
           placeholder="有什麼新鮮事？"
+          maxlength="140"
         ></textarea>
         <button class="tweet-button" type="submit">推文</button>
       </form>
@@ -39,7 +41,11 @@
             <span>13</span>
           </div>
           <div class="action-item action-like">
-            <font-awesome-icon class="icon" :icon="['far', 'heart']" />
+            <font-awesome-icon
+              class="icon"
+              :class="['icon', { liked: true }]"
+              :icon="['far', 'heart']"
+            />
             <span>13</span>
           </div>
         </div>
@@ -58,6 +64,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      tweetInput: "",
+    };
+  },
   mixins: [fromNowFilter],
   methods: {
     tweetDetail(tweet) {
@@ -67,11 +78,20 @@ export default {
         this.$router.push(`/reply_list/${tweet.id}`);
       }
     },
+    handleSubmit() {
+      console.log("handleSubmit");
+      this.$emit("after-tweet-submit", this.tweetInput);
+      this.tweetInput = "";
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.liked {
+  color: red;
+}
+
 $orange: #ff6600;
 .avatar {
   width: 50px;

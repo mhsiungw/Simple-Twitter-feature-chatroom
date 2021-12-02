@@ -59,7 +59,7 @@ export default {
         return window.alert("Login failed");
       }
       // 存取 token 並轉到 MainPage
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("simpleTwitter-token", data.token);
       this.$router.push("/");
     },
   },
