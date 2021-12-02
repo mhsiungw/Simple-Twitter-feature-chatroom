@@ -16,7 +16,7 @@
           class="self-photo"
           @click="
             $router
-              .push(`/user/other/${tweet.User ? tweet.User.id : '/'}`)
+              .push(`/users/${tweet.User ? tweet.User.id : '/'}`)
               .catch(() => {})
           "
           :src="tweet.User ? tweet.User.avatar : ''"
@@ -27,7 +27,7 @@
             class="name"
             @click="
               $router
-                .push(`/user/other/${tweet.User ? tweet.User.id : '/'}`)
+                .push(`/users/${tweet.User ? tweet.User.id : '/'}`)
                 .catch(() => {})
             "
             >{{ tweet.User ? tweet.User.name : "" }}</span
@@ -36,7 +36,7 @@
             class="account"
             @click="
               $router
-                .push(`/user/other/${tweet.User ? tweet.User.id : '/'}`)
+                .push(`/users/${tweet.User ? tweet.User.id : '/'}`)
                 .catch(() => {})
             "
             >{{ tweet.User ? tweet.User.account : "" }}</span
@@ -44,12 +44,12 @@
         </div>
       </div>
       <p class="tweet-content">{{ tweet.description }}</p>
-      <span class="time">{{ tweet.User.createdAt | fromNow }}</span>
+      <span class="time">{{ tweet.createdAt | fromNow }}</span>
     </div>
     <hr />
     <div class="counts">
-      <span class="reply-counts">{{ replies.count }} 68回覆</span>
-      <span class="like-counts">{{ likes.count }} 77喜歡次數</span>
+      <span class="reply-counts">{{ replyCount }} 回覆</span>
+      <span class="like-counts">{{ likes.count }} 喜歡次數</span>
     </div>
     <hr />
     <div class="icons">
@@ -77,7 +77,9 @@
         <img
           :src="row.User ? row.User.avatar : ''"
           @click="
-            $router.push(`/user/other/${row.id ? row.id : '/'}`).catch(() => {})
+            $router
+              .push(`/users/${row.User ? row.User.id : '/'}`)
+              .catch(() => {})
           "
         />
         <div class="reply-content">
@@ -86,7 +88,7 @@
               class="name"
               @click="
                 $router
-                  .push(`/user/other/${row ? row.id : '/'}`)
+                  .push(`/users/${row.User ? row.User.id : '/'}`)
                   .catch(() => {})
               "
               >{{ row.User ? row.User.name : "" }}</span
@@ -95,12 +97,12 @@
               class="account"
               @click="
                 $router
-                  .push(`/user/other/${row.User ? row.User.id : '/'}`)
+                  .push(`/users/${row.User ? row.User.id : '/'}`)
                   .catch(() => {})
               "
-              >{{ row ? row.account : "" }}</span
+              >{{ row.User ? row.User.account : "" }}</span
             >
-            <span class="time">・{{ row.createdAt | fromNow }}</span>
+            <span class="time">・{{ row.User.createdAt | fromNow }}</span>
           </div>
           <span class="to-whom"
             >回覆
@@ -125,105 +127,16 @@
 <script>
 import ModalForReplyTweet from "./../components/ModalForReplyTweet";
 import { Toast } from "@/utils/helpers";
+import likesAPI from "@/apis/likes";
 import tweetsAPI from "@/apis/tweets";
-
-// const dummyTweet = {
-//   data: {
-//     tweet: {
-//       User: {
-//         id: 23,
-//         userId: 44,
-//         name: "test332412",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@minhsung",
-//         createdAt: new Date(),
-//         description: "testXDDDDDDQQQQQ2222Q",
-//         likeTweetCount: 16,
-//         replyTweetCount: 57,
-//         isLiked: true,
-//       },
-//     },
-//     replies: [
-//       {
-//         id: 23,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-//         account: "@william",
-//         description: "vdolores1233olues1233",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//       {
-//         id: 14,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@chhhh",
-//         description: "volupts12333atem eligs123332312s",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//       {
-//         id: 55,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolorestatem elige",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@ddddlin",
-//         description: "volupti dolores123332312s",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//       {
-//         id: 33,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-//         account: "@william",
-//         description: "vdolores1233olues1233",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-
-//       {
-//         id: 88,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U01U2ETD2PR-8a609bd1a942-512",
-//         account: "@william",
-//         description: "vdolores1233olues1233",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//     ],
-//   },
-// };
+import { fromNowFilter } from "../utils/mixins.js";
 
 export default {
+  name: "ReplyList",
   components: {
     ModalForReplyTweet,
   },
+  mixins: [fromNowFilter],
   data() {
     return {
       showNewReplyModal: false,
@@ -232,6 +145,7 @@ export default {
       replies: {},
       likes: {},
       comments: {},
+      replyCount: 0,
     };
   },
   watch: {},
@@ -254,17 +168,17 @@ export default {
         const { data } = await tweetsAPI.getTweet({ tweetId });
 
         this.tweet = { ...data };
-        console.log("this.tweet===>", this.tweet);
 
         this.replies = { ...data.Replies };
 
-        Toast.fire({ icon: "success", title: "test" });
+        Toast.fire({ icon: "success", title: "成功取得tweet" });
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "無法取得資料，請稍後再試",
+          title: "無法取得tweet，請稍後再試",
         });
       }
+      this.replyCount = Object.keys(this.replies).length;
     },
     async replyTweet() {
       try {
@@ -277,9 +191,15 @@ export default {
         });
       }
     },
-    async likeTweet() {
+    async likeTweet(tweetId) {
       try {
-        console.log("likeTweet");
+        const { data } = await likesAPI.likeTweet({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.likes.isLike = true;
+        //this.$bus.$emit("tweetAction", { type: "like", tweetId: tweetId });
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -289,9 +209,15 @@ export default {
       }
       await this.fetchTweet(this.tweetId);
     },
-    async unlikeTweet() {
+    async unlikeTweet(tweetId) {
       try {
-        console.log("unlikeTweet");
+        const { data } = await likesAPI.unlikeTweet({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.likes.isLike = false;
+        // this.$bus.$emit('tweetAction', { type: 'unlike', tweetId: tweetId})
       } catch (error) {
         console.log(error);
         Toast.fire({

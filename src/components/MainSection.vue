@@ -18,7 +18,12 @@
         <button class="tweet-button" type="submit">推文</button>
       </form>
     </div>
-    <div v-for="tweet in tweets" :key="tweet.id" class="part post-part">
+    <div
+      v-for="tweet in tweets"
+      :key="tweet.id"
+      class="part post-part"
+      @click="tweetDetail(tweet)"
+    >
       <img class="avatar" :src="tweet.User.avatar" alt="avatar" />
       <div class="post">
         <div class="post-title">
@@ -66,6 +71,13 @@ export default {
   },
   mixins: [fromNowFilter],
   methods: {
+    tweetDetail(tweet) {
+      if (this.isReply) {
+        this.$router.push(`/reply_list/${tweet.TweetId}`);
+      } else {
+        this.$router.push(`/reply_list/${tweet.id}`);
+      }
+    },
     handleSubmit() {
       console.log("handleSubmit");
       this.$emit("after-tweet-submit", this.tweetInput);
@@ -74,7 +86,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped lang="scss">
 .liked {
