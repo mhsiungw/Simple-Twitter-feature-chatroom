@@ -115,12 +115,12 @@
     ></TweetList>
     <TweetList
       v-if="tabOption === '推文與回覆'"
-      :tweets="user.userReplies"
+      :tweets="userReplies"
       :isReply="true"
     ></TweetList>
     <TweetList
       v-if="tabOption === '喜歡的內容'"
-      :tweets="user.userLikes"
+      :tweets="userLikes"
       :isReply="false"
     ></TweetList>
     <ModalForEditProfile
@@ -136,6 +136,7 @@
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import usersAPI from "@/apis/users";
+import { mapState } from "vuex";
 
 export default {
   name: "Profile",
@@ -145,18 +146,22 @@ export default {
   },
   data() {
     return {
-      user: { tweets: [], userLikes: [], userReplies: [] },
+      user: { tweets: [] },
       tabOption: "",
       showEditProfileModal: false,
+      userLikes: [],
+      userReplies: [],
     };
   },
   watch: {
     "$route.params.id": function () {
       this.fetchProfile();
-      this.tabOption = "推文";
+      //this.tabOption = "推文";
     },
   },
-  computed: {},
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
     this.fetchProfile();
     this.fetchUserTweets();
@@ -202,7 +207,7 @@ export default {
         //console.log("this.user.tweets===>", this.user.tweets);
         this.user.tweets = this.user.tweets.map((tweet) => ({
           id: tweet.User.id,
-          userId: tweet.UserId,
+          UserId: tweet.UserId,
           name: tweet.User.name,
           avatar: tweet.User.avatar,
           account: tweet.User.account,
@@ -210,7 +215,7 @@ export default {
           description: tweet.description,
           likeTweetCount: tweet.Like ? tweet.Like.length : 0,
           replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
-          isLiked: tweet.isLiked,
+          isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
         this.tabOption = "推文";
       } catch (error) {
@@ -224,9 +229,9 @@ export default {
           : this.$route.params.id;
       try {
         const userReplies = await usersAPI.getUserReplies({ userId });
-        this.user.userReplies = userReplies.data;
-        console.log("this.userReplies===>", this.user.userReplies);
-        this.user.userReplies = this.user.userReplies.map((reply) => {
+        this.userReplies = userReplies.data;
+        //console.log("this.userReplies===>", this.userReplies);
+        this.userReplies = this.userReplies.map((reply) => {
           return {
             ...reply,
             replyTo: reply.Tweet ? reply.Tweet.User.account : "",
@@ -237,7 +242,7 @@ export default {
             type: "reply",
           };
         });
-        this.user.userReplies.sort((a, b) => {
+        this.userReplies.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
       } catch (error) {
@@ -246,7 +251,7 @@ export default {
     },
     async fetchUserLikes() {
       const userId =
-        this.$route.path === "/user/self"
+        this.$route.path === "/users/"
           ? this.currentUser.id
           : this.$route.params.id;
       try {
@@ -266,9 +271,9 @@ export default {
         //   isLiked: item.isLiked,
         //   likedAt: item.createdAt,
         // }));
-        this.userLikes.sort((a, b) => {
-          return a.likedAt < b.likedAt ? 1 : -1;
-        });
+        // this.userLikes.sort((a, b) => {
+        //   return a.likedAt < b.likedAt ? 1 : -1;
+        // });
       } catch (error) {
         console.log(error);
       }

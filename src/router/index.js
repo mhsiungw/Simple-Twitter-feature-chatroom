@@ -16,11 +16,7 @@ const routes = [
     name: 'Tweet',
     component: () => import('../views/Tweet.vue')
   },
-  {
-    path: '/:id/setting',
-    name: 'SettingPage',
-    component: () => import('../views/SettingPage.vue')
-  },
+
   {
     path: '/users/followings',
     name: 'FollowingPage',
@@ -51,6 +47,11 @@ const routes = [
     path: '/admin/login',
     name: 'AdminLogin',
     component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/:id/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue')
   },
   {
     path: '*',

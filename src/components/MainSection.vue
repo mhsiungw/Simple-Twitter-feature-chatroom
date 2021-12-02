@@ -2,7 +2,12 @@
   <div class="main-section">
     <div class="title">首頁</div>
     <div class="part tweet-part">
-      <img class="avatar" :src="initialCurrentUser.image" alt="avatar" />
+      <img
+        class="avatar"
+        :src="initialCurrentUser.image"
+        alt="avatar"
+        @click="$router.push('/users').catch(() => {})"
+      />
       <form @submit.stop.prevent="handleSubmit" class="tweet-form">
         <textarea
           v-model="tweetInput"
@@ -15,7 +20,12 @@
       </form>
     </div>
     <div v-for="tweet in tweets" :key="tweet.id" class="part post-part">
-      <img class="avatar" :src="tweet.User.avatar" alt="avatar" />
+      <img
+        class="avatar"
+        :src="tweet.User.avatar"
+        alt="avatar"
+        @click.stop="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
+      />
       <div class="post">
         <div class="post-title">
           <div class="name">{{ tweet.User.name }}</div>
@@ -81,7 +91,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped lang="scss">
 .liked {

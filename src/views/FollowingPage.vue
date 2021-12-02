@@ -283,8 +283,11 @@ export default {
 
 <style lang="scss" scoped>
 .page-container {
-  min-width: 1440px;
-  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+
   .follow-list {
     border-right: 1px solid lightgray;
     border-left: 1px solid lightgray;

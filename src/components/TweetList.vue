@@ -4,27 +4,26 @@
       v-for="tweet in tweets"
       :key="`${tweet.id}-${Math.random()}`"
       class="list-item"
-      @click="tweetDetail(tweet)"
     >
       <div
         class="avatar"
         :style="{
           background: `url(${tweet.avatar}) no-repeat center/cover`,
         }"
-        @click.stop="$router.push(`/users/${tweet.userId}`).catch(() => {})"
+        @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
       ></div>
-      <div class="tweet-wrapper">
+      <div class="tweet-wrapper" @click="tweetDetail(tweet)">
         <div class="info">
           <div
             class="name"
-            @click="$router.push(`/users/${tweet.userId}`).catch(() => {})"
+            @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
           >
             {{ tweet.name }}
           </div>
           <div class="account-and-post-time">
             <span
               class="account"
-              @click="$router.push(`/users/${tweet.userId}`).catch(() => {})"
+              @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
               >{{ tweet.account }} </span
             >&bull;
             <span>{{ tweet.createdAt | fromNow }}</span>
@@ -61,6 +60,8 @@
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
+import likesAPI from "@/apis/likes";
+import { Toast } from "@/utils/helpers";
 
 export default {
   name: "TweetList",
@@ -75,21 +76,41 @@ export default {
     isReply: Boolean,
   },
   methods: {
-    tweetDetail() {
-      console.log("tweetDetail");
-    },
-    async likeTweet() {
-      try {
-        console.log("likeTweet");
-      } catch (error) {
-        console.log(error);
+    tweetDetail(tweet) {
+      if (this.isReply) {
+        this.$router.push(`/reply_list/${tweet.id}`);
       }
     },
-    async unlikeTweet() {
+    async likeTweet(tweetId) {
       try {
-        console.log("unlikeTweet");
+        const { data } = await likesAPI.likeTweet({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        //this.$bus.$emit("tweetAction", { type: "like", tweetId: tweetId });
       } catch (error) {
         console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法按讚推文，請稍後再試",
+        });
+      }
+    },
+    async unlikeTweet(tweetId) {
+      try {
+        const { data } = await likesAPI.unlikeTweet({ tweetId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        // this.$bus.$emit('tweetAction', { type: 'unlike', tweetId: tweetId})
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取消按讚，請稍後再試",
+        });
       }
     },
   },
