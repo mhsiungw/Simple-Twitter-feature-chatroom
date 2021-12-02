@@ -16,18 +16,29 @@
         </div>
 
         <div class="modal-body">
-          <div class="background-photo"></div>
-          <div class="photo"></div>
+          <div
+            class="background-photo"
+            :style="{ background: `url(${user.cover}) no-repeat center/cover` }"
+          ></div>
+          <div
+            class="photo"
+            :style="{
+              background: `url(${user.avatar}) no-repeat center/cover`,
+            }"
+          ></div>
           <div class="for-inputs">
+            <span class="name tag">名稱</span>
             <input
+              v-model="user.name"
               class="tweet-content name"
               type="text"
               placeholder=""
               name="name"
             />
             <span class="word-count">{{ user.name ? user.length : 0 }}/50</span>
-
+            <span class="self-intro tag">自我介紹</span>
             <textarea
+              v-model="user.introduction"
               class="tweet-content intro"
               type="textarea"
               placeholder=""
@@ -69,8 +80,6 @@
             alt=""
           />
           <img class="icon cross" src="../assets/imgs/cross.png" alt="" />
-          <span class="name tag">名稱</span>
-          <span class="self-intro tag">自我介紹</span>
         </div>
       </form>
     </div>
@@ -87,7 +96,10 @@ export default {
     },
   },
   computed: {},
-  created() {},
+  created() {
+    //this.user = this.currentUser;
+  },
+
   methods: {
     cancelModalClick() {
       this.$emit("after-click-cross");

@@ -1,8 +1,8 @@
 <template>
   <div class="page-container">
-    <UserSidebar />
+    <UserSidebar class="user-sidebar" />
     <ReplyList />
-    <Trends />
+    <Trends class="trend-section" />
   </div>
 </template>
 
@@ -27,5 +27,9 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
+}
+
+.user-sidebar {
+  left: 100px;
 }
 </style>

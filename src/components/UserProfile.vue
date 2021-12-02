@@ -68,18 +68,16 @@
       <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
-          <span @click="$router.push('/user/self/following')" class="followings"
+          <span @click="$router.push('/user/following')" class="followings"
             >{{ user.following ? user.following.count : 0 }} 個</span
           ><span
-            @click="$router.push('/user/self/following')"
+            @click="$router.push('/user/following')"
             class="type followings"
             >跟隨中</span
           >
-          <span @click="$router.push('/user/self/follower')" class="followers"
+          <span @click="$router.push('/user/follower')" class="followers"
             >{{ user.follower ? user.follower.count : 0 }} 個</span
-          ><span
-            @click="$router.push('/user/self/follower')"
-            class="type followers"
+          ><span @click="$router.push('/user/follower')" class="type followers"
             >跟隨者</span
           >
         </div>
@@ -109,22 +107,22 @@
       </div>
     </div>
     <TweetList
-      v-if="tabOption === '推文' && user.tweets"
+      v-if="tabOption === '推文'"
       :tweets="user.tweets"
       :isReply="false"
     ></TweetList>
     <TweetList
       v-if="tabOption === '推文與回覆'"
-      :tweets="userReplies"
+      :tweets="user.userReplies"
       :isReply="true"
     ></TweetList>
     <TweetList
       v-if="tabOption === '喜歡的內容'"
-      :tweets="userLikes"
+      :tweets="user.userLikes"
       :isReply="false"
     ></TweetList>
     <ModalForEditProfile
-      :user="user.user"
+      :user="user"
       v-if="showEditProfileModal"
       @after-click-cross="afterClickCross"
       @completeEdit="completeEdit"
@@ -136,116 +134,6 @@
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import usersAPI from "@/apis/users";
-
-// const dummyData = {
-//   data: {
-//     user: {
-//       tweets: [
-//         {
-//           id: 23,
-//           userId: 44,
-//           name: "test332412",
-//           avatar:
-//             "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//           account: "@minhsung",
-//           createdAt: new Date(),
-//           description: "testXDDDDDD",
-//           likeTweetCount: 16,
-//           replyTweetCount: 57,
-//           isLiked: true,
-//         },
-//         {
-//           id: 23,
-//           userId: 44,
-//           name: "test332412",
-//           avatar:
-//             "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-//           account: "@minhsung",
-//           createdAt: new Date(),
-//           description: "testXDDDDDD",
-//           likeTweetCount: 13,
-//           replyTweetCount: 99,
-//           isLiked: true,
-//         },
-//         {
-//           id: 23,
-//           userId: 44,
-//           name: "test332412",
-//           avatar:
-//             "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-//           account: "@minhsung",
-//           createdAt: new Date(),
-//           description: "testXDDDDDD",
-//           likeTweetCount: 22,
-//           replyTweetCount: 33,
-//           isLiked: true,
-//         },
-//       ],
-//       id: 1,
-//       userId: 11,
-//       name: "test123",
-//       avatar:
-//         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//       account: "@minhsung",
-//       createdAt: new Date(),
-//       description: "testXDDDDDD",
-//       likeTweetCount: 13,
-//       replyTweetCount: 12,
-//       isLiked: true,
-//     },
-//     follower: {
-//       count: 14,
-//     },
-//     following: {
-//       count: 201,
-//     },
-//     replies: [
-//       {
-//         id: 23,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@william",
-//         description: "voluptatem eligendi dolores1233",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//       {
-//         id: 23,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@william",
-//         description: "voluptatem eligendi dolores123332312s",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-
-//       {
-//         id: 23,
-//         UserId: 14,
-//         TweetId: 11,
-//         comment: "voluptatem eligendi dolores",
-//         replyTo: "1232412",
-//         name: "test123",
-//         avatar:
-//           "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-//         account: "@william",
-//         description: "voluptatem eligendi dolores123332312s",
-//         type: "reply",
-//         createdAt: new Date(),
-//       },
-//     ],
-//   },
-// };
 
 const dummyUserLikesData = {
   data: [
@@ -292,6 +180,34 @@ const dummyUserLikesData = {
       isLiked: true,
       likedAt: true,
     },
+    {
+      id: 14,
+      userId: 22,
+      name: "LINchhhhhh",
+      avatar:
+        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+      account: "@LIN CH",
+      createdAt: new Date(),
+      description: "voluptatem eligendi dolores123332312s",
+      likeTweetCount: 45,
+      replyTweetCount: 67,
+      isLiked: true,
+      likedAt: true,
+    },
+    {
+      id: 16,
+      userId: 22,
+      name: "LINchhhhhh",
+      avatar:
+        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
+      account: "@LIN CH",
+      createdAt: new Date(),
+      description: "voluptatem eligendi dolores123332312s",
+      likeTweetCount: 45,
+      replyTweetCount: 67,
+      isLiked: true,
+      likedAt: true,
+    },
   ],
 };
 
@@ -303,17 +219,22 @@ export default {
   },
   data() {
     return {
-      user: { tweets: [] },
-      tabOption: "推文",
+      user: { tweets: [], userLikes: [], userReplies: [] },
+      tabOption: "",
       showEditProfileModal: false,
-      userLikes: [],
-      userReplies: [],
     };
   },
-  watch: {},
+  watch: {
+    "$route.params.id": function () {
+      this.fetchProfile();
+      this.tabOption = "推文";
+    },
+  },
   computed: {},
   created() {
     this.fetchProfile();
+    this.fetchUserTweets();
+    this.fetchUserReplies();
   },
   methods: {
     selectTab(event) {
@@ -332,27 +253,73 @@ export default {
     },
     async fetchProfile() {
       const userId =
-        this.$route.path === "/userpage"
+        this.$route.path === "/users"
           ? this.currentUser.id
           : this.$route.params.id;
-      console.log(userId);
       try {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
+        this.fetchUserTweets();
 
-        const userTweets = await usersAPI.getUserTweets({ userId });
-        this.user.tweets = Array.from(userTweets.data);
-
-        console.log("this.user.tweets====>", this.user.tweets);
-        console.log("this.user====>", this.user);
-
-        this.userLikes = [...dummyUserLikesData.data];
-        await Promise.all([getProfile], [userTweets]); //有點非同步問題，第一次不會render
+        this.user.userLikes = [...dummyUserLikesData.data];
       } catch (error) {
         console.log(error);
       }
     },
-
+    async fetchUserTweets() {
+      const userId =
+        this.$route.path === "/users"
+          ? this.currentUser.id
+          : this.$route.params.id;
+      try {
+        const userTweets = await usersAPI.getUserTweets({ userId });
+        this.user.tweets = userTweets.data;
+        //console.log("this.user.tweets===>", this.user.tweets);
+        this.user.tweets = this.user.tweets.map((tweet) => ({
+          id: tweet.User.id,
+          userId: tweet.UserId,
+          name: tweet.User.name,
+          avatar: tweet.User.avatar,
+          account: tweet.User.account,
+          createdAt: tweet.createdAt,
+          description: tweet.description,
+          likeTweetCount: tweet.Like ? tweet.Like.length : 0,
+          replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
+          isLiked: tweet.isLiked,
+        }));
+        this.tabOption = "推文";
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async fetchUserReplies() {
+      const userId =
+        this.$route.path === "/users"
+          ? this.currentUser.id
+          : this.$route.params.id;
+      try {
+        const userReplies = await usersAPI.getUserReplies({ userId });
+        this.user.userReplies = userReplies.data;
+        console.log("this.userReplies===>", this.user.userReplies);
+        this.user.userReplies = this.user.userReplies.map((reply) => {
+          return {
+            ...reply,
+            userId: reply.Tweet.UserId,
+            replyTo: reply.Tweet ? reply.Tweet.User.account : "",
+            name: reply.Tweet.User.name,
+            avatar: reply.Tweet.User.avatar,
+            account: reply.Tweet.User.account,
+            description: reply.comment,
+            type: "reply",
+          };
+        });
+        this.user.userReplies.sort((a, b) => {
+          return a.createdAt < b.createdAt ? 1 : -1;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async fetchUserLikes() {
       try {
         console.log("fetchUserLikes");
@@ -409,7 +376,6 @@ $divider: #e6ecf0;
 $bitdark: #657786;
 .profile {
   max-height: 100vh;
-  overflow-y: hidden;
   overflow-x: hidden;
   width: 100%;
   border: 1px solid $divider;

@@ -2,15 +2,14 @@ import { apiHelper } from './../utils/helpers'
 const getToken = () => localStorage.getItem('simpleTwitter-token')
 
 export default {
-  async getTweets() {
-    return apiHelper.get('/tweets', {
+  likeTweet ({ tweetId }) {
+    return apiHelper.post(`/tweets/${tweetId}/like`, null, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-
-  async getTweet({ tweetId }) {
-    return apiHelper.get(`/tweets/${tweetId}`, {
+  unlikeTweet ({ tweetId }) {
+    return apiHelper.post(`/tweets/${tweetId}/unlike`, null, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  },
+  }
 }

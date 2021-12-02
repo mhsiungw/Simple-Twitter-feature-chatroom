@@ -16,17 +16,17 @@ const routes = [
     component: () => import('../views/Tweet.vue')
   },
   {
-    path: '/userpage/:id',
+    path: '/users/:id',
     name: 'UserPage',
     component: () => import('../views/UserPage.vue')
   },
   {
-    path: '/user/followings',
+    path: '/users/followings',
     name: 'FollowingPage',
     component: () => import('../views/FollowingPage.vue'),
   },
   {
-    path: '/user/followers',
+    path: '/users/followers',
     name: 'FollowerPage',
     component: () => import('../views/FollowingPage.vue'),
   },
