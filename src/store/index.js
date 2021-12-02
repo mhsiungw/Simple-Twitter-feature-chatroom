@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import usersAPI from '../apis/users.js'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,6 @@ export default new Vuex.Store({
   },
   mutations: {
     setCurrentUser(state, currentUser) {
-      console.log('setCurrentUser')
       state.currentUser = {
         ...state.currentUser,
         ...currentUser
@@ -25,6 +25,18 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async fetchCurrentUser({ commit }) {
+      try {
+        const { data } = await usersAPI.getCurrentUser()
+        const { id, name, email, avatar: image, role } = data
+        commit('setCurrentUser', {
+          id, name, email, image, isAdmin: role === 'user' ? false : true
+        })
+      } catch (error) {
+        console.log(error)
+        console.error('cannot fetch user info')
+      }
+    }
   },
   modules: {
   }

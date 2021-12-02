@@ -4,19 +4,27 @@
       <img class="logo" src="../assets/imgs/logo.png" alt="logo" />
       <ul class="sidebar-list">
         <li class="list-item">
-          <router-link to="" autofocus>
+          <router-link to="/" :class="{ focus: this.$route.path === '/' }">
             <font-awesome-icon class="icon" icon="home" />
             <span>首頁</span>
           </router-link>
         </li>
         <li class="list-item">
-          <router-link to="">
+          <router-link
+            :to="{ name: 'UserPage', params: { id: currentUser.id } }"
+            :class="{ focus: this.$route.path === `/users/${currentUser.id}` }"
+          >
             <font-awesome-icon class="icon" icon="user" />
             <span>個人資料</span>
           </router-link>
         </li>
         <li class="list-item">
-          <router-link to="">
+          <router-link
+            :to="{ name: 'SettingPage', params: { id: currentUser.id } }"
+            :class="{
+              focus: this.$route.path === `/${currentUser.id}/setting`,
+            }"
+          >
             <font-awesome-icon class="icon" icon="cog" />
             <span>設定</span>
           </router-link>
@@ -30,6 +38,20 @@
     </button>
   </div>
 </template>
+
+<script>
+import { mapState } from "vuex";
+
+export default {
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  created() {
+    console.log(this.$route.path);
+  },
+};
+</script>
+
 
 <style lang="scss" scoped>
 $orange: #ff6600;
@@ -64,7 +86,7 @@ $orange: #ff6600;
         color: black;
         display: flex;
         align-items: center;
-        &:focus {
+        &.focus {
           color: $orange;
         }
       }
