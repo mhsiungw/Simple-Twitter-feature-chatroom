@@ -304,11 +304,10 @@ export default {
         this.user.userReplies = this.user.userReplies.map((reply) => {
           return {
             ...reply,
-            userId: reply.Tweet.UserId,
             replyTo: reply.Tweet ? reply.Tweet.User.account : "",
-            name: reply.Tweet.User.name,
-            avatar: reply.Tweet.User.avatar,
-            account: reply.Tweet.User.account,
+            name: reply.User.name,
+            avatar: reply.User.avatar,
+            account: reply.User.account,
             description: reply.comment,
             type: "reply",
           };
