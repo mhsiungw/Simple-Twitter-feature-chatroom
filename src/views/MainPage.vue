@@ -4,6 +4,8 @@
     <MainSection
       @after-tweet-submit="handleAfterSubmit"
       :tweets="reverseTweet"
+      :current-user="currentUser"
+      :is-authenticatd="isAuthenticated"
     />
     <Trends class="trend-section" />
   </div>
@@ -14,6 +16,7 @@ import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import MainSection from "../components/MainSection.vue";
 import tweetsAPI from "../apis/tweets";
+import { mapState } from "vuex";
 
 let newInput = {
   id: 1100,
@@ -55,6 +58,7 @@ export default {
     this.fetchTweets();
   },
   computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
     reverseTweet() {
       return this.tweets.slice().reverse();
     },

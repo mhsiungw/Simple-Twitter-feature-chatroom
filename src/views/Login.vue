@@ -56,8 +56,12 @@ export default {
       if (data.status !== "success") {
         this.email = "";
         this.password = "";
-        return window.alert("Login failed");
+        window.alert("Login failed");
+        throw new Error(data.status);
       }
+      console.log(data);
+      // Vuex mutation setCurrentUser
+      this.$store.commit("setCurrentUser", data.user);
       // 存取 token 並轉到 MainPage
       localStorage.setItem("simpleTwitter-token", data.token);
       this.$router.push("/");
