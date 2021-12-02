@@ -59,7 +59,6 @@ export default {
         window.alert("Login failed");
         throw new Error(data.status);
       }
-      console.log(data);
       // Vuex mutation setCurrentUser
       this.$store.commit("setCurrentUser", data.user);
       // 存取 token 並轉到 MainPage

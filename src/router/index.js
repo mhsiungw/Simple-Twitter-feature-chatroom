@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store'
 import MainPage from '../views/MainPage.vue'
 
 Vue.use(VueRouter)
@@ -14,6 +15,11 @@ const routes = [
     path: '/reply_list/:id',
     name: 'Tweet',
     component: () => import('../views/Tweet.vue')
+  },
+  {
+    path: '/:id/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue')
   },
   {
     path: '/users/followings',
@@ -54,7 +60,13 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  linkExactActiveClass: 'active',
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  store.dispatch('fetchCurrentUser')
+  next()
 })
 
 export default router

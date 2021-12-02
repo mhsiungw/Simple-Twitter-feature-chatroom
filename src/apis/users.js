@@ -23,4 +23,7 @@ export default {
 
     })
   },
+  getCurrentUser() {
+    return apiHelper.get('/users/currentUser')
+  }
 }

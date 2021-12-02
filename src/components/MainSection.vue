@@ -2,7 +2,7 @@
   <div class="main-section">
     <div class="title">首頁</div>
     <div class="part tweet-part">
-      <img class="avatar" :src="currentUser.avatar" alt="avatar" />
+      <img class="avatar" :src="initialCurrentUser.image" alt="avatar" />
       <form @submit.stop.prevent="handleSubmit" class="tweet-form">
         <textarea
           v-model="tweetInput"
@@ -14,12 +14,7 @@
         <button class="tweet-button" type="submit">推文</button>
       </form>
     </div>
-    <div
-      v-for="tweet in tweets"
-      :key="tweet.id"
-      class="part post-part"
-      @click="tweetDetail(tweet)"
-    >
+    <div v-for="tweet in tweets" :key="tweet.id" class="part post-part">
       <img class="avatar" :src="tweet.User.avatar" alt="avatar" />
       <div class="post">
         <div class="post-title">
@@ -59,11 +54,11 @@ export default {
       type: Array,
       required: true,
     },
-    currentUser: {
+    initialCurrentUser: {
       type: Object,
       required: true,
     },
-    isAuthenticated: {
+    isAuthenticatd: {
       type: Boolean,
       required: true,
     },
@@ -75,17 +70,10 @@ export default {
   },
   mixins: [fromNowFilter],
   methods: {
-    tweetDetail(tweet) {
-      if (this.isReply) {
-        this.$router.push(`/reply_list/${tweet.TweetId}`);
-      } else {
-        this.$router.push(`/reply_list/${tweet.id}`);
-      }
-    },
     handleSubmit() {
       console.log("handleSubmit");
       if (this.tweetInput === "") {
-        return;
+        return window.alert("內容不可空白");
       }
       this.$emit("after-tweet-submit", this.tweetInput);
       this.tweetInput = "";
@@ -93,6 +81,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped lang="scss">
 .liked {
