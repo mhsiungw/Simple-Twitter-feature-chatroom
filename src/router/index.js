@@ -23,6 +23,11 @@ const routes = [
     component: () => import('../views/FollowingPage.vue'),
   },
   {
+    path: '/:id/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue'),
+  },
+  {
     path: '/users/followers',
     name: 'FollowerPage',
     component: () => import('../views/FollowingPage.vue'),
