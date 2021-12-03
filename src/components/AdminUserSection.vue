@@ -16,16 +16,16 @@
             <div class="chat-like">
               <div class="chat">
                 <font-awesome-icon class="icon" :icon="['far', 'comment']" />
-                <span>13</span>
+                <span>{{ user.Likes.length }} </span>
               </div>
               <div class="like">
                 <font-awesome-icon class="icon" :icon="['far', 'heart']" />
-                <span>13</span>
+                <span>{{ user.Replies.length }} </span>
               </div>
             </div>
             <div class="following-followers">
-              <p class="following">34 個跟隨中</p>
-              <p class="followers">34 個跟隨者</p>
+              <p class="following">{{ user.Followings.length }} 個跟隨中</p>
+              <p class="followers">{{ user.Followers.length }} 個跟隨者</p>
             </div>
           </div>
         </div>

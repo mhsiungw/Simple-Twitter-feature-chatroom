@@ -22,7 +22,6 @@
           </router-link>
         </li>
       </ul>
-      <button class="tweet-button">推文</button>
     </div>
     <button class="logout-button">
       <img class="logout" src="../assets/imgs/logout.png" alt="logout" />
@@ -79,19 +78,6 @@ $orange: #ff6600;
         }
       }
     }
-  }
-  .tweet-button {
-    margin-top: 24px;
-    width: 210px;
-    height: 38px;
-    border-radius: 10px;
-    background: $orange;
-    border: none;
-    outline: none;
-    color: white;
-    font-weight: 800;
-    font-family: "Noto Sans TC";
-    cursor: pointer;
   }
 }
 

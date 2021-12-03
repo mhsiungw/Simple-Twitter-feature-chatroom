@@ -80,7 +80,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('fetchCurrentUser')
+  // 如果路由是 admin/... 就執行 fetchCurrentAdmin，否則就執行 fetchCurrentUser
+  if (to.path === '/admin/users' || to.path === "/admin/tweets") {
+    store.dispatch('fetchCurrentAdmin')
+  } else {
+    store.dispatch('fetchCurrentUser')
+  }
   next()
 })
 
