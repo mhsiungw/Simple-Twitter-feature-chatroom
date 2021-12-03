@@ -46,9 +46,6 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
   },
-  created() {
-    console.log(this.$route.path);
-  },
 };
 </script>
 
@@ -56,18 +53,18 @@ export default {
 <style lang="scss" scoped>
 $orange: #ff6600;
 .sidebar-section {
-  margin-top: 15px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   /** 高還不確定要寫絕對還是相對% **/
-  height: 98vh;
+  height: 100vh;
   width: 235px;
 }
 
 .action-wrapper {
   flex: 1;
   .logo {
+    margin-top: 15px;
     width: 30px;
     height: 30px;
   }

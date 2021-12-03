@@ -29,7 +29,7 @@
         <div class="post-actions">
           <div class="action-item action-comment">
             <font-awesome-icon class="icon" :icon="['far', 'comment']" />
-            <span>13</span>
+            <span>{{ tweet.Replies.length }}</span>
           </div>
           <div class="action-item action-like">
             <font-awesome-icon
@@ -37,7 +37,7 @@
               :class="['icon', { liked: true }]"
               :icon="['far', 'heart']"
             />
-            <span>13</span>
+            <span>{{ tweet.Likes.length }}</span>
           </div>
         </div>
       </div>

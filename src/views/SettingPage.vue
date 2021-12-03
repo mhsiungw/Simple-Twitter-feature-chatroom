@@ -1,7 +1,7 @@
 <template>
-  <div class="mainPage-container">
-    <UserSidebar class="user-sidebar" />
-    <SettingSection class="setting-section" />
+  <div class="setting-page-container">
+    <UserSidebar class="sidebar-section" />
+    <SettingSection @after-submit="handleAfterSubmit" class="setting-section" />
   </div>
 </template>
 
@@ -14,19 +14,30 @@ export default {
     UserSidebar,
     SettingSection,
   },
+  methods: {
+    handleAfterSubmit(data) {
+      console.log("handleAfterSubmit", data);
+    },
+  },
 };
 </script>
 
 
 <style scoped lang="scss">
-.mainPage-container {
+.setting-page-container {
   margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  .user-sidebar {
-    position: fixed;
-    left: 100px;
+  height: 100vh;
+  .setting-section {
+    flex: 1;
+  }
+  .sidebar-section {
+    width: 378px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>

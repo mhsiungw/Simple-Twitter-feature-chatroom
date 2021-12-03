@@ -35,10 +35,12 @@ export default {
     return {
       email: "",
       password: "",
+      //用來辨別是否為後台登入頁面
       isAdminLogin: this.$route.path === "/admin/login",
     };
   },
   watch: {
+    //用來辨別是否為後台登入頁面
     $route() {
       this.isAdminLogin = this.$route.path === "/admin/login";
     },
@@ -59,6 +61,7 @@ export default {
         window.alert("Login failed");
         throw new Error(data.status);
       }
+      console.log("data.user", data.user);
       // Vuex mutation setCurrentUser
       this.$store.commit("setCurrentUser", data.user);
       // 存取 token 並轉到 MainPage
