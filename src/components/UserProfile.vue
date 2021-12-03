@@ -25,10 +25,7 @@
         }"
       ></div>
       <button
-        v-if="
-          this.$route.path === '/users' ||
-          this.$route.path === `/users/${currentUser.id}`
-        "
+        v-if="this.$route.path === `/users/${currentUser.id}`"
         class="btn-edit"
         @click="afterClickEditProfile"
       >
@@ -75,17 +72,21 @@
       <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
-          <span @click="$router.push('/users/followings')" class="followings"
+          <span
+            @click="$router.push(`/users/${userId}/followings`)"
+            class="followings"
             >{{ user.following ? user.following.count : 0 }} 個</span
           ><span
-            @click="$router.push('/users/followings')"
+            @click="$router.push(`/users/${userId}/followings`)"
             class="type followings"
             >跟隨中</span
           >
-          <span @click="$router.push('/users/followers')" class="followers"
+          <span
+            @click="$router.push(`/users/${userId}/followers`)"
+            class="followers"
             >{{ user.follower ? user.follower.count : 0 }} 個</span
           ><span
-            @click="$router.push('/users/followers')"
+            @click="$router.push(`/users/${userId}/followers`)"
             class="type followers"
             >跟隨者</span
           >
@@ -158,18 +159,23 @@ export default {
       showEditProfileModal: false,
       userLikes: [],
       userReplies: [],
+      userId: "",
     };
   },
   watch: {
     "$route.params.id": function () {
       this.fetchProfile();
-      //this.tabOption = "推文";
     },
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
+    this.userId =
+      this.$route.path === "/users"
+        ? this.currentUser.id
+        : this.$route.params.id;
+
     this.fetchProfile();
     this.fetchUserTweets();
     this.fetchUserReplies();
@@ -267,7 +273,7 @@ export default {
         console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes = this.userLikes.map((item) => ({
           id: item.Tweet.id,
-          UserId: item.Tweet.User.id,
+          userId: item.Tweet.User.id,
           name: item.Tweet.User.name,
           avatar: item.Tweet.User.avatar,
           account: item.Tweet.User.account,
@@ -275,7 +281,7 @@ export default {
           description: item.Tweet.description,
           likeTweetCount: item.likeTweetCount,
           replyTweetCount: item.replyTweetCount,
-          isLiked: item.isLiked ? item.isLiked : true,
+          isLiked: item.isLiked,
           likedAt: item.createdAt,
         }));
         this.userLikes.sort((a, b) => {
@@ -321,16 +327,7 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit(modalData) {
-      this.user = Object.assign({}, modalData);
-      this.user.tweets = this.user.tweets.map((tweet) => ({
-        ...tweet,
-        name: modalData.name,
-        avatar: modalData.avatar,
-        description: modalData.description,
-      }));
-      console.log("afterEditModal===>", this.user);
-    },
+    completeEdit() {},
   },
 };
 </script>

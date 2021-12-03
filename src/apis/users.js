@@ -18,5 +18,11 @@ export default {
   },
   getCurrentUser() {
     return apiHelper.get('/users/currentUser')
-  }
+  },
+  getFollowings({ userId }) {
+    return apiHelper.get(`/users/${userId}/followings`)
+  },
+  getFollowers({ userId }) {
+    return apiHelper.get(`/users/${userId}/followers`)
+  },
 }

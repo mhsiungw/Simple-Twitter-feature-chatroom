@@ -12,36 +12,19 @@
         <span v-if="nowUser.tweets">{{ nowUser.tweets.length }} 推文</span>
       </div>
     </div>
-    <div class="tab self" v-if="this.$route.path.indexOf('/self') > 0">
+    <div class="tab self">
       <div
         class="item"
-        :class="{ active: this.$route.path === '/users/followers' }"
-        @click="$router.push('/users/followers')"
+        :class="{ active: this.$route.path === `/users/${userId}/followers` }"
+        @click="$router.push(`/users/${userId}/followers`)"
       >
         <div class="text">追隨者</div>
       </div>
 
       <div
         class="item"
-        :class="{ active: $route.path === '/users/followings' }"
-        @click="$router.push('/users/followings')"
-      >
-        <div class="text">正在跟隨</div>
-      </div>
-    </div>
-    <div class="tab ohter" v-if="!(this.$route.path.indexOf('/self') > 0)">
-      <div
-        class="item"
-        :class="{ active: this.$route.path.indexOf('follower') > 0 }"
-        @click="$router.push(`/users/followers`)"
-      >
-        <div class="text">追隨者</div>
-      </div>
-
-      <div
-        class="item"
-        :class="{ active: this.$route.path.indexOf('following') > 0 }"
-        @click="$router.push(`/users/followings`)"
+        :class="{ active: $route.path === `/users/${userId}/followings` }"
+        @click="$router.push(`/users/${userId}/followings`)"
       >
         <div class="text">正在跟隨</div>
       </div>
@@ -87,6 +70,7 @@ export default {
   data() {
     return {
       followers: [],
+      userId: "",
     };
   },
   props: {
@@ -97,7 +81,13 @@ export default {
       type: Object,
     },
   },
+  watch: {
+    initialFollowers: function () {
+      this.followers = this.initialFollowers;
+    },
+  },
   created() {
+    this.userId = this.$route.params.id;
     this.followers = this.initialFollowers;
   },
   methods: {
