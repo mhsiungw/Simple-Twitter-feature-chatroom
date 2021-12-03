@@ -32,7 +32,6 @@ export default {
     };
   },
   created() {
-    console.log(this.currentUser);
     this.fetchTweets();
   },
   computed: {
@@ -47,10 +46,10 @@ export default {
       // API
       try {
         let response = await tweetsAPI.getTweets();
+        console.log(response);
         if (response.statusText !== "OK") {
           throw new Error(response.status);
         }
-        console.log(response);
         this.tweets = response.data;
       } catch (error) {
         console.log(error);
@@ -59,8 +58,9 @@ export default {
     },
     async handleAfterSubmit(newDescription) {
       try {
-        console.log("handleAfterSubmit", newDescription);
         let newInput = {
+          Likes: [],
+          Replies: [],
           User: {
             avatar: this.currentUser.image,
             name: this.currentUser.name,

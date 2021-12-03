@@ -49,9 +49,14 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/:id/setting',
-    name: 'SettingPage',
-    component: () => import('../views/SettingPage.vue')
+    path: '/admin/users',
+    name: 'AdminUserPage',
+    component: () => import('../views/admin/AdminUserPage.vue')
+  },
+  {
+    path: '/admin/tweets',
+    name: 'AdminTweetPage',
+    component: () => import('../views/admin/AdminTweetPage.vue')
   },
   {
     path: '*',
