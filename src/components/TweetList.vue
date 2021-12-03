@@ -24,14 +24,14 @@
             <span
               class="account"
               @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
-              >{{ tweet.account }} </span
+              >＠{{ tweet.account }} </span
             >&bull;
             <span>{{ tweet.createdAt | fromNow }}</span>
           </div>
         </div>
         <div class="reply-to-wrapper" v-show="tweet.type === 'reply'">
           <span class="title">回覆 </span>
-          <span class="name">{{ tweet.replyTo }}</span>
+          <span class="name">@{{ tweet.replyTo }}</span>
         </div>
         <div class="content">{{ tweet.description }}</div>
         <div class="action" v-show="tweet.type !== 'reply'">

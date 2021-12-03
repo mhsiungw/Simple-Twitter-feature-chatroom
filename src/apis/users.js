@@ -1,27 +1,20 @@
 import { apiHelper } from './../utils/helpers'
-const getToken = () => localStorage.getItem('simpleTwitter-token')
 
 export default {
-  async getProfile({ userId }) {
-    return apiHelper.get(`/users/${userId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    })
+  getProfile({ userId }) {
+    return apiHelper.get(`/users/${userId}`)
   },
-  async getUserTweets({ userId }) {
-    return apiHelper.get(`/users/${userId}/tweets`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    })
+  getUserTweets({ userId }) {
+    return apiHelper.get(`/users/${userId}/tweets`)
   },
-  async getUserReplies({ userId }) {
-    return apiHelper.get(`/users/${userId}/replied_tweets`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    })
+  getUserReplies({ userId }) {
+    return apiHelper.get(`/users/${userId}/replied_tweets`)
   },
   getUserLikes({ userId }) {
-    return apiHelper.get(`/users/${userId}/likes`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-
-    })
+    return apiHelper.get(`/users/${userId}/likes`)
+  },
+  updateUser({ userId, formData }) {
+    return apiHelper.put(`/users/${userId}`, formData)
   },
   getCurrentUser() {
     return apiHelper.get('/users/currentUser')

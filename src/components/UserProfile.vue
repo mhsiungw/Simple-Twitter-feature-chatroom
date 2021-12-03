@@ -24,7 +24,14 @@
           background: `url(${user ? user.avatar : ''}) no-repeat center/cover`,
         }"
       ></div>
-      <button class="btn-edit" @click="afterClickEditProfile">
+      <button
+        v-if="
+          this.$route.path === '/users' ||
+          this.$route.path === `/users/${currentUser.id}`
+        "
+        class="btn-edit"
+        @click="afterClickEditProfile"
+      >
         編輯個人資料
       </button>
       <div class="other-button-wrapper">
@@ -256,24 +263,24 @@ export default {
           : this.$route.params.id;
       try {
         const userLikes = await usersAPI.getUserLikes({ userId });
-        this.user.userLikes = userLikes.data;
-        console.log("this.user.userLikes====>:", this.user.userLikes);
-        // this.userLikes = this.user.userLikes.map((item) => ({
-        //   id: item.Tweet.id,
-        //   userId: item.Tweet.User.id,
-        //   name: item.Tweet.User.name,
-        //   avatar: item.Tweet.User.avatar,
-        //   account: item.Tweet.User.account,
-        //   createdAt: item.Tweet.createdAt,
-        //   description: item.Tweet.description,
-        //   likeTweetCount: item.likeTweetCount,
-        //   replyTweetCount: item.replyTweetCount,
-        //   isLiked: item.isLiked,
-        //   likedAt: item.createdAt,
-        // }));
-        // this.userLikes.sort((a, b) => {
-        //   return a.likedAt < b.likedAt ? 1 : -1;
-        // });
+        this.userLikes = userLikes.data;
+        console.log("this.user.userLikes====>:", this.userLikes);
+        this.userLikes = this.userLikes.map((item) => ({
+          id: item.Tweet.id,
+          UserId: item.Tweet.User.id,
+          name: item.Tweet.User.name,
+          avatar: item.Tweet.User.avatar,
+          account: item.Tweet.User.account,
+          createdAt: item.Tweet.createdAt,
+          description: item.Tweet.description,
+          likeTweetCount: item.likeTweetCount,
+          replyTweetCount: item.replyTweetCount,
+          isLiked: item.isLiked ? item.isLiked : true,
+          likedAt: item.createdAt,
+        }));
+        this.userLikes.sort((a, b) => {
+          return a.likedAt < b.likedAt ? 1 : -1;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -314,7 +321,16 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit() {},
+    completeEdit(modalData) {
+      this.user = Object.assign({}, modalData);
+      this.user.tweets = this.user.tweets.map((tweet) => ({
+        ...tweet,
+        name: modalData.name,
+        avatar: modalData.avatar,
+        description: modalData.description,
+      }));
+      console.log("afterEditModal===>", this.user);
+    },
   },
 };
 </script>
