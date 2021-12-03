@@ -2,16 +2,18 @@
   <div class="row page-container">
     <UserSidebar class="col-3" />
     <FollowList
-      v-show="$route.path === '/user/followers'"
+      class="follow-list"
+      v-show="$route.path === '/users/followers'"
       :initialFollowers="followers"
       :nowUser="user"
     />
     <FollowList
-      v-show="$route.path === '/user/followings'"
+      class="follow-list"
+      v-show="$route.path === '/users/followings'"
       :initialFollowers="followings"
       :nowUser="user"
     />
-    <Trends class="col-4" />
+    <Trends class="col-4 ml-4" />
   </div>
 </template>
 
@@ -39,7 +41,7 @@ const dummyData = {
           isLiked: true,
         },
         {
-          id: 23,
+          id: 46,
           userId: 44,
           name: "test332412",
           avatar:
@@ -52,7 +54,7 @@ const dummyData = {
           isLiked: true,
         },
         {
-          id: 23,
+          id: 39,
           userId: 44,
           name: "test332412",
           avatar:
@@ -99,7 +101,7 @@ const dummyData = {
         createdAt: new Date(),
       },
       {
-        id: 23,
+        id: 2,
         UserId: 14,
         TweetId: 11,
         comment: "voluptatem eligendi dolores",
@@ -114,7 +116,7 @@ const dummyData = {
       },
 
       {
-        id: 23,
+        id: 7,
         UserId: 14,
         TweetId: 11,
         comment: "voluptatem eligendi dolores",
@@ -147,7 +149,7 @@ const dummyFollowList = {
       isLiked: true,
     },
     {
-      id: 23,
+      id: 9,
       userId: 44,
       name: "test332412",
       avatar:
@@ -160,7 +162,7 @@ const dummyFollowList = {
       isLiked: true,
     },
     {
-      id: 23,
+      id: 6,
       userId: 44,
       name: "test332412",
       avatar:
@@ -180,35 +182,48 @@ const dummyFollowList = {
       name: "test332412",
       avatar:
         "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@minhsung",
+      account: "@ch",
       createdAt: new Date(),
-      description: "testXDDDDDD",
+      description: "im followinnnnnng12312412421",
       likeTweetCount: 16,
       replyTweetCount: 57,
       isLiked: true,
     },
     {
-      id: 23,
+      id: 4,
       userId: 44,
       name: "test332412",
       avatar:
         "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-      account: "@minhsung",
+      account: "@ch",
       createdAt: new Date(),
-      description: "testXDDDDDD",
+      description: "im followinnnnnng",
       likeTweetCount: 13,
       replyTweetCount: 99,
       isLiked: true,
     },
     {
-      id: 23,
+      id: 5,
       userId: 44,
       name: "test332412",
       avatar:
         "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-      account: "@minhsung",
+      account: "@ch",
       createdAt: new Date(),
-      description: "testXDDDDDD",
+      description: "im followinnnnnng2222",
+      likeTweetCount: 22,
+      replyTweetCount: 33,
+      isLiked: true,
+    },
+    {
+      id: 6,
+      userId: 44,
+      name: "test332412",
+      avatar:
+        "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
+      account: "@ch12d12d",
+      createdAt: new Date(),
+      description: "im follo2222winnnnnng2222",
       likeTweetCount: 22,
       replyTweetCount: 33,
       isLiked: true,
@@ -268,7 +283,14 @@ export default {
 
 <style lang="scss" scoped>
 .page-container {
-  min-width: 1440px;
-  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+
+  .follow-list {
+    border-right: 1px solid lightgray;
+    border-left: 1px solid lightgray;
+  }
 }
 </style>

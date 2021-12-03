@@ -77,8 +77,11 @@
 </template>
 
 <script>
+import { fromNowFilter } from "../utils/mixins.js";
+
 export default {
   name: "ModalForReplyTweet",
+  mixins: [fromNowFilter],
   data() {
     return {
       replyContent: "",
@@ -95,7 +98,7 @@ export default {
       this.$emit("after-click-cross");
     },
     replyTweet() {
-      console.log("replyTweet");
+      this.$emit("replyTweet", this.replyContent);
     },
   },
 };

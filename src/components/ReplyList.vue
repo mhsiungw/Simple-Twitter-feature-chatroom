@@ -130,6 +130,7 @@ import { Toast } from "@/utils/helpers";
 import likesAPI from "@/apis/likes";
 import tweetsAPI from "@/apis/tweets";
 import { fromNowFilter } from "../utils/mixins.js";
+import { mapState } from "vuex";
 
 export default {
   name: "ReplyList",
@@ -148,9 +149,9 @@ export default {
       replyCount: 0,
     };
   },
-  watch: {},
-  computed: {},
-  mounted() {},
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
     this.tweetId = this.$route.params.id;
     this.fetchTweet(this.tweetId);
@@ -162,7 +163,6 @@ export default {
     afterClickNewReply() {
       this.showNewReplyModal = true;
     },
-
     async fetchTweet(tweetId) {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
@@ -180,14 +180,27 @@ export default {
       }
       this.replyCount = Object.keys(this.replies).length;
     },
-    async replyTweet() {
+    async replyTweet(comment) {
+      const tweetId = this.$route.params.id;
       try {
-        console.log("replyTweet");
+        if (!comment) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入內容",
+          });
+          return;
+        }
+        const { data } = await tweetsAPI.postReply({ tweetId, comment });
+        if (data.status !== "successful") {
+          throw new Error(data.message);
+        }
+        await this.fetchTweet(this.tweetId);
+        this.showNewReplyModal = false;
       } catch (error) {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "目前無法回覆，請稍候",
+          title: "回覆推文失敗，請稍後再試",
         });
       }
     },
