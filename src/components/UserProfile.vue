@@ -68,16 +68,18 @@
       <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
-          <span @click="$router.push('/user/following')" class="followings"
+          <span @click="$router.push('/users/followings')" class="followings"
             >{{ user.following ? user.following.count : 0 }} 個</span
           ><span
-            @click="$router.push('/user/following')"
+            @click="$router.push('/users/followings')"
             class="type followings"
             >跟隨中</span
           >
-          <span @click="$router.push('/user/follower')" class="followers"
+          <span @click="$router.push('/users/followers')" class="followers"
             >{{ user.follower ? user.follower.count : 0 }} 個</span
-          ><span @click="$router.push('/user/follower')" class="type followers"
+          ><span
+            @click="$router.push('/users/followers')"
+            class="type followers"
             >跟隨者</span
           >
         </div>
@@ -113,12 +115,12 @@
     ></TweetList>
     <TweetList
       v-if="tabOption === '推文與回覆'"
-      :tweets="user.userReplies"
+      :tweets="userReplies"
       :isReply="true"
     ></TweetList>
     <TweetList
       v-if="tabOption === '喜歡的內容'"
-      :tweets="user.userLikes"
+      :tweets="userLikes"
       :isReply="false"
     ></TweetList>
     <ModalForEditProfile
@@ -134,82 +136,7 @@
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import usersAPI from "@/apis/users";
-
-const dummyUserLikesData = {
-  data: [
-    {
-      id: 12,
-      userId: 11,
-      name: "williammmmmm",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@william",
-      createdAt: new Date(),
-      description: "voluptatem eligendi dolores123332312s",
-      likeTweetCount: 45,
-      replyTweetCount: 67,
-      isLiked: false,
-      likedAt: true,
-    },
-    {
-      id: 13,
-      userId: 114,
-      name: "willlllllll",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@william",
-      createdAt: new Date(),
-      description: "voluptatem eligendi dolores123332312s",
-      likeTweetCount: 45,
-      replyTweetCount: 67,
-      isLiked: false,
-      likedAt: false,
-    },
-
-    {
-      id: 15,
-      userId: 22,
-      name: "LINchhhhhh",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@LIN CH",
-      createdAt: new Date(),
-      description: "voluptatem eligendi dolores123332312s",
-      likeTweetCount: 45,
-      replyTweetCount: 67,
-      isLiked: true,
-      likedAt: true,
-    },
-    {
-      id: 14,
-      userId: 22,
-      name: "LINchhhhhh",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@LIN CH",
-      createdAt: new Date(),
-      description: "voluptatem eligendi dolores123332312s",
-      likeTweetCount: 45,
-      replyTweetCount: 67,
-      isLiked: true,
-      likedAt: true,
-    },
-    {
-      id: 16,
-      userId: 22,
-      name: "LINchhhhhh",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@LIN CH",
-      createdAt: new Date(),
-      description: "voluptatem eligendi dolores123332312s",
-      likeTweetCount: 45,
-      replyTweetCount: 67,
-      isLiked: true,
-      likedAt: true,
-    },
-  ],
-};
+import { mapState } from "vuex";
 
 export default {
   name: "Profile",
@@ -219,22 +146,27 @@ export default {
   },
   data() {
     return {
-      user: { tweets: [], userLikes: [], userReplies: [] },
+      user: { tweets: [] },
       tabOption: "",
       showEditProfileModal: false,
+      userLikes: [],
+      userReplies: [],
     };
   },
   watch: {
     "$route.params.id": function () {
       this.fetchProfile();
-      this.tabOption = "推文";
+      //this.tabOption = "推文";
     },
   },
-  computed: {},
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
     this.fetchProfile();
     this.fetchUserTweets();
     this.fetchUserReplies();
+    this.fetchUserLikes();
   },
   methods: {
     selectTab(event) {
@@ -260,8 +192,6 @@ export default {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
         this.fetchUserTweets();
-
-        this.user.userLikes = [...dummyUserLikesData.data];
       } catch (error) {
         console.log(error);
       }
@@ -277,7 +207,7 @@ export default {
         //console.log("this.user.tweets===>", this.user.tweets);
         this.user.tweets = this.user.tweets.map((tweet) => ({
           id: tweet.User.id,
-          userId: tweet.UserId,
+          UserId: tweet.UserId,
           name: tweet.User.name,
           avatar: tweet.User.avatar,
           account: tweet.User.account,
@@ -285,7 +215,7 @@ export default {
           description: tweet.description,
           likeTweetCount: tweet.Like ? tweet.Like.length : 0,
           replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
-          isLiked: tweet.isLiked,
+          isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
         this.tabOption = "推文";
       } catch (error) {
@@ -299,9 +229,9 @@ export default {
           : this.$route.params.id;
       try {
         const userReplies = await usersAPI.getUserReplies({ userId });
-        this.user.userReplies = userReplies.data;
-        console.log("this.userReplies===>", this.user.userReplies);
-        this.user.userReplies = this.user.userReplies.map((reply) => {
+        this.userReplies = userReplies.data;
+        //console.log("this.userReplies===>", this.userReplies);
+        this.userReplies = this.userReplies.map((reply) => {
           return {
             ...reply,
             replyTo: reply.Tweet ? reply.Tweet.User.account : "",
@@ -312,7 +242,7 @@ export default {
             type: "reply",
           };
         });
-        this.user.userReplies.sort((a, b) => {
+        this.userReplies.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
       } catch (error) {
@@ -320,8 +250,30 @@ export default {
       }
     },
     async fetchUserLikes() {
+      const userId =
+        this.$route.path === "/users/"
+          ? this.currentUser.id
+          : this.$route.params.id;
       try {
-        console.log("fetchUserLikes");
+        const userLikes = await usersAPI.getUserLikes({ userId });
+        this.user.userLikes = userLikes.data;
+        console.log("this.user.userLikes====>:", this.user.userLikes);
+        // this.userLikes = this.user.userLikes.map((item) => ({
+        //   id: item.Tweet.id,
+        //   userId: item.Tweet.User.id,
+        //   name: item.Tweet.User.name,
+        //   avatar: item.Tweet.User.avatar,
+        //   account: item.Tweet.User.account,
+        //   createdAt: item.Tweet.createdAt,
+        //   description: item.Tweet.description,
+        //   likeTweetCount: item.likeTweetCount,
+        //   replyTweetCount: item.replyTweetCount,
+        //   isLiked: item.isLiked,
+        //   likedAt: item.createdAt,
+        // }));
+        // this.userLikes.sort((a, b) => {
+        //   return a.likedAt < b.likedAt ? 1 : -1;
+        // });
       } catch (error) {
         console.log(error);
       }
@@ -375,6 +327,7 @@ $divider: #e6ecf0;
 $bitdark: #657786;
 .profile {
   max-height: 100vh;
+  overflow-y: scroll;
   overflow-x: hidden;
   width: 100%;
   border: 1px solid $divider;

@@ -3,7 +3,7 @@
     <div class="upper">
       <img
         class="arrow"
-        @click="$router.go(-1)"
+        @click="$router.push('/')"
         src="../assets/imgs/vector@2x.png"
         alt=""
       />
@@ -15,16 +15,16 @@
     <div class="tab self" v-if="this.$route.path.indexOf('/self') > 0">
       <div
         class="item"
-        :class="{ active: this.$route.path === '/user/followers' }"
-        @click="$router.push('/user/followers')"
+        :class="{ active: this.$route.path === '/users/followers' }"
+        @click="$router.push('/users/followers')"
       >
         <div class="text">追隨者</div>
       </div>
 
       <div
         class="item"
-        :class="{ active: $route.path === '/user/followings' }"
-        @click="$router.push('/user/followings')"
+        :class="{ active: $route.path === '/users/followings' }"
+        @click="$router.push('/users/followings')"
       >
         <div class="text">正在跟隨</div>
       </div>
@@ -33,7 +33,7 @@
       <div
         class="item"
         :class="{ active: this.$route.path.indexOf('follower') > 0 }"
-        @click="$router.push(`/user/followers`)"
+        @click="$router.push(`/users/followers`)"
       >
         <div class="text">追隨者</div>
       </div>
@@ -41,7 +41,7 @@
       <div
         class="item"
         :class="{ active: this.$route.path.indexOf('following') > 0 }"
-        @click="$router.push(`/user/followings`)"
+        @click="$router.push(`/users/followings`)"
       >
         <div class="text">正在跟隨</div>
       </div>
@@ -205,7 +205,7 @@ $divider: #e6ecf0;
       display: flex;
       flex-direction: row;
       position: relative;
-      // outline: blue solid;
+      border-top: 1px solid lightgrey;
       img {
         width: 50px;
         height: 50px;

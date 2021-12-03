@@ -1,8 +1,8 @@
 <template>
-  <div class="page-container">
-    <UserSidebar class="user-sidebar" />
+  <div class="row page-container">
+    <UserSidebar class="col-3" />
     <ReplyList />
-    <Trends class="trend-section" />
+    <Trends class="col-4 ml-4" />
   </div>
 </template>
 
@@ -22,14 +22,9 @@ export default {
 
 <style lang="scss">
 .page-container {
-  height: 100%;
-
-  width: 100%;
+  margin: 0 auto;
   display: flex;
-  flex-direction: row;
-}
-
-.user-sidebar {
-  left: 100px;
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 </style>
