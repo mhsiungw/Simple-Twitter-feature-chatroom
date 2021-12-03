@@ -76,20 +76,20 @@
       <div class="number-followers">
         <div>
           <span
-            @click="$router.push(`/users/${userId}/followings`)"
+            @click="$router.push(`/users/${user.id}/followings`)"
             class="followings"
             >{{ user.Followings ? user.followingsCount : 0 }} 個</span
           ><span
-            @click="$router.push(`/users/${userId}/followings`)"
+            @click="$router.push(`/users/${user.id}/followings`)"
             class="type followings"
             >跟隨中</span
           >
           <span
-            @click="$router.push(`/users/${userId}/followers`)"
+            @click="$router.push(`/users/${user.id}/followers`)"
             class="followers"
             >{{ user.Followers ? user.followersCount : 0 }} 個</span
           ><span
-            @click="$router.push(`/users/${userId}/followers`)"
+            @click="$router.push(`/users/${user.id}/followers`)"
             class="type followers"
             >跟隨者</span
           >
@@ -171,7 +171,7 @@ export default {
     "$route.params.id": function () {
       this.fetchProfile();
     },
-    //deep: true,
+    deep: true,
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
@@ -205,15 +205,16 @@ export default {
       try {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
-        console.log("thisuser===>", this.user);
+        //console.log("thisuser===>", this.user);
 
-        this.user.followersCount = this.user.Followers.length;
-        this.user.followingsCount = this.user.Followings.length;
+        this.user.followersCount = this.user.Followers.length - 1;
+        this.user.followingsCount = this.user.Followings.length - 1;
 
-        // this.user.tweets.sort((a, b) => {
-        //   return a.createdAt - b.createdAt;
-        // });
-
+        if (this.user.tweets) {
+          this.user.tweets.sort((a, b) => {
+            return a.createdAt - b.createdAt;
+          });
+        }
         this.fetchUserTweets();
       } catch (error) {
         console.log(error);
@@ -221,13 +222,14 @@ export default {
     },
     async fetchUserTweets() {
       const userId =
-        this.$route.path === "/users"
+        this.$route.path === `/users/${this.currentUser.id}`
           ? this.currentUser.id
           : this.$route.params.id;
+
       try {
         const userTweets = await usersAPI.getUserTweets({ userId });
         this.user.tweets = userTweets.data;
-        //console.log("this.user.tweets===>", this.user.tweets);
+        console.log("this.user.tweets===>", this.user.tweets);
         this.user.tweets = this.user.tweets.map((tweet) => ({
           id: tweet.User.id,
           UserId: tweet.UserId,
@@ -247,13 +249,14 @@ export default {
     },
     async fetchUserReplies() {
       const userId =
-        this.$route.path === "/users"
+        this.$route.path === `/users/${this.currentUser.id}`
           ? this.currentUser.id
           : this.$route.params.id;
+
       try {
         const userReplies = await usersAPI.getUserReplies({ userId });
         this.userReplies = userReplies.data;
-        console.log("this.userReplies===>", this.userReplies);
+        //console.log("this.userReplies===>", this.userReplies);
         this.userReplies = this.userReplies.map((reply) => {
           return {
             ...reply,
@@ -274,7 +277,7 @@ export default {
     },
     async fetchUserLikes() {
       const userId =
-        this.$route.path === "/users/"
+        this.$route.path === `/users/${this.currentUser.id}`
           ? this.currentUser.id
           : this.$route.params.id;
       try {
@@ -283,7 +286,7 @@ export default {
         //console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes = this.userLikes.map((item) => ({
           id: item.Tweet.id,
-          userId: item.Tweet.User.id,
+          UserId: item.Tweet.User.id,
           name: item.Tweet.User.name,
           avatar: item.Tweet.User.avatar,
           account: item.Tweet.User.account,
@@ -304,7 +307,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        console.log(data);
+        // console.log(data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }

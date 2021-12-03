@@ -1,6 +1,6 @@
 <template>
-  <div class="row page-container">
-    <UserSidebar class="col-3" />
+  <div class="page-container">
+    <UserSidebar class="user-sidebar" />
     <FollowList
       class="follow-list"
       v-if="$route.path === `/users/${userId}/followers`"
@@ -13,7 +13,7 @@
       :initialFollowers="followings"
       :nowUser="user"
     />
-    <Trends class="col-4 ml-4" />
+    <Trends class="trend-section" />
   </div>
 </template>
 
@@ -23,6 +23,7 @@ import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
+import { mapState } from "vuex";
 
 export default {
   name: "FollowingPage",
@@ -39,17 +40,42 @@ export default {
       userId: "",
     };
   },
-  
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
     this.userId = this.$route.params.id;
     this.fetchFollowList(this.userId);
     this.fetchProfile(this.userId);
+    this.fetchUserTweets(this.userId);
   },
   methods: {
     async fetchProfile(userId) {
       try {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async fetchUserTweets(userId) {
+      try {
+        const userTweets = await usersAPI.getUserTweets({ userId });
+        this.user.tweets = userTweets.data;
+        //console.log("this.user.tweets===>", this.user.tweets);
+        this.user.tweets = this.user.tweets.map((tweet) => ({
+          id: tweet.User.id,
+          UserId: tweet.UserId,
+          name: tweet.User.name,
+          avatar: tweet.User.avatar,
+          account: tweet.User.account,
+          createdAt: tweet.createdAt,
+          description: tweet.description,
+          likeTweetCount: tweet.Like ? tweet.Like.length : 0,
+          replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
+          isLiked: tweet.isLiked ? tweet.isLiked : true,
+        }));
+        this.tabOption = "推文";
       } catch (error) {
         console.log(error);
       }
@@ -62,10 +88,10 @@ export default {
 
       try {
         const followersData = await usersAPI.getFollowers({ userId });
-        console.log("followersData", followersData);
+        // console.log("followersData", followersData);
         this.followers = followersData.data;
         const followingsData = await usersAPI.getFollowings({ userId });
-        console.log("followingsData", followingsData);
+        // console.log("followingsData", followingsData);
         this.followings = followingsData.data;
       } catch (err) {
         console.log(err);
@@ -85,10 +111,16 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  .trend-section,
+  .user-sidebar {
+    position: fixed;
+  }
+  .trend-section {
+    right: 12px;
+  }
 
-  .follow-list {
-    border-right: 1px solid lightgray;
-    border-left: 1px solid lightgray;
+  .user-sidebar {
+    left: 100px;
   }
 }
 </style>

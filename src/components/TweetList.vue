@@ -12,7 +12,7 @@
         }"
         @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
       ></div>
-      <div class="tweet-wrapper" @click="tweetDetail(tweet)">
+      <div class="tweet-wrapper">
         <div class="info">
           <div
             class="name"
@@ -29,11 +29,17 @@
             <span>{{ tweet.createdAt | fromNow }}</span>
           </div>
         </div>
-        <div class="reply-to-wrapper" v-show="tweet.type === 'reply'">
+        <div
+          @click="$router.push(`/users/${tweet.Tweet.UserId}`).catch(() => {})"
+          class="reply-to-wrapper"
+          v-show="tweet.type === 'reply'"
+        >
           <span class="title">回覆 </span>
           <span class="name">@{{ tweet.replyTo }}</span>
         </div>
-        <div class="content">{{ tweet.description }}</div>
+        <div class="content" @click="tweetDetail(tweet)">
+          {{ tweet.description }}
+        </div>
         <div class="action" v-show="tweet.type !== 'reply'">
           <div class="reply-wrapper">
             <div class="icon reply"></div>
