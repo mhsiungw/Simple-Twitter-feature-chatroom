@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import usersAPI from '../apis/users.js'
+import adminAPI from '../apis/admin'
 
 Vue.use(Vuex)
 
@@ -30,6 +31,18 @@ export default new Vuex.Store({
     async fetchCurrentUser({ commit }) {
       try {
         const { data } = await usersAPI.getCurrentUser()
+        const { id, name, email, avatar: image, role, account, cover } = data
+        commit('setCurrentUser', {
+          id, name, email, image, account, cover, isAdmin: role === 'user' ? false : true
+        })
+      } catch (error) {
+        console.log(error)
+        console.error('cannot fetch user info')
+      }
+    },
+    async fetchCurrentAdmin({ commit }) {
+      try {
+        const { data } = await adminAPI.getCurrentAdmin()
         const { id, name, email, avatar: image, role, account, cover } = data
         commit('setCurrentUser', {
           id, name, email, image, account, cover, isAdmin: role === 'user' ? false : true
