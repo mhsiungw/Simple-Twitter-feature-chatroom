@@ -38,6 +38,11 @@ const routes = [
     component: () => import('../views/SettingPage.vue')
   },
   {
+    path: '/:id/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue'),
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue')

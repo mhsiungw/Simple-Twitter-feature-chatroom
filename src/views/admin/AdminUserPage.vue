@@ -1,18 +1,33 @@
 <template>
   <div class="user-page-container">
     <AdminSidebar class="sidebar-section" />
-    <AdminUserSection class="user-section" />
+    <AdminUserSection :user-data="userData" class="user-section" />
   </div>
 </template>
 
 <script>
 import AdminSidebar from "../../components/AdminSidebar.vue";
 import AdminUserSection from "../../components/AdminUserSection.vue";
+import adminAPI from "../../apis/admin";
 
 export default {
   components: {
     AdminSidebar,
     AdminUserSection,
+  },
+  data() {
+    return {
+      userData: [],
+    };
+  },
+  created() {
+    this.fetchAllUsers();
+  },
+  methods: {
+    async fetchAllUsers() {
+      let { data } = await adminAPI.getAllUsers();
+      this.userData = data;
+    },
   },
 };
 </script>

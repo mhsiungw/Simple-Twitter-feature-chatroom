@@ -29,6 +29,8 @@
 
 <script>
 import authorizationAPI from "../apis/authorization";
+import adminAPI from "../apis/admin";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -45,28 +47,47 @@ export default {
       this.isAdminLogin = this.$route.path === "/admin/login";
     },
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   methods: {
     async handleSubmit() {
       if (!this.email || !this.password) {
         return window.alert("please enter input");
       }
-      // 串接 API
-      let { data } = await authorizationAPI.logIn({
-        email: this.email,
-        password: this.password,
-      });
+      /************     
+      因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
+      ************/
+      let { data } = this.isAdminLogin
+        ? await adminAPI.adminLogin({
+            email: this.email,
+            password: this.password,
+          })
+        : await authorizationAPI.logIn({
+            email: this.email,
+            password: this.password,
+          });
+      // 如果登入失敗
+      console.log(data);
       if (data.status !== "success") {
         this.email = "";
         this.password = "";
         window.alert("Login failed");
         throw new Error(data.status);
       }
-      console.log("data.user", data.user);
       // Vuex mutation setCurrentUser
       this.$store.commit("setCurrentUser", data.user);
       // 存取 token 並轉到 MainPage
       localStorage.setItem("simpleTwitter-token", data.token);
-      this.$router.push("/");
+
+      /************     
+      因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
+      ************/
+      if (this.isAdminLogin === false) {
+        this.$router.push("/");
+      } else if (this.isAdminLogin === true) {
+        this.$router.push("/admin/users");
+      }
     },
   },
 };

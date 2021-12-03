@@ -31,7 +31,10 @@
       >
         編輯個人資料
       </button>
-      <div class="other-button-wrapper">
+      <div
+        class="other-button-wrapper"
+        v-if="this.$route.path !== `/users/${currentUser.id}`"
+      >
         <div class="btn-messege">
           <a v-if="user"><div class="icon messege"></div></a>
         </div>
@@ -54,14 +57,14 @@
         <button
           v-if="user.isFollowed"
           class="btn-follow unfollow"
-          @click="deleteFollowing(user.user.id)"
+          @click="deleteFollowing(currentUser.id)"
         >
           正在跟隨
         </button>
         <button
           v-if="!user.isFollowed"
           class="btn btn-follow"
-          @click="addFollowing(user.user.id)"
+          @click="addFollowing(currentUser.id)"
         >
           跟隨
         </button>
@@ -75,7 +78,7 @@
           <span
             @click="$router.push(`/users/${userId}/followings`)"
             class="followings"
-            >{{ user.following ? user.following.count : 0 }} 個</span
+            >{{ user.Followings ? user.followingsCount : 0 }} 個</span
           ><span
             @click="$router.push(`/users/${userId}/followings`)"
             class="type followings"
@@ -84,7 +87,7 @@
           <span
             @click="$router.push(`/users/${userId}/followers`)"
             class="followers"
-            >{{ user.follower ? user.follower.count : 0 }} 個</span
+            >{{ user.Followers ? user.followersCount : 0 }} 個</span
           ><span
             @click="$router.push(`/users/${userId}/followers`)"
             class="type followers"
@@ -143,7 +146,9 @@
 <script>
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
+import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
+import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
 export default {
@@ -166,16 +171,12 @@ export default {
     "$route.params.id": function () {
       this.fetchProfile();
     },
+    //deep: true,
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
-    this.userId =
-      this.$route.path === "/users"
-        ? this.currentUser.id
-        : this.$route.params.id;
-
     this.fetchProfile();
     this.fetchUserTweets();
     this.fetchUserReplies();
@@ -198,12 +199,21 @@ export default {
     },
     async fetchProfile() {
       const userId =
-        this.$route.path === "/users"
+        this.$route.path === `/users/${this.currentUser.id}`
           ? this.currentUser.id
           : this.$route.params.id;
       try {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
+        console.log("thisuser===>", this.user);
+
+        this.user.followersCount = this.user.Followers.length;
+        this.user.followingsCount = this.user.Followings.length;
+
+        // this.user.tweets.sort((a, b) => {
+        //   return a.createdAt - b.createdAt;
+        // });
+
         this.fetchUserTweets();
       } catch (error) {
         console.log(error);
@@ -243,7 +253,7 @@ export default {
       try {
         const userReplies = await usersAPI.getUserReplies({ userId });
         this.userReplies = userReplies.data;
-        //console.log("this.userReplies===>", this.userReplies);
+        console.log("this.userReplies===>", this.userReplies);
         this.userReplies = this.userReplies.map((reply) => {
           return {
             ...reply,
@@ -270,7 +280,7 @@ export default {
       try {
         const userLikes = await usersAPI.getUserLikes({ userId });
         this.userLikes = userLikes.data;
-        console.log("this.user.userLikes====>:", this.userLikes);
+        //console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes = this.userLikes.map((item) => ({
           id: item.Tweet.id,
           userId: item.Tweet.User.id,
@@ -291,18 +301,34 @@ export default {
         console.log(error);
       }
     },
-    async addFollowing() {
+    async addFollowing(userId) {
       try {
-        console.log("addFollowing");
+        const { data } = await followshipsAPI.addFollowing({ userId });
+        console.log(data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.user.isFollowed = true;
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試",
+        });
       }
     },
-    async deleteFollowing() {
+    async deleteFollowing(userId) {
       try {
-        console.log("deleteFollowing");
+        const { data } = await followshipsAPI.deleteFollowing({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.user.isFollowed = false;
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試",
+        });
       }
     },
     async addSubscribe() {
