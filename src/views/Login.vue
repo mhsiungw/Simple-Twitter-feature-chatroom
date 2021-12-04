@@ -18,7 +18,7 @@
         <router-link v-if="!isAdminLogin" to="/register"
           >註冊 Alphitter</router-link
         >
-        <span class="dot">．</span>
+        <span v-if="!isAdminLogin" class="dot">．</span>
         <router-link :to="isAdminLogin ? '/login' : '/admin/login'">
           {{ isAdminLogin ? "前台登入" : "後台登入" }}
         </router-link>

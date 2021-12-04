@@ -29,11 +29,11 @@
       <div class="post">
         <div class="post-title">
           <div class="name">{{ tweet.User.name }}</div>
-          <div class="acount-name">@{{ tweet.User.account }}</div>
+          <div class="account-name">@{{ tweet.User.account }}</div>
           <span class="dot">．</span>
-          <div class="time">{{ tweet.createdAt | fromNow }}</div>
+          <div class="created-time">{{ tweet.createdAt | fromNow }}</div>
         </div>
-        <p class="post-detail">
+        <p class="post-desc">
           {{ tweet.description }}
         </p>
         <div class="post-actions">
@@ -174,13 +174,13 @@ $orange: #ff6600;
         font-weight: 500;
         margin-right: 5px;
       }
-      .acount-name,
-      .time {
+      .account-name,
+      .created-time {
         white-space: nowrap;
         color: #657786;
       }
     }
-    .post-detail {
+    .post-desc {
       width: 100%;
       word-break: break-word;
       // border: 1px solid red;
