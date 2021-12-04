@@ -21,6 +21,7 @@ import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
 import { mapState } from "vuex";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "MainPage",
@@ -40,9 +41,15 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
-    // 把推文以倒序顯示
+    // 把推文按照發文時間顯示（越近發的越先）
     reverseTweet() {
-      return this.tweets.slice().reverse();
+      console.log("reverseTweet");
+      let newTweets = this.tweets;
+      return newTweets.sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
     },
   },
   methods: {
@@ -53,7 +60,11 @@ export default {
         if (response.statusText !== "OK") {
           throw new Error(response.status);
         }
-        this.tweets = response.data;
+        this.tweets = response.data.sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
       } catch (error) {
         console.log(error);
         window.alert("無法顯示資料，請稍後再試");
@@ -70,7 +81,7 @@ export default {
             account: this.currentUser.name,
           },
           UserId: this.currentUser.id,
-          id: this.tweets.length + 2,
+          id: uuidv4(),
           createdAt: moment().format(),
           description: newDescription,
         };
@@ -79,23 +90,28 @@ export default {
           UserId: newInput.UserId,
           description: newDescription,
         });
-        if (data.status !== "successful") {
+        if (data.status !== "success") {
           throw new Error(data.status);
         }
 
         //頁面即時更新
-        this.tweets.push(newInput);
+        // this.tweets.push(newInput);
+        // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
+        this.$router.go(0);
       } catch (error) {
         console.log(error);
       }
     },
     async handleAfterLikeClick(tweetId) {
       try {
+        console.log("handleAfterLikeClick", tweetId);
+
         // 發送 API
         let response = await likeAPI.likeTweet({ tweetId });
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
+        console.log(response);
         //頁面即時更新
         // 先 render 找出符合 tweetId 的 tweet
         this.tweets.filter((tweet) => {
@@ -106,8 +122,6 @@ export default {
             ) {
               tweet.Likes.push({ UserId: this.currentUser.id });
               //如果使用者按過讚，就 return
-            } else {
-              return;
             }
           }
         });
@@ -123,7 +137,7 @@ export default {
           throw new Error(response.statusText);
         }
         console.log("handleAfterDislikeClick", tweetId);
-        //頁面即時更新
+        // 頁面即時更新;
         this.tweets.filter((tweet) => {
           if (tweet.id === tweetId) {
             tweet.Likes = tweet.Likes.filter((Like) => {
