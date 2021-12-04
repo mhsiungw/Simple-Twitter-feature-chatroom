@@ -1,8 +1,8 @@
 <template>
-  <div class="row page-container">
-    <UserSidebar class="col-3" />
-    <UserProfile />
-    <Trends class="col-4 ml-4" />
+  <div class="page-container">
+    <UserSidebar class="mr-2" />
+    <UserProfile class="user-profile-section" />
+    <Trends class="ml-2" />
   </div>
 </template>
 
@@ -22,10 +22,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mainPage-container {
+.page-container {
   margin: 0 auto;
   display: flex;
+  flex: 0 1 auto;
   flex-flow: row nowrap;
   justify-content: center;
+  .user-profile-section {
+    min-width: 600px;
+  }
 }
 </style>

@@ -42,14 +42,14 @@
           <div
             v-if="!user.isSubscribed"
             class="btn-noti"
-            @click="addSubscribe(user.user.id)"
+            @click="addSubscribe(user.id)"
           >
             <div class="icon subscribe"></div>
           </div>
           <div
             v-if="user.isSubscribed"
             class="btn-noti already"
-            @click="deleteSubscribe(user.user.id)"
+            @click="deleteSubscribe(use.id)"
           >
             <div class="icon subscribe"></div>
           </div>
@@ -57,14 +57,14 @@
         <button
           v-if="user.isFollowed"
           class="btn-follow unfollow"
-          @click="deleteFollowing(currentUser.id)"
+          @click="deleteFollowing(user.id)"
         >
           正在跟隨
         </button>
         <button
           v-if="!user.isFollowed"
           class="btn btn-follow"
-          @click="addFollowing(currentUser.id)"
+          @click="addFollowing(user.id)"
         >
           跟隨
         </button>
@@ -123,6 +123,8 @@
       v-if="tabOption === '推文'"
       :tweets="user.tweets"
       :isReply="false"
+      @child-click-like="likeTweet"
+      @child-click-unlike="unlikeTweet"
     ></TweetList>
     <TweetList
       v-if="tabOption === '推文與回覆'"
@@ -133,6 +135,8 @@
       v-if="tabOption === '喜歡的內容'"
       :tweets="userLikes"
       :isReply="false"
+      @child-click-like="likeTweet"
+      @child-click-unlike="unlikeTweet"
     ></TweetList>
     <ModalForEditProfile
       :user="user"
@@ -148,6 +152,7 @@ import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
+import likesAPI from "@/apis/likes";
 import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
@@ -230,9 +235,9 @@ export default {
       try {
         const userTweets = await usersAPI.getUserTweets({ userId });
         this.user.tweets = userTweets.data;
-        console.log("this.user.tweets123===>", userTweets);
+        //console.log("this.user.tweets===>", userTweets);
         this.user.tweets = this.user.tweets.map((tweet) => ({
-          id: tweet.User.id,
+          id: tweet.id,
           UserId: tweet.UserId,
           name: tweet.User.name,
           avatar: tweet.User.avatar,
@@ -287,7 +292,7 @@ export default {
         this.userLikes = userLikes.data;
         //console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes = this.userLikes.map((item) => ({
-          id: item.Tweet.id,
+          id: item.id,
           UserId: item.Tweet.User.id,
           name: item.Tweet.User.name,
           avatar: item.Tweet.User.avatar,
@@ -309,7 +314,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        // console.log(data);
+        console.log("addFollowing", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -350,8 +355,6 @@ export default {
         console.log(error);
       }
     },
-    tweetAction() {},
-    followAction() {},
     afterClickEditProfile() {
       this.showEditProfileModal = true;
     },
@@ -367,11 +370,49 @@ export default {
         description: modalData.description,
       }));
     },
+    async likeTweet(tweetId) {
+      try {
+        const { data } = await likesAPI.likeTweet({ tweetId });
+        console.log("likeTweet", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.user.tweets = this.user.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            console.log(tweet);
+            tweet.isLiked = !tweet.isLiked;
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法按讚推文，請稍後再試",
+        });
+      }
+    },
+    async unlikeTweet(tweetId) {
+      try {
+        const { data } = await likesAPI.unlikeTweet({ tweetId });
+        console.log("likeTweet", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.fetchUserTweets();
+        this.fetchUserLikes();
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法按讚推文，請稍後再試",
+        });
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightdark: #9197a3;

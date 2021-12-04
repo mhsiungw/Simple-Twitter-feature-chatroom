@@ -1,6 +1,6 @@
 <template>
   <div class="main-section">
-    <ModalForTweet class="modal" />
+    <ModalForTweet v-if="showModalForTweet" />
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
@@ -91,6 +91,7 @@ export default {
   data() {
     return {
       tweetInput: "",
+      showModalForTweet: false,
     };
   },
   mixins: [fromNowFilter],
@@ -118,7 +119,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .liked {
   color: red;
 }

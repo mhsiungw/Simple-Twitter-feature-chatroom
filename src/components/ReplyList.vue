@@ -170,8 +170,6 @@ export default {
         this.tweet = { ...data, currentUser: this.currentUser };
 
         this.replies = { ...data.Replies };
-
-        Toast.fire({ icon: "success", title: "成功取得tweet" });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -244,7 +242,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f5f8fa;

@@ -58,7 +58,7 @@ export default {
     async fetchTopUsers() {
       try {
         const { data } = await usersAPI.getTopUsers();
-        console.log("topuser===>", data);
+        //console.log("topuser===>", data);
         this.topUsers = [...data];
         this.topUsers = this.topUsers
           .filter((user) => user.id !== this.currentUser.id)
@@ -74,7 +74,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        console.log("addfollow", data);
+        // console.log("addfollow", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -100,7 +100,7 @@ export default {
     async deleteFollowing(userId) {
       try {
         const { data } = await followshipsAPI.deleteFollowing({ userId });
-        console.log("deleteFollow", data);
+        // console.log("deleteFollow", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -130,7 +130,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f5f8fa;

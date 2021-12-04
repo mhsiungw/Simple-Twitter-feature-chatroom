@@ -61,27 +61,17 @@
         </div>
       </div>
     </div>
-    <ModalForReplyTweet
-      :tweet="tweet"
-      v-if="showNewReplyModal"
-      @replyTweet="replyTweet"
-      @after-click-cross="afterClickCross"
-    />
   </div>
 </template>
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
-import ModalForReplyTweet from "./../components/ModalForReplyTweet";
-import likesAPI from "@/apis/likes";
 import tweetsAPI from "@/apis/tweets";
 import { Toast } from "@/utils/helpers";
 
 export default {
   name: "TweetList",
-  components: {
-    ModalForReplyTweet,
-  },
+  components: {},
   mixins: [fromNowFilter],
   props: {
     tweets: {
@@ -93,9 +83,7 @@ export default {
     isReply: Boolean,
   },
   data() {
-    return {
-      showNewReplyModal: false,
-    };
+    return {};
   },
   methods: {
     tweetDetail(tweet) {
@@ -103,14 +91,6 @@ export default {
         this.$router.push(`/reply_list/${tweet.id}`);
       }
     },
-    afterClickCross() {
-      //Tweet.showNewReplyModal = false;
-    },
-    afterClickNewReply(e) {
-      console.log(e.target);
-      //Tweet.showNewReplyModal = true;
-    },
-    created() {},
     async replyTweet(comment) {
       const tweetId = this.$route.params.id;
       try {
@@ -126,7 +106,6 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        await this.fetchTweet(this.tweetId);
         this.showNewReplyModal = false;
       } catch (error) {
         console.log(error);
@@ -137,42 +116,16 @@ export default {
       }
     },
     async likeTweet(tweetId) {
-      try {
-        const { data } = await likesAPI.likeTweet({ tweetId });
-
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        //this.$bus.$emit("tweetAction", { type: "like", tweetId: tweetId });
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "無法按讚推文，請稍後再試",
-        });
-      }
+      this.$emit("child-click-like", tweetId);
     },
     async unlikeTweet(tweetId) {
-      try {
-        const { data } = await likesAPI.unlikeTweet({ tweetId });
-
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        // this.$bus.$emit('tweetAction', { type: 'unlike', tweetId: tweetId})
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "無法取消按讚，請稍後再試",
-        });
-      }
+      this.$emit("child-click-unlike", tweetId);
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f6f8fa;

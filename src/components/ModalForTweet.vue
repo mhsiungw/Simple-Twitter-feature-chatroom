@@ -1,6 +1,6 @@
 <template>
-  <div class="tweet-modal">
-    <button class="cancle-button">X</button>
+  <div class="post-tweet">
+    <button class="cancel-button">X</button>
     <hr />
     <div class="tweet-part">
       <img class="avatar" :src="currentUser.image" alt="avatar" />
@@ -25,24 +25,24 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f5f8fa;
 $bitdark: #657786;
 $divider: #e6ecf0;
-.tweet-modal {
+.post-tweet {
   width: 600px;
   height: 300px;
   background: #fff;
   top: 55px;
   left: 50%;
-  transform: translateX(-50%);
+  //transform: translateX(-50%);
   border: 1px solid black;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  .cancle-button {
+  .cancel-button {
     align-self: flex-start;
     border: none;
     background: #fff;
