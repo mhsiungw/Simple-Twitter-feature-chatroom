@@ -18,17 +18,12 @@ const routes = [
   },
 
   {
-    path: '/users/followings',
+    path: '/users/:id/followings',
     name: 'FollowingPage',
     component: () => import('../views/FollowingPage.vue'),
   },
   {
-    path: '/:id/setting',
-    name: 'SettingPage',
-    component: () => import('../views/SettingPage.vue'),
-  },
-  {
-    path: '/users/followers',
+    path: '/users/:id/followers',
     name: 'FollowerPage',
     component: () => import('../views/FollowingPage.vue'),
   },
@@ -37,7 +32,16 @@ const routes = [
     name: 'UserPage',
     component: () => import('../views/UserPage.vue')
   },
-
+  {
+    path: '/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue')
+  },
+  {
+    path: '/:id/setting',
+    name: 'SettingPage',
+    component: () => import('../views/SettingPage.vue'),
+  },
   {
     path: '/login',
     name: 'Login',

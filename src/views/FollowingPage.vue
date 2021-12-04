@@ -1,19 +1,19 @@
 <template>
-  <div class="row page-container">
-    <UserSidebar class="col-3" />
+  <div class="page-container">
+    <UserSidebar class="user-sidebar" />
     <FollowList
       class="follow-list"
-      v-show="$route.path === '/users/followers'"
+      v-if="$route.path === `/users/${userId}/followers`"
       :initialFollowers="followers"
       :nowUser="user"
     />
     <FollowList
       class="follow-list"
-      v-show="$route.path === '/users/followings'"
+      v-if="$route.path === `/users/${userId}/followings`"
       :initialFollowers="followings"
       :nowUser="user"
     />
-    <Trends class="col-4 ml-4" />
+    <Trends class="trend-section" />
   </div>
 </template>
 
@@ -22,214 +22,8 @@ import FollowList from "../components/FollowList.vue";
 import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import { Toast } from "@/utils/helpers";
-
-const dummyData = {
-  data: {
-    user: {
-      tweets: [
-        {
-          id: 23,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 16,
-          replyTweetCount: 57,
-          isLiked: true,
-        },
-        {
-          id: 46,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 13,
-          replyTweetCount: 99,
-          isLiked: true,
-        },
-        {
-          id: 39,
-          userId: 44,
-          name: "test332412",
-          avatar:
-            "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-          account: "@minhsung",
-          createdAt: new Date(),
-          description: "testXDDDDDD",
-          likeTweetCount: 22,
-          replyTweetCount: 33,
-          isLiked: true,
-        },
-      ],
-      id: 1,
-      userId: 11,
-      name: "test123",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@minhsung",
-      createdAt: new Date(),
-      description: "testXDDDDDD",
-      likeTweetCount: 13,
-      replyTweetCount: 12,
-      isLiked: true,
-    },
-    follower: {
-      count: 14,
-    },
-    following: {
-      count: 201,
-    },
-    replies: [
-      {
-        id: 23,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores1233",
-        type: "reply",
-        createdAt: new Date(),
-      },
-      {
-        id: 2,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
-
-      {
-        id: 7,
-        UserId: 14,
-        TweetId: 11,
-        comment: "voluptatem eligendi dolores",
-        replyTo: "1232412",
-        name: "test123",
-        avatar:
-          "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-        account: "@william",
-        description: "voluptatem eligendi dolores123332312s",
-        type: "reply",
-        createdAt: new Date(),
-      },
-    ],
-  },
-};
-
-const dummyFollowList = {
-  followers: [
-    {
-      id: 23,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@minhsung",
-      createdAt: new Date(),
-      description: "testXDDDDDD",
-      likeTweetCount: 16,
-      replyTweetCount: 57,
-      isLiked: true,
-    },
-    {
-      id: 9,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-      account: "@minhsung",
-      createdAt: new Date(),
-      description: "testXDDDDDD",
-      likeTweetCount: 13,
-      replyTweetCount: 99,
-      isLiked: true,
-    },
-    {
-      id: 6,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-      account: "@minhsung",
-      createdAt: new Date(),
-      description: "testXDDDDDD",
-      likeTweetCount: 22,
-      replyTweetCount: 33,
-      isLiked: true,
-    },
-  ],
-  followings: [
-    {
-      id: 23,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@ch",
-      createdAt: new Date(),
-      description: "im followinnnnnng12312412421",
-      likeTweetCount: 16,
-      replyTweetCount: 57,
-      isLiked: true,
-    },
-    {
-      id: 4,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U029Q08104V-g67abce21890-512",
-      account: "@ch",
-      createdAt: new Date(),
-      description: "im followinnnnnng",
-      likeTweetCount: 13,
-      replyTweetCount: 99,
-      isLiked: true,
-    },
-    {
-      id: 5,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-      account: "@ch",
-      createdAt: new Date(),
-      description: "im followinnnnnng2222",
-      likeTweetCount: 22,
-      replyTweetCount: 33,
-      isLiked: true,
-    },
-    {
-      id: 6,
-      userId: 44,
-      name: "test332412",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U022PUC3C7P-411ed5d8c3fe-512",
-      account: "@ch12d12d",
-      createdAt: new Date(),
-      description: "im follo2222winnnnnng2222",
-      likeTweetCount: 22,
-      replyTweetCount: 33,
-      isLiked: true,
-    },
-  ],
-};
+import usersAPI from "@/apis/users";
+import { mapState } from "vuex";
 
 export default {
   name: "FollowingPage",
@@ -243,32 +37,62 @@ export default {
       followers: [],
       followings: [],
       user: {},
+      userId: "",
     };
   },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
-    this.fetchFollowList();
-    this.fetchProfile();
+    this.userId = this.$route.params.id;
+    this.fetchFollowList(this.userId);
+    this.fetchProfile(this.userId);
+    this.fetchUserTweets(this.userId);
   },
   methods: {
-    async fetchProfile() {
+    async fetchProfile(userId) {
       try {
-        console.log("fetchProfile");
-
-        const { data } = { ...dummyData };
-        this.user = { ...data.user };
-        console.log("this.user===>", this.user);
+        const getProfile = await usersAPI.getProfile({ userId });
+        this.user = { ...getProfile.data };
       } catch (error) {
         console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "目前無法取得資料，請稍候",
-        });
+      }
+    },
+    async fetchUserTweets(userId) {
+      try {
+        const userTweets = await usersAPI.getUserTweets({ userId });
+        this.user.tweets = userTweets.data;
+        //console.log("this.user.tweets===>", this.user.tweets);
+        this.user.tweets = this.user.tweets.map((tweet) => ({
+          id: tweet.User.id,
+          UserId: tweet.UserId,
+          name: tweet.User.name,
+          avatar: tweet.User.avatar,
+          account: tweet.User.account,
+          createdAt: tweet.createdAt,
+          description: tweet.description,
+          likeTweetCount: tweet.Like ? tweet.Like.length : 0,
+          replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
+          isLiked: tweet.isLiked ? tweet.isLiked : true,
+        }));
+        this.tabOption = "推文";
+      } catch (error) {
+        console.log(error);
       }
     },
     async fetchFollowList() {
+      const userId =
+        this.$route.path === "/users"
+          ? this.currentUser.id
+          : this.$route.params.id;
+
       try {
-        this.followers = [...dummyFollowList.followers];
-        this.followings = [...dummyFollowList.followings];
+        const followersData = await usersAPI.getFollowers({ userId });
+        // console.log("followersData", followersData);
+        this.followers = followersData.data;
+        const followingsData = await usersAPI.getFollowings({ userId });
+        // console.log("followingsData", followingsData);
+        this.followings = followingsData.data;
       } catch (err) {
         console.log(err);
         Toast.fire({
@@ -287,10 +111,16 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  .trend-section,
+  .user-sidebar {
+    position: fixed;
+  }
+  .trend-section {
+    right: 12px;
+  }
 
-  .follow-list {
-    border-right: 1px solid lightgray;
-    border-left: 1px solid lightgray;
+  .user-sidebar {
+    left: 100px;
   }
 }
 </style>

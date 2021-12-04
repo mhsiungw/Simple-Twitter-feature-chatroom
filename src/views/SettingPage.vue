@@ -9,7 +9,7 @@
 import UserSidebar from "../components/UserSidebar.vue";
 import SettingSection from "../components/SettingSection.vue";
 export default {
-  name: "UserPage",
+  name: "Setting",
   components: {
     UserSidebar,
     SettingSection,
@@ -21,7 +21,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped lang="scss">
 .setting-page-container {

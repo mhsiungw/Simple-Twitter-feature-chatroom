@@ -167,7 +167,7 @@ export default {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
 
-        this.tweet = { ...data };
+        this.tweet = { ...data, currentUser: this.currentUser };
 
         this.replies = { ...data.Replies };
 
@@ -190,7 +190,7 @@ export default {
           });
           return;
         }
-        const { data } = await tweetsAPI.postReply({ tweetId, comment });
+        const { data } = await tweetsAPI.addReply({ tweetId, comment });
         if (data.status !== "successful") {
           throw new Error(data.message);
         }

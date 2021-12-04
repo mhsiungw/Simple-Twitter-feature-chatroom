@@ -20,12 +20,52 @@
             class="background-photo"
             :style="{ background: `url(${user.cover}) no-repeat center/cover` }"
           ></div>
+          <div class="icon camera-two">
+            <input
+              type="file"
+              class="coverFile"
+              ref="coverFile"
+              name="cover"
+              accept="image/*"
+              @change="coverChange"
+            />
+          </div>
+          <img
+            class="icon inside-two"
+            src="../assets/imgs/camera_inside.png"
+            alt=""
+          />
+          <img
+            class="icon cross"
+            src="../assets/imgs/cross.png"
+            alt=""
+            @click.stop.prevent="cancelModalClick()"
+          />
+
+          <img class="icon camera-two" src="../assets/imgs/camera.png" alt="" />
+
           <div
             class="photo"
             :style="{
               background: `url(${user.avatar}) no-repeat center/cover`,
             }"
           ></div>
+          <div class="icon camera-one">
+            <input
+              class="avatarFile"
+              ref="avatarFile"
+              name="avatar"
+              accept="image/*"
+              @change="avatarChange"
+              type="file"
+            />
+          </div>
+          <img
+            class="icon inside-one"
+            src="../assets/imgs/camera_inside.png"
+            alt=""
+          />
+
           <div class="for-inputs">
             <span class="name tag">名稱</span>
             <input
@@ -48,38 +88,6 @@
               >{{ user.description ? user.description.length : 0 }}/160</span
             >
           </div>
-          <div class="icon camera-two">
-            <input
-              class="coverFile"
-              ref="coverFile"
-              name="cover"
-              accept="image/*"
-              @change="coverChange"
-              type="file"
-            />
-          </div>
-          <div class="icon camera-one">
-            <input
-              class="avatarFile"
-              ref="avatarFile"
-              name="avatar"
-              accept="image/*"
-              @change="avatarChange"
-              type="file"
-            />
-          </div>
-          <img class="icon camera-two" src="../assets/imgs/camera.png" alt="" />
-          <img
-            class="icon inside-one"
-            src="../assets/imgs/camera_inside.png"
-            alt=""
-          />
-          <img
-            class="icon inside-two"
-            src="../assets/imgs/camera_inside.png"
-            alt=""
-          />
-          <img class="icon cross" src="../assets/imgs/cross.png" alt="" />
         </div>
       </form>
     </div>
@@ -87,6 +95,10 @@
 </template>
 
 <script>
+import { Toast } from "@/utils/helpers";
+import usersAPI from "@/apis/users";
+import { mapState } from "vuex";
+
 export default {
   name: "ModalForEditProfile",
   props: {
@@ -95,7 +107,9 @@ export default {
       required: true,
     },
   },
-  computed: {},
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
+  },
   created() {
     //this.user = this.currentUser;
   },
@@ -104,20 +118,77 @@ export default {
     cancelModalClick() {
       this.$emit("after-click-cross");
     },
-    coverChange() {
-      console.log("coverChange");
+    coverChange(e) {
+      const { files } = e.target;
+      console.log("files", files[0]);
+      if (files !== 0) {
+        const coverUrl = window.URL.createObjectURL(files[0]);
+        this.user.cover = coverUrl;
+      }
     },
-    avatarChange() {
-      console.log("avatarChange");
+    avatarChange(e) {
+      const { files } = e.target;
+      console.log("files", files);
+
+      if (files !== 0) {
+        const avatarUrl = window.URL.createObjectURL(files[0]);
+        this.user.avatar = avatarUrl;
+      }
     },
     handleSubmit(e) {
-      console.log(e);
+      if (this.user.name === "") {
+        Toast.fire({
+          icon: "warning",
+          title: "請輸入名稱",
+        });
+        return;
+      } else if (
+        this.user.name.length > 50 &&
+        this.user.introduction.length > 160
+      ) {
+        Toast.fire({
+          icon: "warning",
+          title: "名稱和自我介紹超過最大限制字數！",
+        });
+        return;
+      } else if (this.user.name.length > 50) {
+        Toast.fire({
+          icon: "warning",
+          title: "名稱只限50字",
+        });
+        return;
+      } else if (this.user.introduction.length > 160) {
+        Toast.fire({
+          icon: "warning",
+          title: "自我介紹只限160字",
+        });
+        return;
+      }
+      const form = e.target;
+      const formData = new FormData(form);
+      for (let [name, value] of formData.entries()) {
+        console.log(name + ": " + value);
+      }
+      this.updateUser(formData);
     },
-    async putUser() {
+    async updateUser(formData) {
       try {
-        console.log("putUser");
+        const { data } = await usersAPI.updateUser({
+          userId: this.currentUser.id,
+          formData,
+        });
+        console.log("data==>", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$emit("completeEdit", this.user);
+        await this.$store.dispatch("fetchCurrentUser");
+        this.$emit("after-click-cross");
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法更新資料，請稍後再試",
+        });
       }
     },
   },
@@ -320,7 +391,7 @@ $divider: #e6ecf0;
         top: 90px;
         left: 262px;
         cursor: pointer;
-        z-index: 999;
+        //z-index: 999;
         .coverFile {
           width: 100%;
           height: 100%;
@@ -337,6 +408,7 @@ $divider: #e6ecf0;
       }
 
       .cross {
+        cursor: pointer;
         top: 92px;
         left: 318.5px;
       }

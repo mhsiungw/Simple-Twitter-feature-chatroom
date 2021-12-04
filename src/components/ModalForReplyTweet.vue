@@ -58,7 +58,7 @@
         <div class="content-of-mine">
           <img
             class="photo-of-mine"
-            :src="tweet.User.avatar"
+            :src="tweet.currentUser.image"
             alt="photo-of-mine"
           />
           <textarea
