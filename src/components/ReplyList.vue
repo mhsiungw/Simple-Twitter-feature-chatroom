@@ -191,7 +191,8 @@ export default {
           return;
         }
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
-        if (data.status !== "successful") {
+        //console.log(data)
+        if (data.status !== "success") {
           throw new Error(data.message);
         }
         await this.fetchTweet(this.tweetId);

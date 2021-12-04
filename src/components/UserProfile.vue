@@ -78,7 +78,7 @@
           <span
             @click="$router.push(`/users/${user.id}/followings`)"
             class="followings"
-            >{{ user.Followings ? user.followingsCount : 0 }} 個</span
+            >{{ user.followingsCount > 0 ? user.followingsCount : 0 }} 個</span
           ><span
             @click="$router.push(`/users/${user.id}/followings`)"
             class="type followings"
@@ -87,7 +87,7 @@
           <span
             @click="$router.push(`/users/${user.id}/followers`)"
             class="followers"
-            >{{ user.Followers ? user.followersCount : 0 }} 個</span
+            >{{ user.followersCount > 0 ? user.followersCount : 0 }} 個</span
           ><span
             @click="$router.push(`/users/${user.id}/followers`)"
             class="type followers"
@@ -170,6 +170,7 @@ export default {
   watch: {
     "$route.params.id": function () {
       this.fetchProfile();
+      this.fetchUserTweets();
     },
     deep: true,
   },
@@ -229,7 +230,7 @@ export default {
       try {
         const userTweets = await usersAPI.getUserTweets({ userId });
         this.user.tweets = userTweets.data;
-        console.log("this.user.tweets===>", this.user.tweets);
+        console.log("this.user.tweets123===>", userTweets);
         this.user.tweets = this.user.tweets.map((tweet) => ({
           id: tweet.User.id,
           UserId: tweet.UserId,
@@ -238,9 +239,10 @@ export default {
           account: tweet.User.account,
           createdAt: tweet.createdAt,
           description: tweet.description,
-          likeTweetCount: tweet.Like ? tweet.Like.length : 0,
-          replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
-          isLiked: tweet.isLiked ? tweet.isLiked : true,
+          likeTweetCount: tweet.likeCount,
+          replyTweetCount: tweet.replyCount,
+          isLiked: tweet.isLiked,
+          showNewReplyModal: false,
         }));
         this.tabOption = "推文";
       } catch (error) {
@@ -356,7 +358,15 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit() {},
+    completeEdit(modalData) {
+      this.user.user = Object.assign({}, modalData);
+      this.user.tweets = this.user.tweets.map((tweet) => ({
+        ...tweet,
+        name: modalData.name,
+        avatar: modalData.avatar,
+        description: modalData.description,
+      }));
+    },
   },
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="recommend-users">
     <div class="title">跟隨誰</div>
     <div class="list-group">
-      <div v-for="user in popularUsers" :key="user.id" class="list-group-item">
+      <div v-for="user in topUsers" :key="user.id" class="list-group-item">
         <div class="avatar"><img :src="user.avatar" alt="" /></div>
         <div class="info">
           <div class="name">
@@ -34,55 +34,22 @@
 </template>
 
 <script>
-const dummyData = {
-  users: [
-    {
-      id: 1,
-      name: "minhsiung",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@minhsung",
-      followerCount: 10,
-      isFollowed: true,
-    },
-    {
-      id: 2,
-      name: "LIN CH",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@LIN CH",
-      followerCount: 10,
-      isFollowed: true,
-    },
-    {
-      id: 3,
-      name: "Will",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@Will",
-      followerCount: 10,
-      isFollowed: true,
-    },
-    {
-      id: 4,
-      name: "DanLin",
-      avatar:
-        "https://ca.slack-edge.com/T01L0ECKVH9-U0271BY8464-e33af84d2111-512",
-      account: "@DanLin",
-      followerCount: 10,
-      isFollowed: false,
-    },
-  ],
-};
+import usersAPI from "@/apis/users";
+import followshipsAPI from "@/apis/followships";
+import { Toast } from "@/utils/helpers";
+import { mapState } from "vuex";
 
 export default {
-  name: "PopularUsers",
+  name: "Trends",
 
   data() {
     return {
-      popularUsers: [],
+      topUsers: [],
       more: false,
     };
+  },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
     this.fetchTopUsers();
@@ -90,25 +57,70 @@ export default {
   methods: {
     async fetchTopUsers() {
       try {
-        const { users } = { ...dummyData };
-        this.popularUsers = users;
-        //console.log(this.popularUsers);
+        const { data } = await usersAPI.getTopUsers();
+        console.log("topuser===>", data);
+        this.topUsers = [...data];
+        this.topUsers = this.topUsers
+          .filter((user) => user.id !== this.currentUser.id)
+          .slice(0, 8);
       } catch (error) {
         console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "目前無法為你推薦追蹤，請稍候",
+        });
       }
     },
-    async addFollowing() {
+    async addFollowing(userId) {
       try {
-        console.log("addTest");
+        const { data } = await followshipsAPI.addFollowing({ userId });
+        console.log("addfollow", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.topUsers = this.topUsers.map((user) => {
+          if (user.id !== userId) {
+            return user;
+          } else {
+            return {
+              ...user,
+              followerCount: user.followerCount + 1,
+              isFollowed: true,
+            };
+          }
+        });
       } catch (error) {
-        console.log("error");
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試",
+        });
       }
     },
-    async deleteFollowing() {
+    async deleteFollowing(userId) {
       try {
-        console.log("deleteTest");
+        const { data } = await followshipsAPI.deleteFollowing({ userId });
+        console.log("deleteFollow", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.topUsers = this.topUsers.map((user) => {
+          if (user.id !== userId) {
+            return user;
+          } else {
+            return {
+              ...user,
+              followerCount: user.followerCount - 1,
+              isFollowed: false,
+            };
+          }
+        });
       } catch (error) {
-        console.log("error");
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試",
+        });
       }
     },
     followAction() {

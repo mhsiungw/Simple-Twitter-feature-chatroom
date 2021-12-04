@@ -42,7 +42,7 @@
         </div>
         <div class="action" v-show="tweet.type !== 'reply'">
           <div class="reply-wrapper">
-            <div class="icon reply"></div>
+            <div class="icon reply" @click="afterClickNewReply($event)"></div>
             <span class="number">{{ tweet.replyTweetCount }}</span>
           </div>
           <div class="like-wrapper">
@@ -61,16 +61,27 @@
         </div>
       </div>
     </div>
+    <ModalForReplyTweet
+      :tweet="tweet"
+      v-if="showNewReplyModal"
+      @replyTweet="replyTweet"
+      @after-click-cross="afterClickCross"
+    />
   </div>
 </template>
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
+import ModalForReplyTweet from "./../components/ModalForReplyTweet";
 import likesAPI from "@/apis/likes";
+import tweetsAPI from "@/apis/tweets";
 import { Toast } from "@/utils/helpers";
 
 export default {
   name: "TweetList",
+  components: {
+    ModalForReplyTweet,
+  },
   mixins: [fromNowFilter],
   props: {
     tweets: {
@@ -81,10 +92,48 @@ export default {
     },
     isReply: Boolean,
   },
+  data() {
+    return {
+      showNewReplyModal: false,
+    };
+  },
   methods: {
     tweetDetail(tweet) {
       if (this.isReply) {
         this.$router.push(`/reply_list/${tweet.id}`);
+      }
+    },
+    afterClickCross() {
+      //Tweet.showNewReplyModal = false;
+    },
+    afterClickNewReply(e) {
+      console.log(e.target);
+      //Tweet.showNewReplyModal = true;
+    },
+    created() {},
+    async replyTweet(comment) {
+      const tweetId = this.$route.params.id;
+      try {
+        if (!comment) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入內容",
+          });
+          return;
+        }
+        const { data } = await tweetsAPI.addReply({ tweetId, comment });
+        //console.log(data)
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        await this.fetchTweet(this.tweetId);
+        this.showNewReplyModal = false;
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "回覆推文失敗，請稍後再試",
+        });
       }
     },
     async likeTweet(tweetId) {
