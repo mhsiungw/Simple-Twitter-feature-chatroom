@@ -1,9 +1,13 @@
 <template>
   <div class="main-section">
+
     <ModalForTweet
       @after-cancel-click="handleAfterTweetCancel"
       v-if="isTweetClicked"
     />
+
+    <ModalForTweet v-if="showModalForTweet" />
+
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
@@ -98,6 +102,7 @@ export default {
   data() {
     return {
       tweetInput: "",
+      showModalForTweet: false,
     };
   },
   mixins: [fromNowFilter],
