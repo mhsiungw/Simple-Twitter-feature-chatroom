@@ -12,3 +12,10 @@ export default {
   name: "App",
 };
 </script>
+
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+</style>

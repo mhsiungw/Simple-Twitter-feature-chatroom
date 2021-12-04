@@ -89,7 +89,7 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 .setting-section {
   border: 1px solid #e6ecf0;
