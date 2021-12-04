@@ -1,24 +1,22 @@
 # Simple-Twitter CH組
 
 ## 前端 
-[simple-twitter前端]](https://github.com/CHLin13/twitter-front-end)
+[simple-twitter前端](https://github.com/CHLin13/twitter-front-end)
 
 ###專案建置
 ```
 git clone https://github.com/CHLin13/twitter-front-end.git
 ```
-↓
 ```
 npm ci
 ```
-↓
 ```
 npm run serve
 ```
 
 ## 後端 
 
-[simple-twitter 後端]](https://github.com/CHLin13/twitter-api-2020)
+[simple-twitter 後端](https://github.com/CHLin13/twitter-api-2020)
 
 ###本地端專案建置
 
@@ -44,11 +42,9 @@ npx sequelize-cli db:seed:undo:all
 ```
 git clone https://github.com/CHLin13/twitter-api-2020.git
 ```
-↓
 ```
 npm ci
 ```
-↓
 ```
 npm run serve
 ```
