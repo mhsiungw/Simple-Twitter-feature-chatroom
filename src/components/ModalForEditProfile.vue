@@ -195,13 +195,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightdark: #9197a3;
 $bitdark: #657786;
 $divider: #e6ecf0;
-.modal.edit {
+.modal,
+.edit {
   position: fixed;
   top: 0;
   left: 0;

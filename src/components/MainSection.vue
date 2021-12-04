@@ -1,6 +1,9 @@
 <template>
   <div class="main-section">
-    <ModalForTweet class="modal" />
+    <ModalForTweet
+      @after-cancel-click="handleAfterTweetCancel"
+      v-if="isTweetClicked"
+    />
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
@@ -87,6 +90,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isTweetClicked: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -114,11 +121,14 @@ export default {
       //把資料傳到父層，讓父層串 API
       this.$emit("after-dislike-clicked", tweetId);
     },
+    handleAfterTweetCancel() {
+      this.$emit("after-cancel-click");
+    },
   },
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .liked {
   color: red;
 }

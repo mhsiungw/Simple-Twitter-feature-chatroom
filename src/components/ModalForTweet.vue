@@ -1,17 +1,21 @@
 <template>
-  <div class="tweet-modal">
-    <button class="cancle-button">X</button>
-    <hr />
-    <div class="tweet-part">
-      <img class="avatar" :src="currentUser.image" alt="avatar" />
-      <form class="tweet-form">
-        <textarea
-          id="tweet-input"
-          type="textarea"
-          placeholder="有什麼新鮮事？"
-        ></textarea>
-        <button class="tweet-button">推文</button>
-      </form>
+  <div class="modal-container">
+    <div class="tweet-modal">
+      <button @click.stop.prevent="handleCancelClick" class="cancel-button">
+        X
+      </button>
+      <hr />
+      <div class="tweet-part">
+        <img class="avatar" :src="currentUser.image" alt="avatar" />
+        <form class="tweet-form">
+          <textarea
+            id="tweet-input"
+            type="textarea"
+            placeholder="有什麼新鮮事？"
+          ></textarea>
+          <button class="tweet-button">推文</button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -22,27 +26,42 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
   },
+  methods: {
+    handleCancelClick() {
+      this.$emit("after-cancel-click");
+    },
+  },
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f5f8fa;
 $bitdark: #657786;
 $divider: #e6ecf0;
+// modal 背後的灰色背景
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+// modal 本身
 .tweet-modal {
   width: 600px;
   height: 300px;
+  margin-top: 54px;
   background: #fff;
-  top: 55px;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 1px solid black;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  .cancle-button {
+  .cancel-button {
     align-self: flex-start;
     border: none;
     background: #fff;

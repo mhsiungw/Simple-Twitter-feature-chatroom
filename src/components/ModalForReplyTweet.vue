@@ -104,13 +104,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $orange: #ff6600;
 $deeporange: #f34a16;
 $lightgray: #f5f8fa;
 $bitdark: #657786;
 $divider: #e6ecf0;
-.modal.reply {
+.modal,
+.reply {
   top: 0;
   left: 0;
   bottom: 0;
