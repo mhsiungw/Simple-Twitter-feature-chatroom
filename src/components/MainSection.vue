@@ -1,5 +1,6 @@
 <template>
   <div class="main-section">
+    <ModalForTweet class="modal" />
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
@@ -67,8 +68,12 @@
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
+import ModalForTweet from "./ModalForTweet.vue";
 
 export default {
+  components: {
+    ModalForTweet,
+  },
   props: {
     tweets: {
       type: Array,
