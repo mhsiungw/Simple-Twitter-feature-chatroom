@@ -41,12 +41,22 @@
             <font-awesome-icon class="icon" :icon="['far', 'comment']" />
             <span>{{ tweet.Replies.length }}</span>
           </div>
-          <div class="action-item action-like">
-            <font-awesome-icon
-              class="icon"
-              :class="['icon', { liked: true }]"
-              :icon="['far', 'heart']"
-            />
+          <div
+            v-if="
+              tweet.Likes.some((Like) => Like.UserId === initialCurrentUser.id)
+            "
+            @click.stop.prevent="handleDislikeClick(tweet.id)"
+            class="action-item action-like"
+          >
+            <font-awesome-icon class="icon liked" :icon="['far', 'heart']" />
+            <span>{{ tweet.Likes.length }}</span>
+          </div>
+          <div
+            v-else
+            @click.stop.prevent="handleLikeClick(tweet.id)"
+            class="action-item action-like"
+          >
+            <font-awesome-icon class="icon" :icon="['far', 'heart']" />
             <span>{{ tweet.Likes.length }}</span>
           </div>
         </div>
@@ -87,6 +97,17 @@ export default {
       }
       this.$emit("after-tweet-submit", this.tweetInput);
       this.tweetInput = "";
+    },
+    handleLikeClick(tweetId) {
+      console.log("MainSection handleLikeClick", tweetId);
+
+      //把資料傳到父層，讓父層串 API
+      this.$emit("after-like-clicked", tweetId);
+    },
+    handleDislikeClick(tweetId) {
+      console.log("MainSection handleDislikeClick", tweetId);
+      //把資料傳到父層，讓父層串 API
+      this.$emit("after-dislike-clicked", tweetId);
     },
   },
 };
