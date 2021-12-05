@@ -1,13 +1,18 @@
 <template>
   <div class="mainPage-container">
-    <UserSidebar class="user-sidebar" />
+    <UserSidebar
+      @after-tweet-click="handleAfterTweetClick"
+      class="user-sidebar"
+    />
     <MainSection
       @after-tweet-submit="handleAfterSubmit"
       @after-like-clicked="handleAfterLikeClick"
       @after-dislike-clicked="handleAfterDislikeClick"
+      @after-cancel-click="handleAfterTweetCancel"
       :tweets="reverseTweet"
       :initial-current-user="currentUser"
       :is-authenticatd="isAuthenticated"
+      :is-tweet-clicked="isTweetClicked"
     />
     <Trends class="trend-section" />
   </div>
@@ -33,7 +38,7 @@ export default {
   data() {
     return {
       tweets: [],
-      showTweetModal: false,
+      isTweetClicked: false,
     };
   },
   created() {
@@ -148,6 +153,12 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    handleAfterTweetClick() {
+      this.isTweetClicked = true;
+    },
+    handleAfterTweetCancel() {
+      this.isTweetClicked = false;
     },
   },
 };
