@@ -3,10 +3,10 @@
     <div class="title">使用者列表</div>
     <div class="user-cards">
       <div v-for="user in userData" :key="user.id" class="card-item">
-        <img :src="user.cover" alt="cover" class="cover" />
+        <img :src="user.cover | emptyImage" alt="cover" class="cover" />
         <div class="description">
           <div class="description-title">
-            <img :src="user.avatar" alt="avatar" class="avatar" />
+            <img :src="user.avatar | emptyImage" alt="avatar" class="avatar" />
             <div class="name-account">
               <p class="name">{{ user.name }}</p>
               <p class="account">@{{ user.account }}</p>
@@ -36,10 +36,12 @@
 
 <script>
 import { mapState } from "vuex";
+import { emptyImageFilter } from "../utils/mixins";
 export default {
   computed: {
     ...mapState(["currentUser"]),
   },
+  mixins: [emptyImageFilter],
   props: {
     userData: {
       type: Array,

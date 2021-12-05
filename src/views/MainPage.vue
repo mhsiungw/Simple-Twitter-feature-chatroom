@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
-    // 把推文按照發文時間顯示（越近發的越先）
+    // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
       console.log("reverseTweet");
       let newTweets = this.tweets;
@@ -185,7 +185,7 @@ export default {
     position: fixed;
   }
   .trend-section {
-    right: 12px;
+    right: 82px;
   }
 
   .user-sidebar {

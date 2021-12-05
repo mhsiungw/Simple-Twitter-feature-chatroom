@@ -109,10 +109,6 @@ export default {
     width: 1063px;
   }
   .sidebar-section {
-    // width: 378px;
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
     position: fixed;
     left: 100px;
   }

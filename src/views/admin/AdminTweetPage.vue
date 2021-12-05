@@ -46,7 +46,7 @@ export default {
         // 發送 API，後端刪除推文
         let response = await adminAPI.deleteTweet(tweetId);
         console.log(response);
-        // // 如果刪除失敗
+        //如果刪除失敗
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
@@ -67,16 +67,14 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
   height: 100vh;
   .tweet-section {
-    flex: 1;
+    width: 1063px;
   }
   .sidebar-section {
-    width: 378px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: fixed;
+    left: 100px;
   }
 }
 </style>
