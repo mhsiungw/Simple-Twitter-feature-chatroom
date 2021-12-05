@@ -121,10 +121,8 @@
     </div>
     <TweetList
       v-if="tabOption === '推文'"
-      :tweets="user.tweets"
+      :tweets="userTweets"
       :isReply="false"
-      @child-click-like="likeTweet"
-      @child-click-unlike="unlikeTweet"
     ></TweetList>
     <TweetList
       v-if="tabOption === '推文與回覆'"
@@ -135,8 +133,6 @@
       v-if="tabOption === '喜歡的內容'"
       :tweets="userLikes"
       :isReply="false"
-      @child-click-like="likeTweet"
-      @child-click-unlike="unlikeTweet"
     ></TweetList>
     <ModalForEditProfile
       :user="user"
@@ -152,7 +148,7 @@ import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
-import likesAPI from "@/apis/likes";
+
 import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
@@ -164,11 +160,12 @@ export default {
   },
   data() {
     return {
-      user: { tweets: [] },
+      user: {},
       tabOption: "",
       showEditProfileModal: false,
       userLikes: [],
       userReplies: [],
+      userTweets: [],
     };
   },
   watch: {
@@ -231,10 +228,10 @@ export default {
           : this.$route.params.id;
 
       try {
-        const userTweets = await usersAPI.getUserTweets({ userId });
-        this.user.tweets = userTweets.data;
+        const userTweetsData = await usersAPI.getUserTweets({ userId });
+        this.userTweets = userTweetsData.data;
         //console.log("this.user.tweets===>", userTweets);
-        this.user.tweets = this.user.tweets.map((tweet) => ({
+        this.userTweets = this.userTweets.map((tweet) => ({
           id: tweet.id,
           UserId: tweet.UserId,
           name: tweet.User.name,
@@ -367,62 +364,6 @@ export default {
         avatar: modalData.avatar,
         description: modalData.description,
       }));
-    },
-    async likeTweet(tweetId) {
-      try {
-        const { data } = await likesAPI.likeTweet({ tweetId });
-        console.log("likeTweet", data);
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        this.user.tweets.filter((tweet) => {
-          if (tweet.id === tweetId) {
-            tweet.isLiked = true;
-          }
-        });
-        this.userLikes.filter((tweet) => {
-          if (tweet.id === tweetId) {
-            tweet.isLiked = true;
-          }
-        });
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "無法按讚推文，請稍後再試",
-        });
-      }
-    },
-    async unlikeTweet(tweetId) {
-      try {
-        const { data } = await likesAPI.unlikeTweet({ tweetId });
-        console.log("unlikeTweet", data);
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        this.user.tweets = this.user.tweets.map((tweet) => {
-          if (tweet.id === tweetId) {
-            console.log(tweet);
-            tweet.isLiked = false;
-          }
-        });
-        // this.user.tweets.filter((tweet) => {
-        //   if (tweet.id === tweetId) {
-        //     tweet.isLiked = false;
-        //   }
-        // });
-        this.userLikes.filter((tweet) => {
-          if (tweet.id === tweetId) {
-            tweet.isLiked = false;
-          }
-        });
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "無法按讚推文，請稍後再試",
-        });
-      }
     },
   },
 };
