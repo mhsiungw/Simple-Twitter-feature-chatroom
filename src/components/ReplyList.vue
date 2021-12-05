@@ -49,7 +49,7 @@
     <hr />
     <div class="counts">
       <span class="reply-counts">{{ replyCount }} 回覆</span>
-      <span class="like-counts">{{ likes.count }} 喜歡次數</span>
+      <span class="like-counts">{{ likes.Count }} 喜歡次數</span>
     </div>
     <hr />
     <div class="icons">
@@ -60,15 +60,17 @@
         @click="afterClickNewReply"
       />
       <img
+        v-if="!likes.isLiked"
         @click="likeTweet(tweet.id)"
         class="heart"
         src="../assets/imgs/heart@2x.png"
         alt="heart"
       />
       <div
-        v-if="likes.rows"
+        v-if="likes.isLiked"
         @click="unlikeTweet(tweet.id)"
         class="icon heart liked"
+        alt="heart"
       ></div>
     </div>
 
@@ -210,8 +212,8 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.likes.isLike = true;
-        //this.$bus.$emit("tweetAction", { type: "like", tweetId: tweetId });
+        this.likes.isLiked = true;
+        this.fetchTweet(this.tweetId);
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -228,8 +230,8 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.likes.isLike = false;
-        // this.$bus.$emit('tweetAction', { type: 'unlike', tweetId: tweetId})
+        this.likes.isLiked = false;
+        this.fetchTweet(this.tweetId);
       } catch (error) {
         console.log(error);
         Toast.fire({
