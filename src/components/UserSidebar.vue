@@ -22,7 +22,7 @@
           <router-link
             :to="{ name: 'SettingPage', params: { id: currentUser.id } }"
             :class="{
-              focus: this.$route.path === `/${currentUser.id}/setting`,
+              focus: this.$route.path === `/setting`,
             }"
           >
             <font-awesome-icon class="icon" icon="cog" />
@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     handleTweetClick() {
-      console.log("handleTweetClick");
       this.$emit("after-tweet-click");
     },
   },
