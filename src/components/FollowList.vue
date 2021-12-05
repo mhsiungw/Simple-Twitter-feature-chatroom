@@ -112,7 +112,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        // console.log(data);
+
         if (data.status !== "success") {
           throw new Error(data.message);
         }

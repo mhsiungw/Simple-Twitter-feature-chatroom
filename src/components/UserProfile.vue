@@ -244,7 +244,7 @@ export default {
           description: tweet.description,
           likeTweetCount: tweet.likeCount,
           replyTweetCount: tweet.replyCount,
-          isLiked: tweet.isLiked > 0 ? true : false,
+          isLiked: tweet.isLiked,
           showNewReplyModal: false,
         }));
         this.tabOption = "推文";
@@ -375,20 +375,16 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        // if (this.tabOption === "推文") {
-        //   this.user.tweets = this.user.tweets.map((tweet) => {
-        //     if (tweet.id === tweetId) {
-        //       tweet.isLiked = true;
-        //     }
-        //   });
-        // }
-        // if (this.tabOption === "喜歡的內容") {
-        //   this.userLikes = this.userLikes.map((tweet) => {
-        //     if (tweet.id === tweetId) {
-        //       tweet.isLiked = true;
-        //     }
-        //   });
-        // }
+        this.user.tweets.filter((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = true;
+          }
+        });
+        this.userLikes.filter((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = true;
+          }
+        });
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -404,12 +400,22 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        // this.user.tweets = this.user.tweets.map((tweet) => {
+        this.user.tweets = this.user.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            console.log(tweet);
+            tweet.isLiked = false;
+          }
+        });
+        // this.user.tweets.filter((tweet) => {
         //   if (tweet.id === tweetId) {
-        //     console.log(tweet);
         //     tweet.isLiked = false;
         //   }
         // });
+        this.userLikes.filter((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = false;
+          }
+        });
       } catch (error) {
         console.log(error);
         Toast.fire({

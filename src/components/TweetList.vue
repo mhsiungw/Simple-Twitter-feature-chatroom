@@ -116,13 +116,13 @@ export default {
       }
     },
     async likeTweet(tweet) {
-      tweet.isLiked = true;
-      console.log("child", tweet);
+      // tweet.isLiked = true;
+      console.log("child", tweet.id);
       this.$emit("child-click-like", tweet.id);
     },
     async unlikeTweet(tweet) {
-      tweet.isLiked = false;
-      console.log("child", tweet);
+      // tweet.isLiked = false;
+      console.log("child", tweet.id);
       this.$emit("child-click-unlike", tweet.id);
     },
   },
