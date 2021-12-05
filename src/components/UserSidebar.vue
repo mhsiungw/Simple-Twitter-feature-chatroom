@@ -30,7 +30,9 @@
           </router-link>
         </li>
       </ul>
-      <button class="tweet-button">推文</button>
+      <button @click.stop.prevent="handleTweetClick" class="tweet-button">
+        推文
+      </button>
     </div>
     <button class="logout-button">
       <img class="logout" src="../assets/imgs/logout.png" alt="logout" />
@@ -45,6 +47,12 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState(["currentUser"]),
+  },
+  methods: {
+    handleTweetClick() {
+      console.log("handleTweetClick");
+      this.$emit("after-tweet-click");
+    },
   },
 };
 </script>
