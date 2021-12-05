@@ -16,19 +16,21 @@
           <button class="tweet-button">推文</button>
         </form>
       </div>
-  <div class="post-tweet">
-    <button class="cancel-button">X</button>
-    <hr />
-    <div class="tweet-part">
-      <img class="avatar" :src="currentUser.image" alt="avatar" />
-      <form class="tweet-form">
-        <textarea
-          id="tweet-input"
-          type="textarea"
-          placeholder="有什麼新鮮事？"
-        ></textarea>
-        <button class="tweet-button">推文</button>
-      </form>
+      <div class="post-tweet">
+        <button class="cancel-button">X</button>
+        <hr />
+        <div class="tweet-part">
+          <img class="avatar" :src="currentUser.image" alt="avatar" />
+          <form class="tweet-form">
+            <textarea
+              id="tweet-input"
+              type="textarea"
+              placeholder="有什麼新鮮事？"
+            ></textarea>
+            <button class="tweet-button">推文</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +68,7 @@ $divider: #e6ecf0;
   z-index: 999;
 }
 // modal 本身
-.tweet-modal {
+
 .post-tweet {
   width: 600px;
   height: 300px;

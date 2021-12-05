@@ -47,14 +47,14 @@
           </div>
           <div class="like-wrapper">
             <div
-              v-show="!tweet.isLiked"
+              v-if="!tweet.isLiked"
               class="icon like"
-              @click.stop="likeTweet(tweet.id)"
+              @click="likeTweet(tweet)"
             ></div>
             <div
-              v-show="tweet.isLiked"
+              v-if="tweet.isLiked"
               class="icon like liked"
-              @click.stop="unlikeTweet(tweet.id)"
+              @click="unlikeTweet(tweet)"
             ></div>
             <span class="number">{{ tweet.likeTweetCount }}</span>
           </div>
@@ -115,11 +115,15 @@ export default {
         });
       }
     },
-    async likeTweet(tweetId) {
-      this.$emit("child-click-like", tweetId);
+    async likeTweet(tweet) {
+      tweet.isLiked = true;
+      console.log("child", tweet);
+      this.$emit("child-click-like", tweet.id);
     },
-    async unlikeTweet(tweetId) {
-      this.$emit("child-click-unlike", tweetId);
+    async unlikeTweet(tweet) {
+      tweet.isLiked = false;
+      console.log("child", tweet);
+      this.$emit("child-click-unlike", tweet.id);
     },
   },
 };

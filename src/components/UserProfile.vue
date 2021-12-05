@@ -169,7 +169,6 @@ export default {
       showEditProfileModal: false,
       userLikes: [],
       userReplies: [],
-      userId: "",
     };
   },
   watch: {
@@ -199,7 +198,6 @@ export default {
         case "推文與回覆":
           break;
         case "喜歡的內容":
-          this.fetchUserLikes();
           break;
       }
     },
@@ -246,7 +244,7 @@ export default {
           description: tweet.description,
           likeTweetCount: tweet.likeCount,
           replyTweetCount: tweet.replyCount,
-          isLiked: tweet.isLiked,
+          isLiked: tweet.isLiked > 0 ? true : false,
           showNewReplyModal: false,
         }));
         this.tabOption = "推文";
@@ -377,12 +375,20 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.user.tweets = this.user.tweets.map((tweet) => {
-          if (tweet.id === tweetId) {
-            console.log(tweet);
-            tweet.isLiked = !tweet.isLiked;
-          }
-        });
+        // if (this.tabOption === "推文") {
+        //   this.user.tweets = this.user.tweets.map((tweet) => {
+        //     if (tweet.id === tweetId) {
+        //       tweet.isLiked = true;
+        //     }
+        //   });
+        // }
+        // if (this.tabOption === "喜歡的內容") {
+        //   this.userLikes = this.userLikes.map((tweet) => {
+        //     if (tweet.id === tweetId) {
+        //       tweet.isLiked = true;
+        //     }
+        //   });
+        // }
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -394,12 +400,16 @@ export default {
     async unlikeTweet(tweetId) {
       try {
         const { data } = await likesAPI.unlikeTweet({ tweetId });
-        console.log("likeTweet", data);
+        console.log("unlikeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.fetchUserTweets();
-        this.fetchUserLikes();
+        // this.user.tweets = this.user.tweets.map((tweet) => {
+        //   if (tweet.id === tweetId) {
+        //     console.log(tweet);
+        //     tweet.isLiked = false;
+        //   }
+        // });
       } catch (error) {
         console.log(error);
         Toast.fire({
