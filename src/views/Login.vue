@@ -6,7 +6,7 @@
     </div>
     <form @submit.prevent.stop="handleSubmit" class="sign-in-form">
       <div class="input account-input">
-        <label for="account">account</label>
+        <label for="account">帳號</label>
         <input v-model="account" type="account" id="account" />
       </div>
       <div class="input password-input">
