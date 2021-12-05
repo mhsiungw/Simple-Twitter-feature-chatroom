@@ -5,9 +5,9 @@
       <h4>{{ isAdminLogin ? "後台登入" : "登入 Alphitter" }}</h4>
     </div>
     <form @submit.prevent.stop="handleSubmit" class="sign-in-form">
-      <div class="input email-input">
-        <label for="email">Email</label>
-        <input v-model="email" type="email" id="email" />
+      <div class="input account-input">
+        <label for="account">account</label>
+        <input v-model="account" type="account" id="account" />
       </div>
       <div class="input password-input">
         <label for="password">密碼</label>
@@ -35,7 +35,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      email: "",
+      account: "",
       password: "",
       //用來辨別是否為後台登入頁面
       isAdminLogin: this.$route.path === "/admin/login",
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      if (!this.email || !this.password) {
+      if (!this.account || !this.password) {
         return window.alert("please enter input");
       }
       /************     
@@ -60,17 +60,17 @@ export default {
       ************/
       let { data } = this.isAdminLogin
         ? await adminAPI.adminLogin({
-            email: this.email,
+            account: this.account,
             password: this.password,
           })
         : await authorizationAPI.logIn({
-            email: this.email,
+            account: this.account,
             password: this.password,
           });
       // 如果登入失敗
       console.log(data);
       if (data.status !== "success") {
-        this.email = "";
+        this.account = "";
         this.password = "";
         window.alert("Login failed");
         throw new Error(data.status);
@@ -122,7 +122,7 @@ $orange: #ff6600;
       width: 540px;
       height: 52px;
       border-radius: 8px;
-      &.email-input {
+      &.account-input {
         margin-bottom: 32px;
       }
       &.password-input {

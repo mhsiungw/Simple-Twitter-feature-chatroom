@@ -34,7 +34,7 @@
         推文
       </button>
     </div>
-    <button class="logout-button">
+    <button class="logout-button" @click="logout">
       <img class="logout" src="../assets/imgs/logout.png" alt="logout" />
       <span>登出</span>
     </button>
@@ -53,10 +53,13 @@ export default {
       console.log("handleTweetClick");
       this.$emit("after-tweet-click");
     },
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
+    },
   },
 };
 </script>
-
 
 <style lang="scss" scoped>
 $orange: #ff6600;

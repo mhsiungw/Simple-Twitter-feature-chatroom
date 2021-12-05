@@ -1,6 +1,6 @@
 <template>
   <div class="recommend-users">
-    <div class="title">跟隨誰</div>
+    <div class="title">追蹤前10名</div>
     <div class="list-group">
       <div v-for="user in topUsers" :key="user.id" class="list-group-item">
         <div class="avatar"><img :src="user.avatar" alt="" /></div>
@@ -12,20 +12,22 @@
             {{ user.account }}
           </div>
         </div>
-        <button
-          v-show="user.isFollowed"
-          class="btn btn-follow unfollow"
-          @click="deleteFollowing(user.id)"
-        >
-          正在跟隨
-        </button>
-        <button
-          v-show="!user.isFollowed"
-          class="btn btn-follow"
-          @click="addFollowing(user.id)"
-        >
-          跟隨
-        </button>
+        <div v-if="user.id !== currentUser.id">
+          <button
+            v-show="user.isFollowed"
+            class="btn btn-follow unfollow"
+            @click="deleteFollowing(user.id)"
+          >
+            正在跟隨
+          </button>
+          <button
+            v-show="!user.isFollowed"
+            class="btn btn-follow"
+            @click="addFollowing(user.id)"
+          >
+            跟隨
+          </button>
+        </div>
       </div>
     </div>
     <div v-show="!more" class="footer" @click="more = !more">顯示更多</div>
@@ -60,9 +62,9 @@ export default {
         const { data } = await usersAPI.getTopUsers();
         //console.log("topuser===>", data);
         this.topUsers = [...data];
-        this.topUsers = this.topUsers
-          .filter((user) => user.id !== this.currentUser.id)
-          .slice(0, 8);
+        // this.topUsers = this.topUsers
+        //   .filter((user) => user.id !== this.currentUser.id)
+        //   .slice(0, 8);
       } catch (error) {
         console.log(error);
         Toast.fire({

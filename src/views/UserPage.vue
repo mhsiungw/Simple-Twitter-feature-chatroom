@@ -1,8 +1,8 @@
 <template>
   <div class="page-container">
-    <UserSidebar class="mr-2" />
+    <UserSidebar class="user-sidebar" />
     <UserProfile class="user-profile-section" />
-    <Trends class="ml-2" />
+    <Trends class="trend-section" />
   </div>
 </template>
 
@@ -25,11 +25,18 @@ export default {
 .page-container {
   margin: 0 auto;
   display: flex;
-  flex: 0 1 auto;
   flex-flow: row nowrap;
   justify-content: center;
-  .user-profile-section {
-    min-width: 600px;
+  .trend-section,
+  .user-sidebar {
+    position: fixed;
+  }
+  .trend-section {
+    right: 12px;
+  }
+
+  .user-sidebar {
+    left: 100px;
   }
 }
 </style>

@@ -49,12 +49,12 @@
             <div
               v-if="!tweet.isLiked"
               class="icon like"
-              @click="likeTweet(tweet)"
+              @click="likeTweet(tweet.id)"
             ></div>
             <div
               v-if="tweet.isLiked"
               class="icon like liked"
-              @click="unlikeTweet(tweet)"
+              @click="unlikeTweet(tweet.id)"
             ></div>
             <span class="number">{{ tweet.likeTweetCount }}</span>
           </div>
@@ -66,8 +66,9 @@
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
-import tweetsAPI from "@/apis/tweets";
+//import tweetsAPI from "@/apis/tweets";
 import { Toast } from "@/utils/helpers";
+import likesAPI from "@/apis/likes";
 
 export default {
   name: "TweetList",
@@ -91,39 +92,77 @@ export default {
         this.$router.push(`/reply_list/${tweet.id}`);
       }
     },
-    async replyTweet(comment) {
-      const tweetId = this.$route.params.id;
+    // async replyTweet(comment) {
+    //   const tweetId = this.$route.params.id;
+    //   try {
+    //     if (!comment) {
+    //       Toast.fire({
+    //         icon: "error",
+    //         title: "請輸入內容",
+    //       });
+    //       return;
+    //     }
+    //     const { data } = await tweetsAPI.addReply({ tweetId, comment });
+    //     //console.log(data)
+    //     if (data.status !== "success") {
+    //       throw new Error(data.message);
+    //     }
+    //     this.showNewReplyModal = false;
+    //   } catch (error) {
+    //     console.log(error);
+    //     Toast.fire({
+    //       icon: "error",
+    //       title: "回覆推文失敗，請稍後再試",
+    //     });
+    //   }
+    // },
+    async likeTweet(tweetId) {
       try {
-        if (!comment) {
-          Toast.fire({
-            icon: "error",
-            title: "請輸入內容",
-          });
-          return;
-        }
-        const { data } = await tweetsAPI.addReply({ tweetId, comment });
-        //console.log(data)
+        const { data } = await likesAPI.likeTweet({ tweetId });
+        console.log("likeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.showNewReplyModal = false;
+
+        this.tweets.filter((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = true;
+            tweet.likeTweetCount =
+              tweet.likeTweetCount + 1 > 0 ? tweet.likeTweetCount + 1 : 0;
+          }
+        });
+        this.$emit("update-from-child", tweetId);
       } catch (error) {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "回覆推文失敗，請稍後再試",
+          title: "無法按讚推文，請稍後再試",
         });
       }
     },
-    async likeTweet(tweet) {
-      tweet.isLiked = true;
-      console.log("child", tweet);
-      this.$emit("child-click-like", tweet.id);
-    },
-    async unlikeTweet(tweet) {
-      tweet.isLiked = false;
-      console.log("child", tweet);
-      this.$emit("child-click-unlike", tweet.id);
+    async unlikeTweet(tweetId) {
+      try {
+        const { data } = await likesAPI.unlikeTweet({ tweetId });
+        console.log("unlikeTweet", data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.filter((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = false;
+            tweet.likeTweetCount =
+              tweet.likeTweetCount - 1 <= 0 ? 0 : tweet.likeTweetCount - 1;
+          }
+        });
+        this.$emit("update-from-child", tweetId);
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法按讚推文，請稍後再試",
+        });
+      }
     },
   },
 };
