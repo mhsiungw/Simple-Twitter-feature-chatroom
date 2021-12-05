@@ -6,30 +6,22 @@
       </button>
       <hr />
       <div class="tweet-part">
-        <img class="avatar" :src="currentUser.image" alt="avatar" />
+        <img
+          class="avatar"
+          :src="currentUser.image | emptyImage"
+          alt="avatar"
+        />
         <form class="tweet-form">
           <textarea
+            v-model="tweetInput"
             id="tweet-input"
             type="textarea"
             placeholder="有什麼新鮮事？"
           ></textarea>
-          <button class="tweet-button">推文</button>
+          <button @click.stop.prevent="handleTweetClick" class="tweet-button">
+            推文
+          </button>
         </form>
-      </div>
-      <div class="post-tweet">
-        <button class="cancel-button">X</button>
-        <hr />
-        <div class="tweet-part">
-          <img class="avatar" :src="currentUser.image" alt="avatar" />
-          <form class="tweet-form">
-            <textarea
-              id="tweet-input"
-              type="textarea"
-              placeholder="有什麼新鮮事？"
-            ></textarea>
-            <button class="tweet-button">推文</button>
-          </form>
-        </div>
       </div>
     </div>
   </div>
@@ -37,13 +29,28 @@
 
 <script>
 import { mapState } from "vuex";
+import { emptyImageFilter } from "../utils/mixins.js";
+
 export default {
   computed: {
     ...mapState(["currentUser"]),
   },
+  data() {
+    return {
+      tweetInput: "",
+    };
+  },
+  mixins: [emptyImageFilter],
   methods: {
     handleCancelClick() {
       this.$emit("after-cancel-click");
+    },
+    handleTweetClick() {
+      if (this.tweetInput === "") {
+        return window.alert("內容不可空白");
+      }
+      this.$emit("after-tweet-submit", this.tweetInput);
+      this.tweetInput = "";
     },
   },
 };
@@ -69,22 +76,20 @@ $divider: #e6ecf0;
 }
 // modal 本身
 
-.post-tweet {
+.tweet-modal {
+  position: relative;
+  right: 42px;
   width: 600px;
   height: 300px;
   margin-top: 54px;
   background: #fff;
-  top: 55px;
-  left: 50%;
-  //transform: translateX(-50%);
-  border: 1px solid black;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
   .cancel-button {
     align-self: flex-start;
     border: none;
-    background: #fff;
+    background: transparent;
     color: $orange;
     font-size: 20px;
     padding: 10px;

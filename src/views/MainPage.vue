@@ -4,16 +4,18 @@
       @after-tweet-click="handleAfterTweetClick"
       class="user-sidebar"
     />
-    <MainSection
-      @after-tweet-submit="handleAfterSubmit"
-      @after-like-clicked="handleAfterLikeClick"
-      @after-dislike-clicked="handleAfterDislikeClick"
-      @after-cancel-click="handleAfterTweetCancel"
-      :tweets="reverseTweet"
-      :initial-current-user="currentUser"
-      :is-authenticatd="isAuthenticated"
-      :is-tweet-clicked="isTweetClicked"
-    />
+    <div class="main-secition-container">
+      <MainSection
+        @after-tweet-submit="handleAfterSubmit"
+        @after-like-clicked="handleAfterLikeClick"
+        @after-dislike-clicked="handleAfterDislikeClick"
+        @after-cancel-click="handleAfterTweetCancel"
+        :tweets="reverseTweet"
+        :initial-current-user="currentUser"
+        :is-tweet-clicked="isTweetClicked"
+      />
+    </div>
+
     <Trends class="trend-section" />
   </div>
 </template>
@@ -77,6 +79,7 @@ export default {
     },
     async handleAfterSubmit(newDescription) {
       try {
+        console.log(newDescription);
         let newInput = {
           Likes: [],
           Replies: [],
@@ -166,10 +169,17 @@ export default {
 
 <style scoped lang="scss">
 .mainPage-container {
-  margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
+  .main-secition-container {
+    width: 1063px;
+    .main-section {
+      border: 1px solid #e6ecf0;
+      width: 600px;
+    }
+  }
+
   .trend-section,
   .user-sidebar {
     position: fixed;

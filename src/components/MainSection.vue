@@ -1,18 +1,15 @@
 <template>
   <div class="main-section">
-
     <ModalForTweet
       @after-cancel-click="handleAfterTweetCancel"
+      @after-tweet-submit="handleAfterTweetSubmit"
       v-if="isTweetClicked"
     />
-
-    <ModalForTweet v-if="showModalForTweet" />
-
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
         class="avatar"
-        :src="initialCurrentUser.image"
+        :src="initialCurrentUser.image | emptyImage"
         alt="avatar"
         @click="$router.push('/users').catch(() => {})"
       />
@@ -30,7 +27,7 @@
     <div v-for="tweet in tweets" :key="tweet.id" class="part post-part">
       <img
         class="avatar"
-        :src="tweet.User.avatar"
+        :src="tweet.User.avatar | emptyImage"
         alt="avatar"
         @click.stop="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
       />
@@ -74,7 +71,7 @@
 </template>
 
 <script>
-import { fromNowFilter } from "../utils/mixins.js";
+import { fromNowFilter, emptyImageFilter } from "../utils/mixins.js";
 import ModalForTweet from "./ModalForTweet.vue";
 
 export default {
@@ -90,10 +87,6 @@ export default {
       type: Object,
       required: true,
     },
-    isAuthenticatd: {
-      type: Boolean,
-      required: true,
-    },
     isTweetClicked: {
       type: Boolean,
       required: true,
@@ -105,7 +98,7 @@ export default {
       showModalForTweet: false,
     };
   },
-  mixins: [fromNowFilter],
+  mixins: [fromNowFilter, emptyImageFilter],
   methods: {
     handleSubmit() {
       console.log("handleSubmit");
@@ -128,6 +121,9 @@ export default {
     },
     handleAfterTweetCancel() {
       this.$emit("after-cancel-click");
+    },
+    handleAfterTweetSubmit(newTWeet) {
+      this.$emit("after-tweet-submit", newTWeet);
     },
   },
 };
@@ -153,8 +149,6 @@ $orange: #ff6600;
 }
 
 .main-section {
-  border: 1px solid #e6ecf0;
-  width: 600px;
   .title {
     padding: 20px 0 15px 25px;
     font-size: 18px;
