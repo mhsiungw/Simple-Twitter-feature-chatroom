@@ -35,6 +35,7 @@ import { mapState } from "vuex";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../utils/helpers";
+import bus from "../utils/bus";
 
 export default {
   name: "MainPage",
@@ -53,7 +54,14 @@ export default {
     };
   },
   created() {
-    this.fetchTweets();
+    bus.$on("trends-change", (userId) => {
+      console.log("userId===>", userId);
+      this.fetchTweets();
+    });
+    //this.fetchTweets();
+  },
+  beforeDestroy() {
+    bus.$off("trends-change");
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
