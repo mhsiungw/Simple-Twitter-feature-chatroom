@@ -190,6 +190,7 @@ export default {
           });
           return;
         }
+        console.log(typeof tweetId);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
         //console.log(data)
         if (data.status !== "success") {

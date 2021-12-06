@@ -75,11 +75,29 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // 如果路由是 admin/... 就執行 fetchCurrentAdmin，否則就執行 fetchCurrentUser
-  if (to.path === '/admin/users' || to.path === "/admin/tweets") {
-    store.dispatch('fetchCurrentAdmin')
-  } else {
-    store.dispatch('fetchCurrentUser')
+  const tokenInLocalStorage = localStorage.getItem('simpleTwitter-token')
+  const tokenInStore = store.state.token
+  let isAuthenticated = store.state.isAuthenticated
+
+  if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
+    isAuthenticated = store.dispatch('fetchCurrentUser')
+  }
+
+
+  // 對於不需要驗證 token 的頁面
+  const pathsWithoutAuthentication = ['Login', 'Register', 'AdminLogin']
+
+  // 如果 token 無效且進入需要驗證的頁面則轉址到登入頁
+  if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
+    next('/login')
+    return
+  }
+
+
+  // 如果 token 有效且進入不需要驗證到頁面則轉址到餐廳首頁
+  if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
+    next('/')
+    return
   }
   next()
 })

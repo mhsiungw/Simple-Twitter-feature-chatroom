@@ -6,23 +6,28 @@
     </div>
     <form @submit.stop.prevent="handleSubmit" class="register-form">
       <div class="input">
-        <label for="email">帳號</label>
-        <input v-model="account" type="text" id="account-name" />
+        <label for="account-name">帳號</label>
+        <input v-model="account" type="text" id="account-name" maxlength="20" />
       </div>
       <div class="input">
-        <label for="email">名稱</label>
-        <input v-model="name" type="text" id="name" />
+        <label for="name">名稱</label>
+        <input v-model="name" type="text" id="name" maxlength="50" />
       </div>
       <div class="input">
         <label for="email">Email</label>
         <input v-model="email" type="email" id="email" />
       </div>
       <div class="input">
-        <label for="email">密碼</label>
-        <input v-model="password" type="password" id="password" />
+        <label for="password">密碼</label>
+        <input
+          v-model="password"
+          type="password"
+          id="password"
+          maxlength="20"
+        />
       </div>
       <div class="input">
-        <label for="email">密碼確認</label>
+        <label for="password-check">密碼確認</label>
         <input v-model="checkPassword" type="password" id="password-check" />
       </div>
       <button class="submit-button" type="submit">註冊</button>

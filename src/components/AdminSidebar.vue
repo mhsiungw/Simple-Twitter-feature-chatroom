@@ -23,7 +23,7 @@
         </li>
       </ul>
     </div>
-    <button class="logout-button">
+    <button @click="logout" class="logout-button">
       <img class="logout" src="../assets/imgs/logout.png" alt="logout" />
       <span>登出</span>
     </button>
@@ -36,6 +36,12 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState(["currentUser"]),
+  },
+  methods: {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
+    },
   },
 };
 </script>

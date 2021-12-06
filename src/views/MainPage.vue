@@ -1,21 +1,25 @@
 <template>
   <div class="mainPage-container">
+    <ModalForReplyTweet
+      @after-click-cross="handleAfterTweetCancel"
+      @replyTweet="handleAfterReplyTweet"
+      :tweet="clickedTweet"
+      v-if="isPostClicked"
+    />
     <UserSidebar
       @after-tweet-click="handleAfterTweetClick"
       class="user-sidebar"
     />
-    <div class="main-secition-container">
-      <MainSection
-        @after-tweet-submit="handleAfterSubmit"
-        @after-like-clicked="handleAfterLikeClick"
-        @after-dislike-clicked="handleAfterDislikeClick"
-        @after-cancel-click="handleAfterTweetCancel"
-        :tweets="reverseTweet"
-        :initial-current-user="currentUser"
-        :is-tweet-clicked="isTweetClicked"
-      />
-    </div>
-
+    <MainSection
+      @after-tweet-submit="handleAfterSubmit"
+      @after-like-clicked="handleAfterLikeClick"
+      @after-dislike-clicked="handleAfterDislikeClick"
+      @after-cancel-click="handleAfterTweetCancel"
+      @after-comment-click="handleAfterCommentClicked"
+      :tweets="reverseTweet"
+      :initial-current-user="currentUser"
+      :is-tweet-clicked="isTweetClicked"
+    />
     <Trends class="trend-section" />
   </div>
 </template>
@@ -24,11 +28,13 @@
 import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import MainSection from "../components/MainSection.vue";
+import ModalForReplyTweet from "../components/ModalForReplyTweet.vue";
 import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
 import { mapState } from "vuex";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import { Toast } from "../utils/helpers";
 
 export default {
   name: "MainPage",
@@ -36,11 +42,14 @@ export default {
     UserSidebar,
     Trends,
     MainSection,
+    ModalForReplyTweet,
   },
   data() {
     return {
       tweets: [],
       isTweetClicked: false,
+      isPostClicked: false,
+      clickedTweet: {},
     };
   },
   created() {
@@ -162,6 +171,37 @@ export default {
     },
     handleAfterTweetCancel() {
       this.isTweetClicked = false;
+      this.isPostClicked = false;
+    },
+    handleAfterCommentClicked(clickedComment) {
+      this.isPostClicked = true;
+      this.clickedTweet = clickedComment;
+    },
+    async handleAfterReplyTweet(comment) {
+      const tweetId = this.clickedTweet.id.toString();
+      try {
+        if (!comment) {
+          Toast.fire({
+            icon: "error",
+            title: "請輸入內容",
+          });
+          return;
+        }
+        console.log(typeof this.clickedTweet.id);
+        const { data } = await tweetsAPI.addReply({ tweetId, comment });
+        //console.log(data)
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.isPostClicked = false;
+        this.$router.go(0);
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "回覆推文失敗，請稍後再試",
+        });
+      }
     },
   },
 };
@@ -171,25 +211,30 @@ export default {
 .mainPage-container {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
-  .main-secition-container {
-    width: 1063px;
-    .main-section {
-      border: 1px solid #e6ecf0;
-      width: 600px;
-    }
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  max-width: 1440px;
+  .main-section {
+    border: 1px solid #e6ecf0;
+    width: 40%;
+    margin-left: 55px;
+    margin-right: 30px;
   }
 
   .trend-section,
   .user-sidebar {
-    position: fixed;
+    position: sticky;
   }
   .trend-section {
-    right: 82px;
+    top: 15px;
+    right: 0%;
   }
 
   .user-sidebar {
-    left: 100px;
+    top: 0;
+    left: 0%;
   }
 }
 </style>

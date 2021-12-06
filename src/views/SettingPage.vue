@@ -100,17 +100,19 @@ export default {
 
 <style scoped lang="scss">
 .setting-page-container {
-  margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
-  height: 100vh;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  max-width: 1440px;
   .setting-section {
-    width: 1063px;
+    flex: 1;
   }
   .sidebar-section {
-    position: fixed;
-    left: 100px;
+    width: 26.7%;
+    padding-left: 95px;
   }
 }
 </style>
