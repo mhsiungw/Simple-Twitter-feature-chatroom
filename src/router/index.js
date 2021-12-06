@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
 import MainPage from '../views/MainPage.vue'
+import { Toast } from '../utils/helpers'
 
 Vue.use(VueRouter)
 
@@ -89,6 +90,10 @@ router.beforeEach((to, from, next) => {
 
   // 如果 token 無效且進入需要驗證的頁面則轉址到登入頁
   if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
+    Toast.fire({
+      icon: 'warning',
+      title: '請先登入會員'
+    })
     next('/login')
     return
   }

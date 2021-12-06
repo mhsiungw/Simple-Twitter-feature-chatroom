@@ -54,7 +54,10 @@ export default {
   methods: {
     async handleSubmit() {
       if (!this.account || !this.password) {
-        return window.alert("please enter input");
+        Toast.fire({
+          icon: "warning",
+          title: "請輸入帳號或密碼",
+        });
       }
       /************     
       因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
@@ -71,11 +74,9 @@ export default {
       // 如果登入失敗
       console.log(data);
       if (data.status !== "success") {
-        this.account = "";
-        this.password = "";
         Toast.fire({
           icon: "error",
-          title: "帳號密碼不存在",
+          title: data.message,
         });
         throw new Error(data.status);
       } else {
