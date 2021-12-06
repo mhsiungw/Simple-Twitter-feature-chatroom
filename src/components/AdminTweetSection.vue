@@ -3,15 +3,15 @@
     <div class="title">推文清單</div>
     <div class="tweet-list">
       <div v-for="tweet in tweets" :key="tweet.id" class="list-item">
-        <img class="avatar" :src="currentUser.image" alt="avatar" />
+        <img class="avatar" :src="tweet.User.avatar" alt="avatar" />
         <div class="post">
           <div class="post-title">
-            <p class="name">{{ currentUser.name }}</p>
-            <p class="account-name">@{{ currentUser.account }}</p>
+            <p class="name">{{ tweet.User.name }}</p>
+            <p class="account-name">@{{ tweet.User.account }}</p>
             <span class="dot">．</span>
             <p class="created-time">{{ tweet.createdAt | fromNow }}</p>
           </div>
-          <div class="post-desc">21312315645644879fsdfsdfgfhewewf</div>
+          <div class="post-desc">{{ tweet.description }}</div>
         </div>
 
         <button

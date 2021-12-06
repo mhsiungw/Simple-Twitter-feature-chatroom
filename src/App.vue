@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-container">
     <router-view />
   </div>
 </template>
@@ -12,3 +12,9 @@ export default {
   name: "App",
 };
 </script>
+
+<style scoped>
+.app-container {
+  min-width: 100%;
+}
+</style>
