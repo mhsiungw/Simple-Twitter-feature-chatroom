@@ -37,16 +37,14 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
   height: 100vh;
   .user-section {
-    flex: 1;
+    width: 1063px;
   }
   .sidebar-section {
-    width: 378px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: fixed;
+    left: 100px;
   }
 }
 </style>

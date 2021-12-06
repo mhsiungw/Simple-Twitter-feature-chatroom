@@ -92,7 +92,6 @@ export default {
       type: Object,
     },
   },
-  computed: {},
   methods: {
     cancelModalClick() {
       this.$emit("after-click-cross");

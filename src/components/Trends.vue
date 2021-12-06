@@ -3,7 +3,7 @@
     <div class="title">追蹤前10名</div>
     <div class="list-group">
       <div v-for="user in topUsers" :key="user.id" class="list-group-item">
-        <div class="avatar"><img :src="user.avatar" alt="" /></div>
+        <div class="avatar"><img :src="user.avatar | emptyImage" alt="" /></div>
         <div class="info">
           <div class="name">
             {{ user.name }}
@@ -38,6 +38,7 @@
 <script>
 import usersAPI from "@/apis/users";
 import followshipsAPI from "@/apis/followships";
+import { emptyImageFilter } from "../utils/mixins";
 import { Toast } from "@/utils/helpers";
 import { mapState } from "vuex";
 
@@ -56,6 +57,7 @@ export default {
   created() {
     this.fetchTopUsers();
   },
+  mixins: [emptyImageFilter],
   methods: {
     async fetchTopUsers() {
       try {
@@ -181,6 +183,7 @@ $divider: #e6ecf0;
         width: 50px;
         border-radius: 50%;
         cursor: pointer;
+        object-fit: cover;
         &:hover {
           filter: brightness(0.9);
         }

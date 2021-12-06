@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container">
+  <div id="app" class="app-container">
     <router-view />
   </div>
 </template>
@@ -13,9 +13,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.container {
-  display: flex;
-  flex-flow: row nowrap;
+<style scoped>
+.app-container {
+  min-width: 100%;
 }
 </style>

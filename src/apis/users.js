@@ -28,4 +28,8 @@ export default {
   getTopUsers() {
     return apiHelper.get('/users/topUsers')
   },
+  editUserInfo(userId, newUserInfo) {
+    console.log("editUserInfo", userId, { ...newUserInfo });
+    return apiHelper.put(`/users/${userId}/edit `, { ...newUserInfo })
+  }
 }

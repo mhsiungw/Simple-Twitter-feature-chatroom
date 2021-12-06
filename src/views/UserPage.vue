@@ -1,7 +1,10 @@
 <template>
   <div class="page-container">
     <UserSidebar class="user-sidebar" />
-    <UserProfile class="user-profile-section" />
+    <div class="user-profile-container">
+      <UserProfile class="user-profile-section" />
+    </div>
+
     <Trends class="trend-section" />
   </div>
 </template>
@@ -23,16 +26,23 @@ export default {
 
 <style lang="scss" scoped>
 .page-container {
-  margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
+  .user-profile-container {
+    width: 1063px;
+    .user-profile-section {
+      border: 1px solid #e6ecf0;
+      width: 600px;
+    }
+  }
+
   .trend-section,
   .user-sidebar {
     position: fixed;
   }
   .trend-section {
-    right: 12px;
+    right: 82px;
   }
 
   .user-sidebar {
