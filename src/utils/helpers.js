@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-const baseURL = "http://localhost:3000/api"
+const baseURL = process.env.NODE_ENV === 'production' ? 'https://thawing-taiga-98720.herokuapp.com/api' : 'http://localhost:3000/api'
 
 
 const axiosInstance = axios.create({
