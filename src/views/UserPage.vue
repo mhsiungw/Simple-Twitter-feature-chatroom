@@ -1,10 +1,7 @@
 <template>
   <div class="page-container">
     <UserSidebar class="user-sidebar" />
-    <div class="user-profile-container">
-      <UserProfile class="user-profile-section" />
-    </div>
-
+    <UserProfile class="user-profile-section" />
     <Trends class="trend-section" />
   </div>
 </template>
@@ -28,25 +25,30 @@ export default {
 .page-container {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
-  .user-profile-container {
-    width: 1063px;
-    .user-profile-section {
-      border: 1px solid #e6ecf0;
-      width: 600px;
-    }
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  max-width: 1440px;
+  .user-profile-section {
+    border: 1px solid #e6ecf0;
+    width: 40%;
+    margin-left: 55px;
+    margin-right: 30px;
   }
 
   .trend-section,
   .user-sidebar {
-    position: fixed;
+    position: sticky;
   }
   .trend-section {
-    right: 82px;
+    top: 15px;
+    right: 0%;
   }
 
   .user-sidebar {
-    left: 100px;
+    top: 0;
+    left: 0%;
   }
 }
 </style>

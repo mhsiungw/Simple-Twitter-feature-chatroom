@@ -46,7 +46,7 @@
                 <span class="time"> {{ tweet.createdAt | fromNow }}</span>
               </div>
 
-              <p>{{ tweet.User.description }}</p>
+              <p>{{ tweet.description }}</p>
               <div class="to-whom">
                 <span>回覆給 </span>
                 <span class="receiver">{{ tweet.User.name }}</span>
@@ -58,7 +58,7 @@
         <div class="content-of-mine">
           <img
             class="photo-of-mine"
-            :src="tweet.currentUser.image"
+            :src="currentUser.image"
             alt="photo-of-mine"
           />
           <textarea
@@ -78,6 +78,7 @@
 
 <script>
 import { fromNowFilter } from "../utils/mixins.js";
+import { mapState } from "vuex";
 
 export default {
   name: "ModalForReplyTweet",
@@ -91,6 +92,9 @@ export default {
     tweet: {
       type: Object,
     },
+  },
+  computed: {
+    ...mapState(["currentUser"]),
   },
   methods: {
     cancelModalClick() {

@@ -142,13 +142,11 @@ $bitdark: #657786;
 $divider: #e6ecf0;
 .recommend-users {
   width: 100%;
-  min-width: 350px;
+  width: 350px;
   max-width: 350px;
   height: 517px;
   border-radius: 14px;
   background: $lightgray;
-  //min
-  margin-top: 15px;
   .title {
     margin-top: 10px;
     text-align: left;
