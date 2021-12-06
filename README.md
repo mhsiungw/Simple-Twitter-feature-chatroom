@@ -51,7 +51,7 @@ npm run serve
 
 
 # Simple-twitter專案測試帳號 與 專案部署網址
-## [點我觀看](https://chlin13.github.io/twitter-front-end/#/)
+## [Demo](https://chlin13.github.io/twitter-front-end/#/)
 
 ## 前台測試帳號：
 ```
