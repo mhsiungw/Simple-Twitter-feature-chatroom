@@ -53,13 +53,14 @@ npm run serve
 # Simple-twitter專案測試帳號 與 專案部署網址
 [專案部署網址](https://chlin13.github.io/twitter-front-end/#/)
 
-```
 ## 前台測試帳號：
+```
 email: user1@example.com
 password: 12345678
 ```
-```
 ## 後台測試帳號：
+
+```
 email: root@example.com
 password: 12345678
 ```
