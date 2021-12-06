@@ -31,6 +31,7 @@
 import authorizationAPI from "../apis/authorization";
 import adminAPI from "../apis/admin";
 import { mapState } from "vuex";
+import { Toast } from "../utils/helpers";
 
 export default {
   data() {
@@ -72,21 +73,28 @@ export default {
       if (data.status !== "success") {
         this.account = "";
         this.password = "";
-        window.alert("Login failed");
+        Toast.fire({
+          icon: "error",
+          title: "帳號密碼不存在",
+        });
         throw new Error(data.status);
-      }
-      // Vuex mutation setCurrentUser
-      this.$store.commit("setCurrentUser", data.user);
-      // 存取 token 並轉到 MainPage
-      localStorage.setItem("simpleTwitter-token", data.token);
-
-      /************     
-      因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
-      ************/
-      if (this.isAdminLogin === false) {
-        this.$router.push("/");
-      } else if (this.isAdminLogin === true) {
-        this.$router.push("/admin/users");
+      } else {
+        Toast.fire({
+          icon: "success",
+          title: "登入成功",
+        });
+        // Vuex mutation setCurrentUser
+        this.$store.commit("setCurrentUser", data.user);
+        // 存取 token 並轉到 MainPage
+        localStorage.setItem("simpleTwitter-token", data.token);
+        /************     
+        因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
+        ************/
+        if (this.isAdminLogin === false) {
+          this.$router.push("/");
+        } else if (this.isAdminLogin === true) {
+          this.$router.push("/admin/users");
+        }
       }
     },
   },

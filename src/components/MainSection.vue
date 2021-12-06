@@ -21,10 +21,21 @@
           placeholder="有什麼新鮮事？"
           maxlength="140"
         ></textarea>
+        <p
+          class="word-count"
+          :class="{ 'word-limit': tweetInput.length === 140 }"
+        >
+          {{ tweetInput.length }}/140
+        </p>
         <button class="tweet-button" type="submit">推文</button>
       </form>
     </div>
-    <div v-for="tweet in tweets" :key="tweet.id" class="part post-part">
+    <div
+      v-for="tweet in tweets"
+      :key="tweet.id"
+      @click.stop.prevent="handleTweetClick(tweet.id)"
+      class="part post-part"
+    >
       <img
         class="avatar"
         :src="tweet.User.avatar | emptyImage"
@@ -42,7 +53,10 @@
           {{ tweet.description }}
         </p>
         <div class="post-actions">
-          <div class="action-item action-comment">
+          <div
+            @click.stop.prevent="handleCommentClick(tweet)"
+            class="action-item action-comment"
+          >
             <font-awesome-icon class="icon" :icon="['far', 'comment']" />
             <span>{{ tweet.Replies.length }}</span>
           </div>
@@ -53,13 +67,13 @@
             @click.stop.prevent="handleDislikeClick(tweet.id)"
             class="action-item action-like"
           >
-            <font-awesome-icon class="icon liked" :icon="['far', 'heart']" />
+            <font-awesome-icon class="icon liked" :icon="['fas', 'heart']" />
             <span>{{ tweet.Likes.length }}</span>
           </div>
           <div
             v-else
             @click.stop.prevent="handleLikeClick(tweet.id)"
-            class="action-item action-like"
+            class="action-item action-dislike"
           >
             <font-awesome-icon class="icon" :icon="['far', 'heart']" />
             <span>{{ tweet.Likes.length }}</span>
@@ -125,6 +139,12 @@ export default {
     handleAfterTweetSubmit(newTWeet) {
       this.$emit("after-tweet-submit", newTWeet);
     },
+    handleTweetClick(tweetId) {
+      this.$router.push({ name: "Tweet", params: { id: `${tweetId}` } });
+    },
+    handleCommentClick(tweet) {
+      this.$emit("after-comment-click", tweet);
+    },
   },
 };
 </script>
@@ -165,6 +185,17 @@ $orange: #ff6600;
       display: flex;
       flex-direction: column;
       width: 100%;
+      .word-count {
+        color: gray;
+        font-family: monospace;
+        font-size: 12px;
+        align-self: flex-end;
+        margin: 0;
+        margin-right: 14px;
+        &.word-limit {
+          color: red;
+        }
+      }
       #tweet-input {
         resize: none;
         height: 100px;
@@ -196,6 +227,7 @@ $orange: #ff6600;
 .post-part {
   border: 1px solid #e6ecf0;
   display: flex;
+  cursor: pointer;
   .post {
     margin: 0 10px 0 10px;
     display: flex;
