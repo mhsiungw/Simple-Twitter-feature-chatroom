@@ -291,15 +291,15 @@ export default {
 
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
-          UserId: item.User.id,
-          name: item.Tweet.User.name,
-          avatar: item.Tweet.User.avatar,
-          account: item.Tweet.User.account,
+          UserId: item.UserId,
+          name: item.userName,
+          avatar: item.userAvatar,
+          account: item.userAccount,
           createdAt: item.createdAt,
           description: item.Tweet.description,
-          likeTweetCount: item.Tweet.likeTweetCount,
-          replyTweetCount: item.Tweet.replyTweetCount,
-          isLiked: item.Tweet.isLiked,
+          likeTweetCount: item.likeTweetCount,
+          replyTweetCount: item.replyTweetCount,
+          isLiked: item.isLiked,
           likedAt: item.createdAt,
         }));
         console.log("this.user.userLikes====>:", this.userLikes);
