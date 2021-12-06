@@ -230,7 +230,7 @@ export default {
       try {
         const userTweetsData = await usersAPI.getUserTweets({ userId });
         this.userTweets = userTweetsData.data;
-        //console.log("this.user.tweets===>", userTweets);
+        // console.log("this.user.tweets===>", this.userTweets);
         this.userTweets = this.userTweets.map((tweet) => ({
           id: tweet.id,
           UserId: tweet.UserId,
@@ -244,6 +244,8 @@ export default {
           isLiked: tweet.isLiked,
           showNewReplyModal: false,
         }));
+        //console.log("this.user.tweets===>", this.userTweets);
+
         this.tabOption = "推文";
       } catch (error) {
         console.log(error);
@@ -285,23 +287,25 @@ export default {
       try {
         const userLikes = await usersAPI.getUserLikes({ userId });
         this.userLikes = userLikes.data;
-        //console.log("this.user.userLikes====>:", this.userLikes);
+        console.log("1this.user.userLikes====>:", this.userLikes);
+
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
-          UserId: item.Tweet.User.id,
+          UserId: item.User.id,
           name: item.Tweet.User.name,
           avatar: item.Tweet.User.avatar,
           account: item.Tweet.User.account,
-          createdAt: item.Tweet.createdAt,
+          createdAt: item.createdAt,
           description: item.Tweet.description,
-          likeTweetCount: item.likeTweetCount,
-          replyTweetCount: item.replyTweetCount,
-          isLiked: item.isLiked,
+          likeTweetCount: item.Tweet.likeTweetCount,
+          replyTweetCount: item.Tweet.replyTweetCount,
+          isLiked: item.Tweet.isLiked,
           likedAt: item.createdAt,
         }));
-        this.userLikes.sort((a, b) => {
-          return a.likedAt < b.likedAt ? 1 : -1;
-        });
+        console.log("this.user.userLikes====>:", this.userLikes);
+        // this.userLikes.sort((a, b) => {
+        //   return a.likedAt < b.likedAt ? 1 : -1;
+        // });
       } catch (error) {
         console.log(error);
       }
