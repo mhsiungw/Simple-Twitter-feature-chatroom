@@ -1,5 +1,7 @@
 <template>
   <div class="profile">
+    <Loading :isLoading="isLoading" />
+
     <div class="header">
       <div class="arrow">
         <div @click="$router.go(-1)" class="icon back"></div>
@@ -7,7 +9,7 @@
       <div class="simple-info">
         <div class="name">{{ user.name ? user.name : "" }}</div>
         <div class="tweet-count">
-          {{ user.tweets ? user.tweets.length : 0 }} 推文
+          {{ userTweets ? userTweets.length : 0 }} 推文
         </div>
       </div>
     </div>
@@ -71,7 +73,7 @@
       </div>
 
       <div class="name">{{ user ? user.name : "no name field" }}</div>
-      <div class="account">{{ user ? user.account : "no acc field" }}</div>
+      <div class="account">＠{{ user ? user.account : "no acc field" }}</div>
       <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
@@ -138,7 +140,8 @@
       :user="user"
       v-if="showEditProfileModal"
       @after-click-cross="afterClickCross"
-      @completeEdit="completeEdit"
+      @complete-edit="completeEdit"
+      @uploading="uploading"
     />
   </div>
 </template>
@@ -148,13 +151,14 @@ import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
-
+import Loading from "../components/Loading.vue";
 import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
 export default {
   name: "Profile",
   components: {
+    Loading,
     TweetList,
     ModalForEditProfile,
   },
@@ -166,6 +170,7 @@ export default {
       userLikes: [],
       userReplies: [],
       userTweets: [],
+      isLoading: false,
     };
   },
   watch: {
@@ -208,8 +213,8 @@ export default {
         this.user = { ...getProfile.data };
         //console.log("thisuser===>", this.user);
 
-        this.user.followersCount = this.user.Followers.length - 1;
-        this.user.followingsCount = this.user.Followings.length - 1;
+        this.user.followersCount = this.user.Followers.length;
+        this.user.followingsCount = this.user.Followings.length;
 
         if (this.user.tweets) {
           this.user.tweets.sort((a, b) => {
@@ -360,7 +365,10 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit(modalData) {
+    async completeEdit(modalData) {
+      this.showEditProfileModal = false;
+      this.$router.go(0);
+
       this.user.user = Object.assign({}, modalData);
       this.user.tweets = this.user.tweets.map((tweet) => ({
         ...tweet,
@@ -368,6 +376,9 @@ export default {
         avatar: modalData.avatar,
         description: modalData.description,
       }));
+    },
+    uploading(status) {
+      this.isLoading = status;
     },
   },
 };

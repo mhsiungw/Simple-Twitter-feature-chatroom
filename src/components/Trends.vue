@@ -3,14 +3,14 @@
     <div class="title">追蹤前10名</div>
     <div class="list-group">
       <div v-for="user in topUsers" :key="user.id" class="list-group-item">
-        <div class="avatar"><img :src="user.avatar | emptyImage" alt="" /></div>
-        <div class="info">
+        <div class="avatar" @click="$router.push(`/users/${user.id}`)">
+          <img :src="user.avatar | emptyImage" alt="empty-img" />
+        </div>
+        <div class="info" @click="$router.push(`/users/${user.id}`)">
           <div class="name">
             {{ user.name }}
           </div>
-          <div class="account">
-            {{ user.account }}
-          </div>
+          <div class="account">＠{{ user.account }}</div>
         </div>
         <div v-if="user.id !== currentUser.id">
           <button

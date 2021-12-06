@@ -3,16 +3,17 @@
     <UserSidebar class="user-sidebar" />
     <FollowList
       class="follow-list"
-      v-if="$route.path === `/users/${userId}/followers`"
-      :initialFollowers="followers"
-      :nowUser="user"
-    />
-    <FollowList
-      class="follow-list"
       v-if="$route.path === `/users/${userId}/followings`"
       :initialFollowers="followings"
       :nowUser="user"
     />
+    <FollowList
+      class="follow-list"
+      v-if="$route.path === `/users/${userId}/followers`"
+      :initialFollowers="followers"
+      :nowUser="user"
+    />
+
     <Trends class="trend-section" />
   </div>
 </template>

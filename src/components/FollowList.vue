@@ -16,23 +16,22 @@
     <div class="tab self">
       <div
         class="item"
-        :class="{ active: this.$route.path === `/users/${userId}/followers` }"
-        @click="$router.push(`/users/${userId}/followers`)"
-      >
-        <div class="text">追隨者</div>
-      </div>
-
-      <div
-        class="item"
         :class="{ active: $route.path === `/users/${userId}/followings` }"
         @click="$router.push(`/users/${userId}/followings`)"
       >
         <div class="text">正在跟隨</div>
       </div>
+      <div
+        class="item"
+        :class="{ active: this.$route.path === `/users/${userId}/followers` }"
+        @click="$router.push(`/users/${userId}/followers`)"
+      >
+        <div class="text">追隨者</div>
+      </div>
     </div>
     <div class="followListContent">
       <div v-for="follower in followers" :key="follower.id">
-        <div v-if="follower.name !== currentUser.name" class="singleContent">
+        <div class="singleContent">
           <img
             v-if="follower"
             :src="follower.avatar"

@@ -1,11 +1,7 @@
 <template>
   <div class="modal edit">
     <div class="modal-content">
-      <form
-        ref="form"
-        @submit.stop.prevent="handleSubmit"
-        enctype="multipart/form-data"
-      >
+      <form @submit.stop.prevent="handleSubmit" enctype="multipart/form-data">
         <div class="modal-header">
           <div
             class="icon cross"
@@ -18,13 +14,14 @@
         <div class="modal-body">
           <div
             class="background-photo"
-            :style="{ background: `url(${user.cover}) no-repeat center/cover` }"
+            :style="{
+              background: `url(${this.editUserCover}) no-repeat center/cover`,
+            }"
           ></div>
           <div class="icon camera-two">
             <input
               type="file"
               class="coverFile"
-              ref="coverFile"
               name="cover"
               accept="image/*"
               @change="coverChange"
@@ -47,13 +44,12 @@
           <div
             class="photo"
             :style="{
-              background: `url(${user.avatar}) no-repeat center/cover`,
+              background: `url(${this.editUserAvatar}) no-repeat center/cover`,
             }"
           ></div>
           <div class="icon camera-one">
             <input
               class="avatarFile"
-              ref="avatarFile"
               name="avatar"
               accept="image/*"
               @change="avatarChange"
@@ -69,23 +65,31 @@
           <div class="for-inputs">
             <span class="name tag">名稱</span>
             <input
-              v-model="user.name"
+              v-model="editUserName"
               class="tweet-content name"
               type="text"
               placeholder=""
               name="name"
+              maxlength="50"
             />
-            <span class="word-count">{{ user.name ? user.length : 0 }}/50</span>
+            <span
+              class="word-count"
+              :class="{ 'word-limit': user.name.length === 140 }"
+              >{{ user.name ? user.name.length : 0 }}/50</span
+            >
             <span class="self-intro tag">自我介紹</span>
             <textarea
-              v-model="user.introduction"
+              v-model="editUserIntro"
               class="tweet-content intro"
               type="textarea"
               placeholder=""
               name="introduction"
+              maxlength="160"
             ></textarea>
-            <span class="word-count"
-              >{{ user.description ? user.description.length : 0 }}/160</span
+            <span
+              class="word-count"
+              :class="{ 'word-limit': user.introduction.length === 140 }"
+              >{{ user.introduction ? user.introduction.length : 0 }}/160</span
             >
           </div>
         </div>
@@ -101,19 +105,24 @@ import { mapState } from "vuex";
 
 export default {
   name: "ModalForEditProfile",
+  components: {},
   props: {
     user: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      editUserName: this.user.name,
+      editUserIntro: this.user.introduction,
+      editUserCover: this.user.cover,
+      editUserAvatar: this.user.avatar,
+    };
+  },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
-  created() {
-    //this.user = this.currentUser;
-  },
-
   methods: {
     cancelModalClick() {
       this.$emit("after-click-cross");
@@ -123,7 +132,7 @@ export default {
       console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
-        this.user.cover = coverUrl;
+        this.editUserCover = coverUrl;
       }
     },
     avatarChange(e) {
@@ -132,44 +141,53 @@ export default {
 
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);
-        this.user.avatar = avatarUrl;
+        this.editUserAvatar = avatarUrl;
       }
     },
-    handleSubmit(e) {
-      if (this.user.name === "") {
+    async handleSubmit(e) {
+      try {
+        if (this.user.name === "") {
+          Toast.fire({
+            icon: "warning",
+            title: "請輸入名稱",
+          });
+          return;
+        } else if (
+          this.user.name.length > 50 &&
+          this.user.introduction.length > 160
+        ) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱和自我介紹超過最大限制字數！",
+          });
+          return;
+        } else if (this.user.name.length > 50) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱只限50字",
+          });
+          return;
+        } else if (this.user.introduction.length > 160) {
+          Toast.fire({
+            icon: "warning",
+            title: "自我介紹只限160字",
+          });
+          return;
+        }
+        this.$emit("uploading", true);
+
+        const form = e.target;
+        const formData = new FormData(form);
+        for (let [name, value] of formData.entries()) {
+          console.log(name + ": " + value);
+        }
+        this.updateUser(formData);
+      } catch (error) {
         Toast.fire({
-          icon: "warning",
-          title: "請輸入名稱",
+          icon: "error",
+          title: "無法更新資料，請稍後再試",
         });
-        return;
-      } else if (
-        this.user.name.length > 50 &&
-        this.user.introduction.length > 160
-      ) {
-        Toast.fire({
-          icon: "warning",
-          title: "名稱和自我介紹超過最大限制字數！",
-        });
-        return;
-      } else if (this.user.name.length > 50) {
-        Toast.fire({
-          icon: "warning",
-          title: "名稱只限50字",
-        });
-        return;
-      } else if (this.user.introduction.length > 160) {
-        Toast.fire({
-          icon: "warning",
-          title: "自我介紹只限160字",
-        });
-        return;
       }
-      const form = e.target;
-      const formData = new FormData(form);
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
-      }
-      this.updateUser(formData);
     },
     async updateUser(formData) {
       try {
@@ -181,9 +199,9 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.$emit("completeEdit", this.user);
-        await this.$store.dispatch("fetchCurrentUser");
-        this.$emit("after-click-cross");
+
+        this.$emit("complete-edit", this.user);
+        this.$emit("uploading", false);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -333,6 +351,9 @@ $divider: #e6ecf0;
           font-weight: 500;
           font-size: 15px;
           line-height: 22px;
+          &.word-limit {
+            color: red;
+          }
         }
       }
       .tag {

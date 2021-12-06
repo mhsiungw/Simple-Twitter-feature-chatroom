@@ -54,11 +54,11 @@ export default {
     };
   },
   created() {
-    bus.$on("trends-change", (userId) => {
-      console.log("userId===>", userId);
-      this.fetchTweets();
-    });
-    //this.fetchTweets();
+    // bus.$on("trends-change", (userId) => {
+    //   console.log("userId===>", userId);
+    //   this.fetchTweets();
+    // });
+    this.fetchTweets();
   },
   beforeDestroy() {
     bus.$off("trends-change");

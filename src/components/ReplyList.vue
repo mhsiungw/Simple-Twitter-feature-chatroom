@@ -108,7 +108,10 @@
           </div>
           <span class="to-whom"
             >回覆
-            <span class="receiver">
+            <span
+              class="receiver"
+              @click="$router.push(`/users/${tweet.User.id}`)"
+            >
               ＠{{ tweet.User ? tweet.User.account : "" }}</span
             ></span
           >
@@ -149,6 +152,7 @@ export default {
       likes: {},
       comments: {},
       replyCount: 0,
+      likesCount: 0,
     };
   },
   computed: {
