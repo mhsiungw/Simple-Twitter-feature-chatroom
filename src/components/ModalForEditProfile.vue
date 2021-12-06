@@ -129,7 +129,7 @@ export default {
     },
     coverChange(e) {
       const { files } = e.target;
-     // console.log("files", files[0]);
+      // console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
         this.editUserCover = coverUrl;
@@ -178,9 +178,9 @@ export default {
 
         const form = e.target;
         const formData = new FormData(form);
-        for (let [name, value] of formData.entries()) {
-         // console.log(name + ": " + value);
-        }
+        // for (let [name, value] of formData.entries()) {
+        //  // console.log(name + ": " + value);
+        // }
         this.updateUser(formData);
       } catch (error) {
         Toast.fire({
