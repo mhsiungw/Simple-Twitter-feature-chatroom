@@ -69,7 +69,7 @@ export default {
             password: this.password,
           });
       // 如果登入失敗
-      console.log(data);
+      //console.log(data);
       if (data.status !== "success") {
         this.account = "";
         this.password = "";

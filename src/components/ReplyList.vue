@@ -172,7 +172,7 @@ export default {
     async fetchTweet(tweetId) {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
-        console.log("getTweet123", data);
+        //console.log("getTweet123", data);
 
         this.tweet = { ...data, currentUser: this.currentUser };
         this.likes = { ...data.Likes, isLiked: data.isLiked };
@@ -196,7 +196,7 @@ export default {
           });
           return;
         }
-        console.log(typeof tweetId);
+       // console.log(typeof tweetId);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
         //console.log(data)
         if (data.status !== "success") {

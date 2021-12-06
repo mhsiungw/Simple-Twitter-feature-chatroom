@@ -129,7 +129,7 @@ export default {
     },
     coverChange(e) {
       const { files } = e.target;
-      console.log("files", files[0]);
+     // console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
         this.editUserCover = coverUrl;
@@ -137,7 +137,7 @@ export default {
     },
     avatarChange(e) {
       const { files } = e.target;
-      console.log("files", files);
+      //console.log("files", files);
 
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);
@@ -179,7 +179,7 @@ export default {
         const form = e.target;
         const formData = new FormData(form);
         for (let [name, value] of formData.entries()) {
-          console.log(name + ": " + value);
+         // console.log(name + ": " + value);
         }
         this.updateUser(formData);
       } catch (error) {
@@ -195,7 +195,7 @@ export default {
           userId: this.currentUser.id,
           formData,
         });
-        console.log("data==>", data);
+        //console.log("data==>", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }

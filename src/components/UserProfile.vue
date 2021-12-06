@@ -292,7 +292,7 @@ export default {
       try {
         const userLikes = await usersAPI.getUserLikes({ userId });
         this.userLikes = userLikes.data;
-        console.log("1this.user.userLikes====>:", this.userLikes);
+        //console.log("1this.user.userLikes====>:", this.userLikes);
 
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
@@ -307,10 +307,10 @@ export default {
           isLiked: item.isLiked,
           likedAt: item.createdAt,
         }));
-        console.log("this.user.userLikes====>:", this.userLikes);
-        // this.userLikes.sort((a, b) => {
-        //   return a.likedAt < b.likedAt ? 1 : -1;
-        // });
+        //console.log("this.user.userLikes====>:", this.userLikes);
+        this.userLikes.sort((a, b) => {
+          return a.likedAt < b.likedAt ? 1 : -1;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -318,7 +318,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        console.log("addFollowing", data);
+        // console.log("addFollowing", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -347,14 +347,14 @@ export default {
     },
     async addSubscribe() {
       try {
-        console.log("addSubscribe");
+        // console.log("addSubscribe");
       } catch (error) {
         console.log(error);
       }
     },
     async deleteSubscribe() {
       try {
-        console.log("deleteSubscribe");
+        // console.log("deleteSubscribe");
       } catch (error) {
         console.log(error);
       }
