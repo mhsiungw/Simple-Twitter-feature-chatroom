@@ -1,7 +1,7 @@
 # Simple-Twitter CH組
 
-## 前端 
-[simple-twitter前端](https://github.com/CHLin13/twitter-front-end)
+## 前端
+[Github Repo](https://github.com/CHLin13/twitter-front-end)
 
 ### 專案建置
 ```
@@ -14,20 +14,20 @@ npm ci
 npm run serve
 ```
 
-## 後端 
+## 後端
 
-[simple-twitter 後端](https://github.com/CHLin13/twitter-api-2020)
+[Github Repo](https://github.com/CHLin13/twitter-api-2020)
 
-### 本地端專案建置
+## 本地端專案建置
 
-## 本地端資料庫建置(MySQL Workbench)
+### 本地端資料庫建置(MySQL Workbench)
 ```
 create database ac_twitter_workspace;
 create database ac_twitter_workspace_test;
 
 ```
 
-## 本地端資料圖遷徒檔與種子檔設置
+### 本地端資料圖遷徒檔與種子檔設置
 ```
 npx sequelize db:migrate
 npx sequelize db:migrate:undo:all
