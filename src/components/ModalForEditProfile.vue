@@ -75,7 +75,11 @@
               placeholder=""
               name="name"
             />
-            <span class="word-count">{{ user.name ? user.length : 0 }}/50</span>
+            <span
+              class="word-count"
+              :class="{ 'word-limit': editUserName.length === 50 }"
+              >{{ editUserName ? editUserName.length : 0 }}/50</span
+            >
             <span class="self-intro tag">自我介紹</span>
             <textarea
               v-model="user.introduction"
@@ -84,8 +88,10 @@
               placeholder=""
               name="introduction"
             ></textarea>
-            <span class="word-count"
-              >{{ user.description ? user.description.length : 0 }}/160</span
+            <span
+              class="word-count"
+              :class="{ 'word-limit': editUserIntro.length === 160 }"
+              >{{ editUserIntro ? editUserIntro.length : 0 }}/160</span
             >
           </div>
         </div>
@@ -120,7 +126,6 @@ export default {
     },
     coverChange(e) {
       const { files } = e.target;
-      console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
         this.user.cover = coverUrl;
@@ -128,7 +133,6 @@ export default {
     },
     avatarChange(e) {
       const { files } = e.target;
-      console.log("files", files);
 
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);

@@ -87,35 +87,26 @@ export default {
       return this.settingInfo.password === this.settingInfo.checkPassword;
     },
   },
-  created() {
-    this.fetchCurrentUser();
-  },
   // 監聽 currentUser 資料有無改變
   watch: {
-    currentUser() {
-      this.settingInfo = {
-        ...this.settingInfo,
-        account: this.currentUser.account,
-        name: this.currentUser.name,
-        email: this.currentUser.email,
-      };
+    currentUser: {
+      deep: true,
+      handler() {
+        this.settingInfo = {
+          ...this.settingInfo,
+          account: this.currentUser.account,
+          name: this.currentUser.name,
+          email: this.currentUser.email,
+        };
+      },
     },
   },
   methods: {
-    fetchCurrentUser() {
-      this.settingInfo = {
-        ...this.settingInfo,
-        account: this.currentUser.account,
-        name: this.currentUser.name,
-        email: this.currentUser.email,
-      };
-    },
     async handleSave() {
       if (this.isEmptyValue) {
         return window.alert("請填寫所有欄位在儲存");
       }
       if (!this.isPasswordSame) {
-        console.log(456);
         return window.alert("密碼請一致");
       }
       this.$emit("after-save", this.settingInfo);

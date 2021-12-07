@@ -13,15 +13,18 @@
       <div class="modal-body">
         <div class="content-of-other">
           <div class="other-info">
-            <img
-              :src="tweet.User.avatar"
-              alt=""
-              @click="
-                $router
-                  .push(`/user/other/${tweet.User ? tweet.User.id : '/'}`)
-                  .catch(() => {})
-              "
-            />
+            <div class="img-container">
+              <img
+                :src="tweet.User.avatar"
+                alt=""
+                @click="
+                  $router
+                    .push(`/user/other/${tweet.User ? tweet.User.id : '/'}`)
+                    .catch(() => {})
+                "
+              />
+              <div class="img-bottom-line"></div>
+            </div>
             <div class="text-wrap">
               <div class="title-wrap">
                 <span
@@ -66,9 +69,15 @@
             v-model="replyContent"
             type="textarea"
             placeholder="推你的回覆"
-            name=""
-            id=""
+            maxlength="200"
           ></textarea>
+          <div
+            class="word-count"
+            :class="{ 'word-limit': replyContent.length === 200 }"
+          >
+            {{ replyContent.length }}/200
+          </div>
+
           <button @click.prevent="replyTweet">推文</button>
         </div>
       </div>
@@ -155,6 +164,7 @@ $divider: #e6ecf0;
           flex-direction: row;
           align-items: flex-start;
           // outline: red solid;
+
           img {
             width: 50px;
             height: 50px;
@@ -168,6 +178,15 @@ $divider: #e6ecf0;
               filter: brightness(0.9);
             }
             // outline: red solid;
+          }
+          .img-bottom-line {
+            position: relative;
+            left: -0.2rem;
+            top: -0.3rem;
+            margin: 0;
+            padding: 0;
+            transform: rotate(90deg) scale(1.1);
+            border-bottom: 2.5px solid lightgrey;
           }
           .text-wrap {
             display: flex;
@@ -239,6 +258,7 @@ $divider: #e6ecf0;
       }
 
       .content-of-mine {
+        height: 80%;
         img {
           width: 50px;
           height: 50px;
@@ -261,6 +281,20 @@ $divider: #e6ecf0;
             font-size: 16px;
             font-weight: 500;
             color: #919191;
+          }
+        }
+        .word-count {
+          position: absolute;
+          top: 80%;
+          right: 10px;
+          color: gray;
+          font-family: monospace;
+          font-size: 12px;
+          align-self: flex-end;
+          margin: 0;
+          margin-right: 14px;
+          &.word-limit {
+            color: red;
           }
         }
         button {

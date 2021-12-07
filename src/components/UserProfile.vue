@@ -5,6 +5,7 @@
       @after-tweet-submit="handleAfterTweetSubmit"
       v-if="isTweetClicked"
     />
+    <Loading :isLoading="isLoading" />
     <div class="header">
       <div class="arrow">
         <div @click="$router.go(-1)" class="icon back"></div>
@@ -12,7 +13,7 @@
       <div class="simple-info">
         <div class="name">{{ user.name ? user.name : "" }}</div>
         <div class="tweet-count">
-          {{ user.tweets ? user.tweets.length : 0 }} 推文
+          {{ userTweets ? userTweets.length : 0 }} 推文
         </div>
       </div>
     </div>
@@ -76,7 +77,7 @@
       </div>
 
       <div class="name">{{ user ? user.name : "no name field" }}</div>
-      <div class="account">{{ user ? user.account : "no acc field" }}</div>
+      <div class="account">＠{{ user ? user.account : "no acc field" }}</div>
       <div class="intro">{{ user ? user.introduction : "no intro field" }}</div>
       <div class="number-followers">
         <div>
@@ -143,7 +144,8 @@
       :user="user"
       v-if="showEditProfileModal"
       @after-click-cross="afterClickCross"
-      @completeEdit="completeEdit"
+      @complete-edit="completeEdit"
+      @uploading="uploading"
     />
   </div>
 </template>
@@ -154,13 +156,14 @@ import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
 import ModalForTweet from "./ModalForTweet.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
-
+import Loading from "../components/Loading.vue";
 import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
 export default {
   name: "Profile",
   components: {
+    Loading,
     TweetList,
     ModalForEditProfile,
     ModalForTweet,
@@ -179,6 +182,7 @@ export default {
       userLikes: [],
       userReplies: [],
       userTweets: [],
+      isLoading: false,
     };
   },
   watch: {
@@ -221,8 +225,8 @@ export default {
         this.user = { ...getProfile.data };
         //console.log("thisuser===>", this.user);
 
-        this.user.followersCount = this.user.Followers.length - 1;
-        this.user.followingsCount = this.user.Followings.length - 1;
+        this.user.followersCount = this.user.Followers.length;
+        this.user.followingsCount = this.user.Followings.length;
 
         if (this.user.tweets) {
           this.user.tweets.sort((a, b) => {
@@ -243,7 +247,7 @@ export default {
       try {
         const userTweetsData = await usersAPI.getUserTweets({ userId });
         this.userTweets = userTweetsData.data;
-        //console.log("this.user.tweets===>", userTweets);
+        // console.log("this.user.tweets===>", this.userTweets);
         this.userTweets = this.userTweets.map((tweet) => ({
           id: tweet.id,
           UserId: tweet.UserId,
@@ -257,6 +261,8 @@ export default {
           isLiked: tweet.isLiked,
           showNewReplyModal: false,
         }));
+        //console.log("this.user.tweets===>", this.userTweets);
+
         this.tabOption = "推文";
       } catch (error) {
         console.log(error);
@@ -298,20 +304,22 @@ export default {
       try {
         const userLikes = await usersAPI.getUserLikes({ userId });
         this.userLikes = userLikes.data;
-        //console.log("this.user.userLikes====>:", this.userLikes);
+        //console.log("1this.user.userLikes====>:", this.userLikes);
+
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
-          UserId: item.Tweet.User.id,
-          name: item.Tweet.User.name,
-          avatar: item.Tweet.User.avatar,
-          account: item.Tweet.User.account,
-          createdAt: item.Tweet.createdAt,
+          UserId: item.UserId,
+          name: item.userName,
+          avatar: item.userAvatar,
+          account: item.userAccount,
+          createdAt: item.createdAt,
           description: item.Tweet.description,
           likeTweetCount: item.likeTweetCount,
           replyTweetCount: item.replyTweetCount,
           isLiked: item.isLiked,
           likedAt: item.createdAt,
         }));
+        //console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes.sort((a, b) => {
           return a.likedAt < b.likedAt ? 1 : -1;
         });
@@ -322,7 +330,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        console.log("addFollowing", data);
+        // console.log("addFollowing", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -351,14 +359,14 @@ export default {
     },
     async addSubscribe() {
       try {
-        console.log("addSubscribe");
+        // console.log("addSubscribe");
       } catch (error) {
         console.log(error);
       }
     },
     async deleteSubscribe() {
       try {
-        console.log("deleteSubscribe");
+        // console.log("deleteSubscribe");
       } catch (error) {
         console.log(error);
       }
@@ -369,7 +377,10 @@ export default {
     afterClickCross() {
       this.showEditProfileModal = false;
     },
-    completeEdit(modalData) {
+    async completeEdit(modalData) {
+      this.showEditProfileModal = false;
+      this.$router.go(0);
+
       this.user.user = Object.assign({}, modalData);
       this.user.tweets = this.user.tweets.map((tweet) => ({
         ...tweet,
@@ -386,6 +397,9 @@ export default {
       this.$emit("after-tweet-submit", newTWeet);
     },
     /** tweet modal  control end **/
+    uploading(status) {
+      this.isLoading = status;
+    },
   },
 };
 </script>
