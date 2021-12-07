@@ -8,7 +8,7 @@ export default {
     })
   },
   register({ account, name, password, email, checkPassword }) {
-    console.log('register API')
+    //console.log('register API')
     return apiHelper.post('/users', { account, name, password, email, checkPassword })
   }
 }

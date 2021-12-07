@@ -3,14 +3,14 @@
     <div class="title">追蹤前10名</div>
     <div class="list-group">
       <div v-for="user in topUsers" :key="user.id" class="list-group-item">
-        <div class="avatar"><img :src="user.avatar | emptyImage" alt="" /></div>
-        <div class="info">
+        <div class="avatar" @click="$router.push(`/users/${user.id}`)">
+          <img :src="user.avatar | emptyImage" alt="empty-img" />
+        </div>
+        <div class="info" @click="$router.push(`/users/${user.id}`)">
           <div class="name">
             {{ user.name }}
           </div>
-          <div class="account">
-            {{ user.account }}
-          </div>
+          <div class="account">＠{{ user.account }}</div>
         </div>
         <div v-if="user.id !== currentUser.id">
           <button
@@ -41,6 +41,7 @@ import followshipsAPI from "@/apis/followships";
 import { emptyImageFilter } from "../utils/mixins";
 import { Toast } from "@/utils/helpers";
 import { mapState } from "vuex";
+import bus from "../utils/bus";
 
 export default {
   name: "Trends",
@@ -94,6 +95,7 @@ export default {
             };
           }
         });
+        this.busForTrends(userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -120,6 +122,7 @@ export default {
             };
           }
         });
+        this.busForTrends(userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -127,8 +130,9 @@ export default {
         });
       }
     },
-    followAction() {
-      console.log("followAction");
+    async busForTrends(userId) {
+      // 通过 $emit 来触发方法，参数1 是定义方法名，参数2 是你要发送的数据
+      bus.$emit("trends-change", userId);
     },
   },
 };

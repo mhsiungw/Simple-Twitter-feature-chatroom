@@ -36,6 +36,7 @@ import { mapState } from "vuex";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../utils/helpers";
+import bus from "../utils/bus";
 
 export default {
   name: "MainPage",
@@ -55,13 +56,24 @@ export default {
     };
   },
   created() {
+    // bus.$on("trends-change", (userId) => {
+    //   console.log("userId===>", userId);
+    //   this.fetchTweets();
+    // });
     this.fetchTweets();
+  },
+  beforeDestroy() {
+    bus.$off("trends-change");
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
     // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
+
       let newTweets = this.newTweet;
+
+      //console.log("reverseTweet");
+      let newTweets = this.tweets;
       return newTweets.sort((a, b) => {
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -106,7 +118,7 @@ export default {
     },
     async handleAfterSubmit(newDescription) {
       try {
-        console.log(newDescription);
+       // console.log(newDescription);
         let newInput = {
           Likes: [],
           Replies: [],
@@ -139,14 +151,14 @@ export default {
     },
     async handleAfterLikeClick(tweetId) {
       try {
-        console.log("handleAfterLikeClick", tweetId);
+       // console.log("handleAfterLikeClick", tweetId);
 
         // 發送 API
         let response = await likeAPI.likeTweet({ tweetId });
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        console.log(response);
+       // console.log(response);
         //頁面即時更新
         // 先 render 找出符合 tweetId 的 tweet
         this.tweets.filter((tweet) => {
@@ -171,7 +183,7 @@ export default {
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        console.log("handleAfterDislikeClick", tweetId);
+       // console.log("handleAfterDislikeClick", tweetId);
         // 頁面即時更新;
         this.tweets.filter((tweet) => {
           if (tweet.id === tweetId) {
@@ -205,7 +217,7 @@ export default {
           });
           return;
         }
-        console.log(typeof this.clickedTweet.id);
+       // console.log(typeof this.clickedTweet.id);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
         //console.log(data)
         if (data.status !== "success") {

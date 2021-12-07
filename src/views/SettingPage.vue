@@ -41,7 +41,7 @@ export default {
   methods: {
     async handleAfterSubmit(newDescription) {
       try {
-        console.log("handleAfterSubmit", newDescription);
+      //  console.log("handleAfterSubmit", newDescription);
         let newInput = {
           Likes: [],
           Replies: [],
@@ -55,7 +55,7 @@ export default {
           createdAt: moment().format(),
           description: newDescription,
         };
-        console.log(newInput);
+       // console.log(newInput);
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
           UserId: newInput.UserId,
@@ -80,10 +80,10 @@ export default {
       this.isTweetClicked = false;
     },
     async handleAfterSave(newInfo) {
-      console.log("handleAfterSave", newInfo);
+    //  console.log("handleAfterSave", newInfo);
       try {
         let response = await userAPI.editUserInfo(this.currentUser.id, newInfo);
-        console.log("response", response);
+       // console.log("response", response);
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         } else {
