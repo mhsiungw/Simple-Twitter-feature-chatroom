@@ -63,16 +63,54 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
+<<<<<<< HEAD:src/views/MainPage.vue.vue
+=======
+
+
+    // 把推文按照發文時間顯示（越近發的越先顯示）
+    // reverseTweet() {
+    //   return [...this.newTweets].sort((a, b) => {
+    //     return (
+    //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    //     );
+    //   });
+    // },
+
+>>>>>>> c6dcc500e7d4d4a7fc4637f088c64fd277edb298:src/views/MainPage.vue
   },
   methods: {
     async fetchTweets() {
       // API
       try {
         let tweetResponse = await tweetsAPI.getTweets();
+<<<<<<< HEAD:src/views/MainPage.vue.vue
         if (tweetResponse.statusText !== "OK") {
           throw new Error(tweetResponse.status);
         }
         this.tweets = tweetResponse.data;
+=======
+
+        if (tweetResponse.statusText !== "OK") {
+          throw new Error(tweetResponse.status);
+        }
+        this.tweets = tweetResponse.data;
+
+        // let userResponse = await usersAPI.getFollowings({
+        //   userId: this.currentUser.id,
+        // });
+        if (tweetResponse.statusText !== "OK") {
+          throw new Error(tweetResponse.status);
+        }
+        console.log(tweetResponse);
+        // if (userResponse.statusText !== "OK") {
+        //   throw new Error(userResponse.status);
+        // }
+        // for (let user of userResponse.data) {
+        //   this.followings.push({ userId: user.followingId });
+        // }
+        return (this.tweets = tweetResponse.data);
+
+>>>>>>> c6dcc500e7d4d4a7fc4637f088c64fd277edb298:src/views/MainPage.vue
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -83,6 +121,25 @@ export default {
 
     async handleAfterSubmit(newDescription) {
       try {
+<<<<<<< HEAD:src/views/MainPage.vue.vue
+=======
+
+        // let newInput = {
+        //   Likes: [],
+        //   Replies: [],
+        //   User: {
+        //     avatar: this.currentUser.image,
+        //     name: this.currentUser.name,
+        //     account: this.currentUser.name,
+        //   },
+        //   UserId: this.currentUser.id,
+        //   id: uuidv4(),
+        //   createdAt: moment().format(),
+        //   description: newDescription,
+        // };
+        // console.log(newDescription);
+
+>>>>>>> c6dcc500e7d4d4a7fc4637f088c64fd277edb298:src/views/MainPage.vue
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
           UserId: this.currentUser.id,
