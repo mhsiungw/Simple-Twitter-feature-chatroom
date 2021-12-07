@@ -322,9 +322,10 @@ export default {
           isLiked: item.isLiked,
           likedAt: item.createdAt,
         }));
-        //console.log("this.user.userLikes====>:", this.userLikes);
+
+        console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes.sort((a, b) => {
-          return a.likedAt < b.likedAt ? 1 : -1;
+          return a.createdAt < b.createdAt ? 1 : -1;
         });
       } catch (error) {
         console.log(error);

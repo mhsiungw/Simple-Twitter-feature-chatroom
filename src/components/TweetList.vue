@@ -1,10 +1,6 @@
 <template>
   <div class="tweet-list" v-if="tweets">
-    <div
-      v-for="tweet in tweets"
-      :key="`${tweet.id}-${Math.random()}`"
-      class="list-item"
-    >
+    <div v-for="tweet in tweets" :key="tweet.id" class="list-item">
       <div
         class="avatar"
         :style="{
@@ -52,12 +48,12 @@
             <div
               v-if="!tweet.isLiked"
               class="icon like"
-              @click="likeTweet(tweet.id)"
+              @click="likeTweet(tweet.TweetId)"
             ></div>
             <div
               v-if="tweet.isLiked"
               class="icon like liked"
-              @click="unlikeTweet(tweet.id)"
+              @click="unlikeTweet(tweet.TweetId)"
             ></div>
             <span class="number">{{ tweet.likeTweetCount }}</span>
           </div>
@@ -104,13 +100,13 @@ export default {
         }
 
         this.tweets.filter((tweet) => {
-          if (tweet.id === tweetId) {
+          console.log(tweet);
+          if (tweet.TweetId === tweetId) {
             tweet.isLiked = true;
             tweet.likeTweetCount =
               tweet.likeTweetCount + 1 > 0 ? tweet.likeTweetCount + 1 : 0;
           }
         });
-        this.$emit("update-from-child", tweetId);
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -128,13 +124,12 @@ export default {
         }
 
         this.tweets.filter((tweet) => {
-          if (tweet.id === tweetId) {
+          if (tweet.TweetId === tweetId) {
             tweet.isLiked = false;
             tweet.likeTweetCount =
               tweet.likeTweetCount - 1 <= 0 ? 0 : tweet.likeTweetCount - 1;
           }
         });
-        this.$emit("update-from-child", tweetId);
       } catch (error) {
         console.log(error);
         Toast.fire({
