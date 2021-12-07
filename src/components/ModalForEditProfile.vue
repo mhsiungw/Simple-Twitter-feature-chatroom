@@ -1,11 +1,7 @@
 <template>
   <div class="modal edit">
     <div class="modal-content">
-      <form
-        ref="form"
-        @submit.stop.prevent="handleSubmit"
-        enctype="multipart/form-data"
-      >
+      <form @submit.stop.prevent="handleSubmit" enctype="multipart/form-data">
         <div class="modal-header">
           <div
             class="icon cross"
@@ -18,13 +14,16 @@
         <div class="modal-body">
           <div
             class="background-photo"
-            :style="{ background: `url(${user.cover}) no-repeat center/cover` }"
+            :style="{
+              background: `url(${
+                this.editUserCover ? this.editUserCover : ''
+              }) no-repeat center/cover`,
+            }"
           ></div>
           <div class="icon camera-two">
             <input
               type="file"
               class="coverFile"
-              ref="coverFile"
               name="cover"
               accept="image/*"
               @change="coverChange"
@@ -35,25 +34,22 @@
             src="../assets/imgs/camera_inside.png"
             alt=""
           />
-          <img
+          <div
             class="icon cross"
-            src="../assets/imgs/cross.png"
-            alt=""
             @click.stop.prevent="cancelModalClick()"
-          />
-
-          <img class="icon camera-two" src="../assets/imgs/camera.png" alt="" />
+          ></div>
 
           <div
             class="photo"
             :style="{
-              background: `url(${user.avatar}) no-repeat center/cover`,
+              background: `url(${
+                this.editUserAvatar ? this.editUserAvatar : ''
+              }) no-repeat center/cover`,
             }"
           ></div>
           <div class="icon camera-one">
             <input
               class="avatarFile"
-              ref="avatarFile"
               name="avatar"
               accept="image/*"
               @change="avatarChange"
@@ -69,11 +65,12 @@
           <div class="for-inputs">
             <span class="name tag">名稱</span>
             <input
-              v-model="user.name"
+              v-model="editUserName"
               class="tweet-content name"
               type="text"
               placeholder=""
               name="name"
+              maxlength="50"
             />
             <span
               class="word-count"
@@ -82,11 +79,12 @@
             >
             <span class="self-intro tag">自我介紹</span>
             <textarea
-              v-model="user.introduction"
+              v-model="editUserIntro"
               class="tweet-content intro"
               type="textarea"
               placeholder=""
               name="introduction"
+              maxlength="160"
             ></textarea>
             <span
               class="word-count"
@@ -107,73 +105,89 @@ import { mapState } from "vuex";
 
 export default {
   name: "ModalForEditProfile",
+  components: {},
   props: {
     user: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      editUserName: this.user.name ? this.user.name : "",
+      editUserIntro: this.user.introduction ? this.user.introduction : "",
+      editUserCover: this.user.cover ? this.user.cover : "",
+      editUserAvatar: this.user.avatar ? this.user.avatar : "",
+    };
+  },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
-  created() {
-    //this.user = this.currentUser;
-  },
-
   methods: {
     cancelModalClick() {
       this.$emit("after-click-cross");
     },
     coverChange(e) {
       const { files } = e.target;
+      // console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
-        this.user.cover = coverUrl;
+        this.editUserCover = coverUrl;
       }
     },
     avatarChange(e) {
       const { files } = e.target;
+      //console.log("files", files);
 
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);
-        this.user.avatar = avatarUrl;
+        this.editUserAvatar = avatarUrl;
       }
     },
-    handleSubmit(e) {
-      if (this.user.name === "") {
+    async handleSubmit(e) {
+      try {
+        if (this.user.name === "") {
+          Toast.fire({
+            icon: "warning",
+            title: "請輸入名稱",
+          });
+          return;
+        } else if (
+          this.user.name.length > 50 &&
+          this.user.introduction.length > 160
+        ) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱和自我介紹超過最大限制字數！",
+          });
+          return;
+        } else if (this.user.name.length > 50) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱只限50字",
+          });
+          return;
+        } else if (this.user.introduction.length > 160) {
+          Toast.fire({
+            icon: "warning",
+            title: "自我介紹只限160字",
+          });
+          return;
+        }
+        this.$emit("uploading", true);
+
+        const form = e.target;
+        const formData = new FormData(form);
+        // for (let [name, value] of formData.entries()) {
+        //  // console.log(name + ": " + value);
+        // }
+        this.updateUser(formData);
+      } catch (error) {
         Toast.fire({
-          icon: "warning",
-          title: "請輸入名稱",
+          icon: "error",
+          title: "無法更新資料，請稍後再試",
         });
-        return;
-      } else if (
-        this.user.name.length > 50 &&
-        this.user.introduction.length > 160
-      ) {
-        Toast.fire({
-          icon: "warning",
-          title: "名稱和自我介紹超過最大限制字數！",
-        });
-        return;
-      } else if (this.user.name.length > 50) {
-        Toast.fire({
-          icon: "warning",
-          title: "名稱只限50字",
-        });
-        return;
-      } else if (this.user.introduction.length > 160) {
-        Toast.fire({
-          icon: "warning",
-          title: "自我介紹只限160字",
-        });
-        return;
       }
-      const form = e.target;
-      const formData = new FormData(form);
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
-      }
-      this.updateUser(formData);
     },
     async updateUser(formData) {
       try {
@@ -181,13 +195,13 @@ export default {
           userId: this.currentUser.id,
           formData,
         });
-        console.log("data==>", data);
+        //console.log("data==>", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.$emit("completeEdit", this.user);
-        await this.$store.dispatch("fetchCurrentUser");
-        this.$emit("after-click-cross");
+
+        this.$emit("complete-edit", this.user);
+        this.$emit("uploading", false);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -283,6 +297,10 @@ $divider: #e6ecf0;
       .background-photo {
         width: 598px;
         height: 200px;
+        height: 200px;
+        background: url(https://images.unsplash.com/photo-1587502537147-2ba64a62e3d3?ixid=MXwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2017&q=80)
+          no-repeat center;
+        background-size: cover;
       }
       .photo {
         width: 120px;
@@ -294,6 +312,7 @@ $divider: #e6ecf0;
         top: 140px;
         border: 4px solid #ffffff;
         box-sizing: border-box;
+        background: url(https://source.unsplash.com/collection/4389261/100x100);
       }
       .for-inputs {
         display: flex;
@@ -337,6 +356,9 @@ $divider: #e6ecf0;
           font-weight: 500;
           font-size: 15px;
           line-height: 22px;
+          &.word-limit {
+            color: red;
+          }
         }
       }
       .tag {
@@ -362,9 +384,23 @@ $divider: #e6ecf0;
         color: #657786;
       }
       .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         position: absolute;
         height: 20px;
         width: 20px;
+        &::before {
+          content: "";
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: block;
+          position: absolute;
+          border: 1.5px dashed lightgray;
+          animation: rotate 10s linear infinite;
+        }
       }
       .inside-one,
       .inside-two {
@@ -377,12 +413,15 @@ $divider: #e6ecf0;
         background: url(../assets/imgs/camera.png) no-repeat center;
         background-size: contain;
         cursor: pointer;
+        transform-origin: center;
+
         .avatarFile {
           padding-right: 30px;
           padding-bottom: 30px;
           width: 30px;
           height: 30px;
           opacity: 0;
+          z-index: 1;
           cursor: pointer;
         }
       }
@@ -393,10 +432,12 @@ $divider: #e6ecf0;
       }
 
       .camera-two {
+        background: url(../assets/imgs/camera.png) no-repeat center;
+        background-size: contain;
+
         top: 90px;
         left: 262px;
         cursor: pointer;
-        //z-index: 999;
         .coverFile {
           width: 100%;
           height: 100%;
@@ -413,10 +454,20 @@ $divider: #e6ecf0;
       }
 
       .cross {
+        background: url(../assets/imgs/cross.png) no-repeat center;
+        background-size: contain;
         cursor: pointer;
-        top: 92px;
-        left: 318.5px;
+        top: 90px;
+        left: 320px;
       }
+    }
+  }
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 }
