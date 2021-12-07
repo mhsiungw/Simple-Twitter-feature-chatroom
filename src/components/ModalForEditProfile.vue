@@ -15,7 +15,9 @@
           <div
             class="background-photo"
             :style="{
-              background: `url(${this.editUserCover}) no-repeat center/cover`,
+              background: `url(${
+                this.editUserCover ? this.editUserCover : ''
+              }) no-repeat center/cover`,
             }"
           ></div>
           <div class="icon camera-two">
@@ -44,7 +46,9 @@
           <div
             class="photo"
             :style="{
-              background: `url(${this.editUserAvatar}) no-repeat center/cover`,
+              background: `url(${
+                this.editUserAvatar ? this.editUserAvatar : ''
+              }) no-repeat center/cover`,
             }"
           ></div>
           <div class="icon camera-one">
@@ -114,10 +118,10 @@ export default {
   },
   data() {
     return {
-      editUserName: this.user.name,
-      editUserIntro: this.user.introduction,
-      editUserCover: this.user.cover,
-      editUserAvatar: this.user.avatar,
+      editUserName: this.user.name ? this.user.name : "",
+      editUserIntro: this.user.introduction ? this.user.introduction : "",
+      editUserCover: this.user.cover ? this.user.cover : "",
+      editUserAvatar: this.user.avatar ? this.user.avatar : "",
     };
   },
   computed: {
@@ -297,6 +301,10 @@ $divider: #e6ecf0;
       .background-photo {
         width: 598px;
         height: 200px;
+        height: 200px;
+        background: url(https://images.unsplash.com/photo-1587502537147-2ba64a62e3d3?ixid=MXwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2017&q=80)
+          no-repeat center;
+        background-size: cover;
       }
       .photo {
         width: 120px;
@@ -308,6 +316,7 @@ $divider: #e6ecf0;
         top: 140px;
         border: 4px solid #ffffff;
         box-sizing: border-box;
+        background: url(https://source.unsplash.com/collection/4389261/100x100);
       }
       .for-inputs {
         display: flex;
