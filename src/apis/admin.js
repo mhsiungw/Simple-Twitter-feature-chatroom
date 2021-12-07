@@ -2,8 +2,8 @@ import { apiHelper } from './../utils/helpers'
 
 export default {
   adminLogin({ account, password }) {
-    console.log({ account, password })
-    console.log('adminLogin')
+    //console.log({ account, password })
+    //console.log('adminLogin')
     return apiHelper.post('admin/signin', { account, password })
   },
   getAllUsers() {

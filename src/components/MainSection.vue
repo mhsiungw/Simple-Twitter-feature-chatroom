@@ -115,7 +115,7 @@ export default {
   mixins: [fromNowFilter, emptyImageFilter],
   methods: {
     handleSubmit() {
-      console.log("handleSubmit");
+      //console.log("handleSubmit");
       if (this.tweetInput === "") {
         return window.alert("內容不可空白");
       }
@@ -123,13 +123,13 @@ export default {
       this.tweetInput = "";
     },
     handleLikeClick(tweetId) {
-      console.log("MainSection handleLikeClick", tweetId);
+     // console.log("MainSection handleLikeClick", tweetId);
 
       //把資料傳到父層，讓父層串 API
       this.$emit("after-like-clicked", tweetId);
     },
     handleDislikeClick(tweetId) {
-      console.log("MainSection handleDislikeClick", tweetId);
+      //console.log("MainSection handleDislikeClick", tweetId);
       //把資料傳到父層，讓父層串 API
       this.$emit("after-dislike-clicked", tweetId);
     },
