@@ -31,6 +31,7 @@ import MainSection from "../components/MainSection.vue";
 import ModalForReplyTweet from "../components/ModalForReplyTweet.vue";
 import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
+import usersAPI from "../apis/users";
 import { mapState } from "vuex";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
@@ -48,6 +49,7 @@ export default {
   data() {
     return {
       tweets: [],
+      newTweet: [],
       isTweetClicked: false,
       isPostClicked: false,
       clickedTweet: {},
@@ -67,6 +69,9 @@ export default {
     ...mapState(["currentUser", "isAuthenticated"]),
     // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
+
+      let newTweets = this.newTweet;
+
       //console.log("reverseTweet");
       let newTweets = this.tweets;
       return newTweets.sort((a, b) => {
@@ -80,19 +85,36 @@ export default {
     async fetchTweets() {
       // API
       try {
-        let response = await tweetsAPI.getTweets();
-        if (response.statusText !== "OK") {
-          throw new Error(response.status);
-        }
-        this.tweets = response.data.sort((a, b) => {
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+        let tweetResponse = await tweetsAPI.getTweets();
+        let userResponse = await usersAPI.getFollowings({
+          userId: this.currentUser.id,
         });
+        if (tweetResponse.statusText !== "OK") {
+          throw new Error(tweetResponse.status);
+        }
+        if (userResponse.statusText !== "OK") {
+          throw new Error(userResponse.status);
+        }
+        console.log(userResponse);
+        this.sortFollowingTweet(tweetResponse.data, userResponse.data);
+        this.tweets = tweetResponse.data;
       } catch (error) {
         console.log(error);
-        window.alert("無法顯示資料，請稍後再試");
+        Toast.fire({
+          icon: "error",
+          message: "無法顯示資料，請稍後再試",
+        });
       }
+    },
+    sortFollowingTweet(tweetObj, userObj) {
+      for (let user of userObj) {
+        for (let tweet of tweetObj) {
+          if (user.account == tweet.User.account) {
+            this.newTweet.push(tweet);
+          }
+        }
+      }
+      console.log(this.newTweet);
     },
     async handleAfterSubmit(newDescription) {
       try {
