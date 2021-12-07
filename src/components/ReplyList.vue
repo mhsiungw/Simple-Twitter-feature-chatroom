@@ -155,6 +155,12 @@ export default {
       likesCount: 0,
     };
   },
+  watch: {
+    "$route.params.id": function () {
+      this.fetchTweet();
+    },
+    deep: true,
+  },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
@@ -184,7 +190,7 @@ export default {
         });
       }
       this.replyCount = Object.keys(this.replies).length;
-      this.likesCount = Object.keys(this.likes).length;
+      this.likesCount = Object.keys(this.likes).length - 1;
     },
     async replyTweet(comment) {
       const tweetId = this.$route.params.id;

@@ -37,7 +37,10 @@
           <span class="title">回覆 </span>
           <span class="name">@{{ tweet.replyTo }}</span>
         </div>
-        <div class="content" @click="tweetDetail(tweet)">
+        <div
+          class="content"
+          @click="$router.push(`/reply_list/${tweet.TweetId}`)"
+        >
           {{ tweet.description }}
         </div>
         <div class="action" v-show="tweet.type !== 'reply'">
@@ -95,7 +98,7 @@ export default {
     async likeTweet(tweetId) {
       try {
         const { data } = await likesAPI.likeTweet({ tweetId });
-        console.log("likeTweet", data);
+        // console.log("likeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -119,7 +122,7 @@ export default {
     async unlikeTweet(tweetId) {
       try {
         const { data } = await likesAPI.unlikeTweet({ tweetId });
-        console.log("unlikeTweet", data);
+        //console.log("unlikeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }

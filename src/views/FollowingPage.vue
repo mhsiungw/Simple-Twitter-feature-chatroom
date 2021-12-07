@@ -108,6 +108,10 @@ export default {
           }
         });
 
+        this.followers.sort((a, b) => {
+          return a.createdAt < b.createdAt ? 1 : -1;
+        });
+
         const followingsData = await usersAPI.getFollowings({ userId });
         // console.log("followingsData", followingsData);
         this.followings = followingsData.data;
@@ -126,6 +130,10 @@ export default {
               isFollowed: false,
             };
           }
+        });
+
+        this.followings.sort((a, b) => {
+          return a.createdAt < b.createdAt ? 1 : -1;
         });
       } catch (err) {
         console.log(err);

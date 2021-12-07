@@ -224,7 +224,6 @@ export default {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
         //console.log("thisuser===>", this.user);
-
         this.user.followersCount = this.user.Followers.length;
         this.user.followingsCount = this.user.Followings.length;
 
@@ -247,9 +246,10 @@ export default {
       try {
         const userTweetsData = await usersAPI.getUserTweets({ userId });
         this.userTweets = userTweetsData.data;
-        // console.log("this.user.tweets===>", this.userTweets);
+        //console.log("this.user.tweets===>", this.userTweets);
         this.userTweets = this.userTweets.map((tweet) => ({
           id: tweet.id,
+          TweetId: tweet.id,
           UserId: tweet.UserId,
           name: tweet.User.name,
           avatar: tweet.User.avatar,
@@ -262,7 +262,9 @@ export default {
           showNewReplyModal: false,
         }));
         //console.log("this.user.tweets===>", this.userTweets);
-
+        this.userTweets.sort((a, b) => {
+          return a.createdAt < b.createdAt ? 1 : -1;
+        });
         this.tabOption = "推文";
       } catch (error) {
         console.log(error);
@@ -309,6 +311,7 @@ export default {
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
           UserId: item.UserId,
+          TweetId: item.TweetId,
           name: item.userName,
           avatar: item.userAvatar,
           account: item.userAccount,
@@ -335,6 +338,7 @@ export default {
           throw new Error(data.message);
         }
         this.user.isFollowed = true;
+        this.user.followersCount++;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -349,7 +353,9 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+
         this.user.isFollowed = false;
+        this.user.followersCount--;
       } catch (error) {
         Toast.fire({
           icon: "error",
