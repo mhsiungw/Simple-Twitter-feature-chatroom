@@ -11,7 +11,6 @@
         class="avatar"
         :src="initialCurrentUser.image | emptyImage"
         alt="avatar"
-        @click="$router.push('/users').catch(() => {})"
       />
       <form @submit.stop.prevent="handleSubmit" class="tweet-form">
         <textarea
@@ -33,7 +32,7 @@
     <div
       v-for="tweet in tweets"
       :key="tweet.id"
-      @click.stop.prevent="handleTweetClick(tweet.id)"
+      @click.stop.prevent="oneClick(tweet.id)"
       class="part post-part"
     >
       <img
@@ -87,6 +86,7 @@
 <script>
 import { fromNowFilter, emptyImageFilter } from "../utils/mixins.js";
 import ModalForTweet from "./ModalForTweet.vue";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -109,19 +109,26 @@ export default {
   data() {
     return {
       tweetInput: "",
+      delay: 700,
+      clicks: 0,
+      timer: null,
     };
   },
   mixins: [fromNowFilter, emptyImageFilter],
   methods: {
     handleSubmit() {
       if (this.tweetInput === "") {
-        return window.alert("內容不可空白");
+        return Toast.fire({
+          icon: "warning",
+          title: "內容請勿空白。",
+        });
       }
       this.$emit("after-tweet-submit", this.tweetInput);
       this.tweetInput = "";
     },
     handleLikeClick(tweetId) {
       //把資料傳到父層，讓父層串 API
+      console.log("handleLikeClick");
       this.$emit("after-like-clicked", tweetId);
     },
     handleDislikeClick(tweetId) {
@@ -138,6 +145,18 @@ export default {
     /** Modal control end **/
     handleTweetClick(tweetId) {
       this.$router.push({ name: "Tweet", params: { id: `${tweetId}` } });
+    },
+    oneClick(tweetId) {
+      this.clicks++;
+      if (this.clicks === 1) {
+        this.timer = setTimeout(function () {
+          this.clicks = 0;
+        }, this.delay);
+      } else {
+        clearTimeout(this.timer);
+        this.handleTweetClick(tweetId);
+        this.clicks = 0;
+      }
     },
     handleCommentClick(tweet) {
       this.$emit("after-comment-click", tweet);
@@ -247,6 +266,7 @@ $orange: #ff6600;
       width: 100%;
       margin-top: 6px;
       word-spacing: 1px;
+      word-break: break-word;
     }
     .post-actions {
       width: 200px;
