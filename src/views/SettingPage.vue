@@ -73,7 +73,7 @@ export default {
           throw new Error(data.message);
         } else {
           Toast.fire({
-            icon: "sucess",
+            icon: "success",
             title: `更改成功`,
           });
           return this.$router.go(0);

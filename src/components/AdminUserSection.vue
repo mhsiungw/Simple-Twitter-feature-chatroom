@@ -16,11 +16,11 @@
             <div class="chat-like">
               <div class="chat">
                 <font-awesome-icon class="icon" :icon="['far', 'comment']" />
-                <span>{{ user.Likes.length }} </span>
+                <span>{{ user.Tweets.length }} </span>
               </div>
               <div class="like">
                 <font-awesome-icon class="icon" :icon="['far', 'heart']" />
-                <span>{{ user.Replies.length }} </span>
+                <span>{{ user.Likes.length }} </span>
               </div>
             </div>
             <div class="following-followers">

@@ -196,7 +196,7 @@ export default {
           });
           return;
         }
-       // console.log(typeof tweetId);
+        // console.log(typeof tweetId);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
         //console.log(data)
         if (data.status !== "success") {
@@ -359,6 +359,7 @@ $divider: #e6ecf0;
       line-height: 34px;
       text-align: start;
       margin: 0 75px 0 15px;
+      word-break: break-all;
     }
     .time {
       width: 600px;
