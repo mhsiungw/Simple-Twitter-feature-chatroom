@@ -365,6 +365,7 @@ $divider: #e6ecf0;
       line-height: 34px;
       text-align: start;
       margin: 0 75px 0 15px;
+      word-break: break-all;
     }
     .time {
       width: 600px;
