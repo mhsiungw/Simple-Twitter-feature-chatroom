@@ -46,8 +46,14 @@ export default {
     },
     async adminDeleteTweet(tweetId) {
       try {
+
         // 發送 API，後端刪除推文
         let response = await adminAPI.deleteTweet(tweetId);
+
+  
+        // 發送 API，後端刪除推文
+        let response = await adminAPI.deleteTweet(tweetId);
+
         //如果刪除失敗
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);

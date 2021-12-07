@@ -38,6 +38,7 @@ import likeAPI from "../apis/likes";
 import usersAPI from "../apis/users";
 import { mapState } from "vuex";
 import { Toast } from "../utils/helpers";
+import bus from "../utils/bus";
 
 export default {
   name: "MainPage",
@@ -60,12 +61,26 @@ export default {
   async created() {
     await this.fetchTweets();
     this.followingsFilter();
+  created() {
+    // bus.$on("trends-change", (userId) => {
+    //   console.log("userId===>", userId);
+    //   this.fetchTweets();
+    // });
+    this.fetchTweets();
+  },
+  beforeDestroy() {
+    bus.$off("trends-change");
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
     // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
       return [...this.newTweets].sort((a, b) => {
+      //let newTweets = this.newTweet;
+
+      //console.log("reverseTweet");
+      let newTweets = this.tweets;
+      return newTweets.sort((a, b) => {
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -113,6 +128,20 @@ export default {
         //   createdAt: moment().format(),
         //   description: newDescription,
         // };
+        // console.log(newDescription);
+        let newInput = {
+          Likes: [],
+          Replies: [],
+          User: {
+            avatar: this.currentUser.image,
+            name: this.currentUser.name,
+            account: this.currentUser.name,
+          },
+          UserId: this.currentUser.id,
+          id: uuidv4(),
+          createdAt: moment().format(),
+          description: newDescription,
+        };
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
           UserId: this.currentUser.id,
@@ -135,6 +164,8 @@ export default {
     },
     async handleAfterLikeClick(tweetId) {
       try {
+        // console.log("handleAfterLikeClick", tweetId);
+
         // 發送 API
         let response = await likeAPI.likeTweet({ tweetId });
         if (response.statusText !== "OK") {

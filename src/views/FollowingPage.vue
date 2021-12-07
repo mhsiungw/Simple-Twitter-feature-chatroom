@@ -3,16 +3,17 @@
     <UserSidebar class="user-sidebar" />
     <FollowList
       class="follow-list"
-      v-if="$route.path === `/users/${userId}/followers`"
-      :initialFollowers="followers"
-      :nowUser="user"
-    />
-    <FollowList
-      class="follow-list"
       v-if="$route.path === `/users/${userId}/followings`"
       :initialFollowers="followings"
       :nowUser="user"
     />
+    <FollowList
+      class="follow-list"
+      v-if="$route.path === `/users/${userId}/followers`"
+      :initialFollowers="followers"
+      :nowUser="user"
+    />
+
     <Trends class="trend-section" />
   </div>
 </template>
@@ -88,11 +89,44 @@ export default {
 
       try {
         const followersData = await usersAPI.getFollowers({ userId });
-        // console.log("followersData", followersData);
         this.followers = followersData.data;
+        //console.log("followersData", this.followers);
+
+        this.followers = this.followers.map((user) => {
+          if (user.Followship.followingId === this.currentUser.id) {
+            return {
+              ...user,
+              followerCount: user.followerCount + 1,
+              isFollowed: true,
+            };
+          } else {
+            return {
+              ...user,
+              followerCount: user.followerCount - 1,
+              isFollowed: false,
+            };
+          }
+        });
+
         const followingsData = await usersAPI.getFollowings({ userId });
         // console.log("followingsData", followingsData);
         this.followings = followingsData.data;
+
+        this.followings = this.followings.map((user) => {
+          if (user.Followship.followingId !== this.currentUser.id) {
+            return {
+              ...user,
+              followerCount: user.followerCount + 1,
+              isFollowed: true,
+            };
+          } else {
+            return {
+              ...user,
+              followerCount: user.followerCount - 1,
+              isFollowed: false,
+            };
+          }
+        });
       } catch (err) {
         console.log(err);
         Toast.fire({

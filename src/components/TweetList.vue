@@ -30,14 +30,17 @@
           </div>
         </div>
         <div
+          v-show="tweet.type === 'reply'"
           @click="$router.push(`/users/${tweet.Tweet.UserId}`).catch(() => {})"
           class="reply-to-wrapper"
-          v-show="tweet.type === 'reply'"
         >
           <span class="title">回覆 </span>
-          <span class="name">@{{ tweet.replyTo }}</span>
+          <span class="name">＠{{ tweet.replyTo }}</span>
         </div>
-        <div class="content" @click="tweetDetail(tweet)">
+        <div
+          class="content"
+          @click="$router.push(`/reply_list/${tweet.id}`).catch(() => {})"
+        >
           {{ tweet.description }}
         </div>
         <div class="action" v-show="tweet.type !== 'reply'">
@@ -114,12 +117,15 @@ export default {
     //       icon: "error",
     //       title: "回覆推文失敗，請稍後再試",
     //     });
+    // tweetClick(tweet) {
+    //   if (this.isReply) {
+    //     this.$router.push(`/reply_list/${tweet.id}`);
     //   }
     // },
     async likeTweet(tweetId) {
       try {
         const { data } = await likesAPI.likeTweet({ tweetId });
-        console.log("likeTweet", data);
+        //console.log("likeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -143,7 +149,7 @@ export default {
     async unlikeTweet(tweetId) {
       try {
         const { data } = await likesAPI.unlikeTweet({ tweetId });
-        console.log("unlikeTweet", data);
+        //console.log("unlikeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }

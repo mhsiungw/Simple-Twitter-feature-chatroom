@@ -115,7 +115,7 @@ export default {
         return window.alert("請填寫所有欄位在儲存");
       }
       if (!this.isPasswordSame) {
-        console.log(456);
+        //console.log(456);
         return window.alert("密碼請一致");
       }
       this.$emit("after-save", this.settingInfo);

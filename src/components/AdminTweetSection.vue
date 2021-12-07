@@ -42,7 +42,7 @@ export default {
   mixins: [fromNowFilter],
   methods: {
     handleDeleteClick(tweetId) {
-      console.log(tweetId);
+      //console.log(tweetId);
       this.$emit("after-delete-click", tweetId);
     },
   },
