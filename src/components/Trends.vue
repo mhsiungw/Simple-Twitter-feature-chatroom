@@ -132,12 +132,6 @@ export default {
         });
       }
     },
-    // followAction() {
-    //   ("followAction");
-    // async busForTrends(userId) {
-    //   // 通过 $emit 来触发方法，参数1 是定义方法名，参数2 是你要发送的数据
-    //   bus.$emit("trends-change", userId);
-    // },
   },
 };
 </script>
@@ -150,9 +144,8 @@ $bitdark: #657786;
 $divider: #e6ecf0;
 .recommend-users {
   width: 100%;
-  width: 350px;
   max-width: 350px;
-  height: 517px;
+  height: 100%;
   border-radius: 14px;
   background: $lightgray;
   .title {
