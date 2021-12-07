@@ -40,33 +40,6 @@ export default {
   methods: {
     async handleAfterSubmit(newDescription) {
       try {
-        // let newInput = {
-        //   Likes: [],
-        //   Replies: [],
-        //   User: {
-        //     avatar: this.currentUser.image,
-        //     name: this.currentUser.name,
-        //     account: this.currentUser.name,
-        //   },
-        //   UserId: this.currentUser.id,
-        //   id: uuidv4(),
-        //   createdAt: moment().format(),
-        //   description: newDescription,
-        // };
-
-        let newInput = {
-          Likes: [],
-          Replies: [],
-          User: {
-            avatar: this.currentUser.image,
-            name: this.currentUser.name,
-            account: this.currentUser.name,
-          },
-          UserId: this.currentUser.id,
-          id: uuidv4(),
-          createdAt: moment().format(),
-          description: newDescription,
-        };
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
           UserId: this.currentUser.id,
@@ -93,17 +66,16 @@ export default {
       this.isTweetClicked = false;
     },
     async handleAfterSave(newInfo) {
-
       try {
-        let response = await userAPI.editUserInfo(this.currentUser.id, newInfo);
-
-    //  console.log("handleAfterSave", newInfo);
-      try {
-        let response = await userAPI.editUserInfo(this.currentUser.id, newInfo);
-        if (response.statusText !== "OK") {
-          throw new Error(response.statusText);
+        let { data } = await userAPI.editUserInfo(this.currentUser.id, newInfo);
+        console.log(data);
+        if (data.status == "error") {
+          throw new Error(data.message);
         } else {
-          window.alert("更改成功");
+          Toast.fire({
+            icon: "sucess",
+            title: `更改成功`,
+          });
           return this.$router.go(0);
         }
       } catch (error) {
