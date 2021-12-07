@@ -74,8 +74,8 @@
             />
             <span
               class="word-count"
-              :class="{ 'word-limit': user.name.length === 140 }"
-              >{{ user.name ? user.name.length : 0 }}/50</span
+              :class="{ 'word-limit': editUserName.length === 50 }"
+              >{{ editUserName ? editUserName.length : 0 }}/50</span
             >
             <span class="self-intro tag">自我介紹</span>
             <textarea
@@ -88,8 +88,8 @@
             ></textarea>
             <span
               class="word-count"
-              :class="{ 'word-limit': user.introduction.length === 140 }"
-              >{{ user.introduction ? user.introduction.length : 0 }}/160</span
+              :class="{ 'word-limit': editUserIntro.length === 160 }"
+              >{{ editUserIntro ? editUserIntro.length : 0 }}/160</span
             >
           </div>
         </div>
