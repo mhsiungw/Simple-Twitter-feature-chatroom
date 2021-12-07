@@ -72,6 +72,7 @@ export default {
             password: this.password,
           });
       // 如果登入失敗
+      data;
       //console.log(data);
       if (data.status !== "success") {
         Toast.fire({

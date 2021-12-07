@@ -141,20 +141,31 @@ export default {
 
 <style lang="scss" scoped>
 .page-container {
-  margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  max-width: 1440px;
+  .follow-list {
+    border: 1px solid #e6ecf0;
+    width: 40%;
+    margin-left: 55px;
+    margin-right: 30px;
+  }
   .trend-section,
   .user-sidebar {
-    position: fixed;
+    position: sticky;
   }
   .trend-section {
-    right: 12px;
+    top: 15px;
+    right: 0%;
   }
 
   .user-sidebar {
-    left: 100px;
+    top: 0;
+    left: 0%;
   }
 }
 </style>

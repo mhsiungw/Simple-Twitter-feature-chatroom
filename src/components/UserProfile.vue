@@ -1,7 +1,11 @@
 <template>
   <div class="profile">
+    <ModalForTweet
+      @after-cancel-click="handleAfterTweetCancel"
+      @after-tweet-submit="handleAfterTweetSubmit"
+      v-if="isTweetClicked"
+    />
     <Loading :isLoading="isLoading" />
-
     <div class="header">
       <div class="arrow">
         <div @click="$router.go(-1)" class="icon back"></div>
@@ -149,6 +153,7 @@
 <script>
 import TweetList from "@/components/TweetList.vue";
 import ModalForEditProfile from "@/components/ModalForEditProfile.vue";
+import ModalForTweet from "./ModalForTweet.vue";
 import { Toast } from "@/utils/helpers";
 import usersAPI from "@/apis/users";
 import Loading from "../components/Loading.vue";
@@ -161,6 +166,13 @@ export default {
     Loading,
     TweetList,
     ModalForEditProfile,
+    ModalForTweet,
+  },
+  props: {
+    isTweetClicked: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -377,6 +389,14 @@ export default {
         description: modalData.description,
       }));
     },
+    /** tweet modal control start **/
+    handleAfterTweetCancel() {
+      this.$emit("after-cancel-click");
+    },
+    handleAfterTweetSubmit(newTWeet) {
+      this.$emit("after-tweet-submit", newTWeet);
+    },
+    /** tweet modal  control end **/
     uploading(status) {
       this.isLoading = status;
     },

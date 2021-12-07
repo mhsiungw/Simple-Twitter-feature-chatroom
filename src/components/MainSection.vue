@@ -109,7 +109,6 @@ export default {
   data() {
     return {
       tweetInput: "",
-      showModalForTweet: false,
     };
   },
   mixins: [fromNowFilter, emptyImageFilter],
@@ -133,12 +132,14 @@ export default {
       //把資料傳到父層，讓父層串 API
       this.$emit("after-dislike-clicked", tweetId);
     },
+    /** Modal control start **/
     handleAfterTweetCancel() {
       this.$emit("after-cancel-click");
     },
     handleAfterTweetSubmit(newTWeet) {
       this.$emit("after-tweet-submit", newTWeet);
     },
+    /** Modal control end **/
     handleTweetClick(tweetId) {
       this.$router.push({ name: "Tweet", params: { id: `${tweetId}` } });
     },
@@ -235,7 +236,6 @@ $orange: #ff6600;
     align-items: flex-start;
     .post-title {
       display: flex;
-      width: 50%;
       font-size: 15px;
       .name {
         font-weight: 500;
@@ -249,8 +249,6 @@ $orange: #ff6600;
     }
     .post-desc {
       width: 100%;
-      word-break: break-word;
-      // border: 1px solid red;
       margin-top: 6px;
       word-spacing: 1px;
     }
