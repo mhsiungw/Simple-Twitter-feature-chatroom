@@ -21,8 +21,7 @@ import SettingSection from "../components/SettingSection.vue";
 import { mapState } from "vuex";
 import tweetsAPI from "../apis/tweets";
 import userAPI from "../apis/users";
-import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
+import { Toast } from "../utils/helpers";
 
 export default {
   name: "Setting",
@@ -41,7 +40,20 @@ export default {
   methods: {
     async handleAfterSubmit(newDescription) {
       try {
-      //  console.log("handleAfterSubmit", newDescription);
+        // let newInput = {
+        //   Likes: [],
+        //   Replies: [],
+        //   User: {
+        //     avatar: this.currentUser.image,
+        //     name: this.currentUser.name,
+        //     account: this.currentUser.name,
+        //   },
+        //   UserId: this.currentUser.id,
+        //   id: uuidv4(),
+        //   createdAt: moment().format(),
+        //   description: newDescription,
+        // };
+
         let newInput = {
           Likes: [],
           Replies: [],
@@ -55,22 +67,23 @@ export default {
           createdAt: moment().format(),
           description: newDescription,
         };
-       // console.log(newInput);
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
-          UserId: newInput.UserId,
+          UserId: this.currentUser.id,
           description: newDescription,
         });
         if (data.status !== "success") {
           throw new Error(data.status);
         }
-        console.log(data);
         //頁面即時更新
         // this.tweets.push(newInput);
         // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
         this.$router.push("/");
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     handleAfterTweetClick() {
@@ -80,10 +93,13 @@ export default {
       this.isTweetClicked = false;
     },
     async handleAfterSave(newInfo) {
+
+      try {
+        let response = await userAPI.editUserInfo(this.currentUser.id, newInfo);
+
     //  console.log("handleAfterSave", newInfo);
       try {
         let response = await userAPI.editUserInfo(this.currentUser.id, newInfo);
-       // console.log("response", response);
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         } else {
@@ -91,7 +107,10 @@ export default {
           return this.$router.go(0);
         }
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
   },

@@ -69,7 +69,7 @@ export default {
         //   .filter((user) => user.id !== this.currentUser.id)
         //   .slice(0, 8);
       } catch (error) {
-        console.log(error);
+        error;
         Toast.fire({
           icon: "error",
           title: "目前無法為你推薦追蹤，請稍候",
@@ -79,7 +79,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        // console.log("addfollow", data);
+        // ("addfollow", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -95,6 +95,8 @@ export default {
             };
           }
         });
+        //min
+        this.$emit("after-following", userId);
         this.busForTrends(userId);
       } catch (error) {
         Toast.fire({
@@ -106,7 +108,7 @@ export default {
     async deleteFollowing(userId) {
       try {
         const { data } = await followshipsAPI.deleteFollowing({ userId });
-        // console.log("deleteFollow", data);
+        // ("deleteFollow", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -122,6 +124,7 @@ export default {
             };
           }
         });
+        this.$emit("after-cancel-following", userId);
         this.busForTrends(userId);
       } catch (error) {
         Toast.fire({
@@ -130,6 +133,8 @@ export default {
         });
       }
     },
+    followAction() {
+      ("followAction");
     async busForTrends(userId) {
       // 通过 $emit 来触发方法，参数1 是定义方法名，参数2 是你要发送的数据
       bus.$emit("trends-change", userId);

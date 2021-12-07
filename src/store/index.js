@@ -44,7 +44,6 @@ export default new Vuex.Store({
         })
         return true
       } catch (error) {
-        console.log(error)
         console.error('cannot fetch user info')
       }
     },
@@ -56,7 +55,6 @@ export default new Vuex.Store({
           id, name, email, image, account, cover, isAdmin: role === 'user' ? false : true
         })
       } catch (error) {
-        console.log(error)
         console.error('cannot fetch user info')
       }
     }

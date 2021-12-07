@@ -9,6 +9,7 @@
 import AdminSidebar from "../../components/AdminSidebar.vue";
 import AdminUserSection from "../../components/AdminUserSection.vue";
 import adminAPI from "../../apis/admin";
+import { Toast } from "../../utils/helpers";
 
 export default {
   components: {
@@ -25,8 +26,15 @@ export default {
   },
   methods: {
     async fetchAllUsers() {
-      let { data } = await adminAPI.getAllUsers();
-      this.userData = data;
+      try {
+        let { data } = await adminAPI.getAllUsers();
+        this.userData = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
+      }
     },
   },
 };

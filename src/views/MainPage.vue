@@ -20,7 +20,11 @@
       :initial-current-user="currentUser"
       :is-tweet-clicked="isTweetClicked"
     />
-    <Trends class="trend-section" />
+    <Trends
+      @after-following="handleAfterFollowing"
+      @after-cancel-following="handleAfterCacenlFollowing"
+      class="trend-section"
+    />
   </div>
 </template>
 
@@ -33,8 +37,6 @@ import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
 import usersAPI from "../apis/users";
 import { mapState } from "vuex";
-import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../utils/helpers";
 import bus from "../utils/bus";
 
@@ -49,12 +51,16 @@ export default {
   data() {
     return {
       tweets: [],
-      newTweet: [],
+      newTweets: [],
+      followings: [],
       isTweetClicked: false,
       isPostClicked: false,
       clickedTweet: {},
     };
   },
+  async created() {
+    await this.fetchTweets();
+    this.followingsFilter();
   created() {
     // bus.$on("trends-change", (userId) => {
     //   console.log("userId===>", userId);
@@ -69,6 +75,7 @@ export default {
     ...mapState(["currentUser", "isAuthenticated"]),
     // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
+      return [...this.newTweets].sort((a, b) => {
       //let newTweets = this.newTweet;
 
       //console.log("reverseTweet");
@@ -94,29 +101,33 @@ export default {
         if (userResponse.statusText !== "OK") {
           throw new Error(userResponse.status);
         }
-        console.log(userResponse);
-        this.sortFollowingTweet(tweetResponse.data, userResponse.data);
-        this.tweets = tweetResponse.data;
+        for (let user of userResponse.data) {
+          this.followings.push({ userId: user.followingId });
+        }
+        return (this.tweets = tweetResponse.data);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          message: "無法顯示資料，請稍後再試",
+          title: "無法顯示資料，請稍後再試",
         });
       }
     },
-    sortFollowingTweet(tweetObj, userObj) {
-      for (let user of userObj) {
-        for (let tweet of tweetObj) {
-          if (user.account == tweet.User.account) {
-            this.newTweet.push(tweet);
-          }
-        }
-      }
-      console.log(this.newTweet);
-    },
+
     async handleAfterSubmit(newDescription) {
       try {
+        // let newInput = {
+        //   Likes: [],
+        //   Replies: [],
+        //   User: {
+        //     avatar: this.currentUser.image,
+        //     name: this.currentUser.name,
+        //     account: this.currentUser.name,
+        //   },
+        //   UserId: this.currentUser.id,
+        //   id: uuidv4(),
+        //   createdAt: moment().format(),
+        //   description: newDescription,
+        // };
         // console.log(newDescription);
         let newInput = {
           Likes: [],
@@ -133,7 +144,7 @@ export default {
         };
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
-          UserId: newInput.UserId,
+          UserId: this.currentUser.id,
           description: newDescription,
         });
         if (data.status !== "success") {
@@ -141,11 +152,14 @@ export default {
         }
 
         //頁面即時更新
-        // this.tweets.push(newInput);
+        //this.tweets.push(newInput);
         // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
         this.$router.go(0);
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     async handleAfterLikeClick(tweetId) {
@@ -157,7 +171,6 @@ export default {
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        // console.log(response);
         //頁面即時更新
         // 先 render 找出符合 tweetId 的 tweet
         this.tweets.filter((tweet) => {
@@ -172,7 +185,10 @@ export default {
           }
         });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     async handleAfterDislikeClick(tweetId) {
@@ -182,7 +198,6 @@ export default {
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        // console.log("handleAfterDislikeClick", tweetId);
         // 頁面即時更新;
         this.tweets.filter((tweet) => {
           if (tweet.id === tweetId) {
@@ -192,7 +207,10 @@ export default {
           }
         });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。錯誤原因：${error}`,
+        });
       }
     },
     handleAfterTweetClick() {
@@ -216,21 +234,46 @@ export default {
           });
           return;
         }
-        // console.log(typeof this.clickedTweet.id);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
-        //console.log(data)
         if (data.status !== "success") {
           throw new Error(data.message);
         }
         this.isPostClicked = false;
         this.$router.go(0);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "回覆推文失敗，請稍後再試",
+          title: `回覆推文失敗，請稍後再試。錯誤原因：${error}`,
         });
       }
+    },
+    //同步更新
+    handleAfterFollowing(userId) {
+      for (let tweet of this.tweets) {
+        if (tweet.UserId == userId) {
+          this.newTweets.push(tweet);
+        }
+      }
+    },
+    handleAfterCacenlFollowing(userId) {
+      this.newTweets = this.newTweets.filter((tweet) => {
+        return tweet.UserId !== userId;
+      });
+    },
+    // created
+    followingsFilter() {
+      let newTweet = [];
+      for (let tweet of this.tweets) {
+        if (tweet.UserId == this.currentUser.id) {
+          newTweet.push(tweet);
+        }
+        for (let user of this.followings) {
+          if (tweet.UserId == user.userId) {
+            newTweet.push(tweet);
+          }
+        }
+      }
+      this.newTweets = newTweet;
     },
   },
 };
