@@ -224,26 +224,28 @@ $divider: #e6ecf0;
   }
   .followListContent {
     height: 104px;
-    width: 600px;
+    width: 100%;
     .singleContent {
-      height: 104px;
       width: 100%;
       display: flex;
       flex-direction: row;
       position: relative;
-      border-top: 1px solid lightgrey;
+      border-bottom: 1px solid lightgrey;
       img {
         width: 50px;
+        min-width: 50px;
         height: 50px;
+        min-height: 50px;
         border-radius: 50%;
-        margin: 13px 10px 41px 15px;
         object-fit: cover;
+        margin: 15px 10px 0 15px;
       }
       .text {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        margin: 10px 0 10px 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
         .title {
           font-family: Noto Sans TC;
           font-style: normal;
@@ -270,8 +272,7 @@ $divider: #e6ecf0;
           }
         }
         .content {
-          width: 510px;
-          height: 44px;
+          width: 100%;
           font-family: Noto Sans TC;
           font-style: normal;
           font-weight: 500;

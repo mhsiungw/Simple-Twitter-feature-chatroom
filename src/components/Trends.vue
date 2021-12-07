@@ -94,6 +94,8 @@ export default {
             };
           }
         });
+        //min
+        this.$emit("after-following", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -120,6 +122,7 @@ export default {
             };
           }
         });
+        this.$emit("after-cancel-following", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",

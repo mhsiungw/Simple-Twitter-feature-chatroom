@@ -13,6 +13,7 @@
 import AdminSidebar from "../../components/AdminSidebar.vue";
 import AdminTweetSection from "../../components/AdminTweetSection.vue";
 import adminAPI from "../../apis/admin";
+import { Toast } from "../../utils/helpers";
 
 export default {
   name: "AdminTweetPage",
@@ -42,7 +43,6 @@ export default {
     },
     async adminDeleteTweet(tweetId) {
       try {
-        console.log(tweetId);
         // 發送 API，後端刪除推文
         let response = await adminAPI.deleteTweet(tweetId);
         console.log(response);
@@ -54,8 +54,16 @@ export default {
         this.tweets = this.tweets.filter((tweet) => {
           return tweetId !== tweet.id;
         });
+        Toast.fire({
+          icon: "success",
+          title: "刪除成功",
+        });
       } catch (error) {
         console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "刪除失敗，請稍後再試",
+        });
       }
     },
   },

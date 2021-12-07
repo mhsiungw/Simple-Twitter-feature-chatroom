@@ -20,7 +20,11 @@
       :initial-current-user="currentUser"
       :is-tweet-clicked="isTweetClicked"
     />
-    <Trends class="trend-section" />
+    <Trends
+      @after-following="handleAfterFollowing"
+      @after-cancel-following="handleAfterCacenlFollowing"
+      class="trend-section"
+    />
   </div>
 </template>
 
@@ -48,21 +52,22 @@ export default {
   data() {
     return {
       tweets: [],
-      newTweet: [],
+      newTweets: [],
+      followings: [],
       isTweetClicked: false,
       isPostClicked: false,
       clickedTweet: {},
     };
   },
-  created() {
-    this.fetchTweets();
+  async created() {
+    await this.fetchTweets();
+    this.followingsFilter();
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
     // 把推文按照發文時間顯示（越近發的越先顯示）
     reverseTweet() {
-      let newTweets = this.newTweet;
-      return newTweets.sort((a, b) => {
+      return [...this.newTweets].sort((a, b) => {
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -83,27 +88,19 @@ export default {
         if (userResponse.statusText !== "OK") {
           throw new Error(userResponse.status);
         }
-        console.log(userResponse);
-        this.sortFollowingTweet(tweetResponse.data, userResponse.data);
-        this.tweets = tweetResponse.data;
+        for (let user of userResponse.data) {
+          this.followings.push({ userId: user.followingId });
+        }
+        return (this.tweets = tweetResponse.data);
       } catch (error) {
         console.log(error);
         Toast.fire({
           icon: "error",
-          message: "無法顯示資料，請稍後再試",
+          title: "無法顯示資料，請稍後再試",
         });
       }
     },
-    sortFollowingTweet(tweetObj, userObj) {
-      for (let user of userObj) {
-        for (let tweet of tweetObj) {
-          if (user.account == tweet.User.account) {
-            this.newTweet.push(tweet);
-          }
-        }
-      }
-      console.log(this.newTweet);
-    },
+
     async handleAfterSubmit(newDescription) {
       try {
         console.log(newDescription);
@@ -125,12 +122,13 @@ export default {
           UserId: newInput.UserId,
           description: newDescription,
         });
+        console.log(data);
         if (data.status !== "success") {
           throw new Error(data.status);
         }
 
         //頁面即時更新
-        // this.tweets.push(newInput);
+        //this.tweets.push(newInput);
         // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
         this.$router.go(0);
       } catch (error) {
@@ -220,6 +218,36 @@ export default {
           title: "回覆推文失敗，請稍後再試",
         });
       }
+    },
+    //同步更新
+    handleAfterFollowing(userId) {
+      console.log("handleAfterFollowing");
+      for (let tweet of this.tweets) {
+        if (tweet.UserId == userId) {
+          this.newTweets.push(tweet);
+        }
+      }
+    },
+    handleAfterCacenlFollowing(userId) {
+      this.newTweets = this.newTweets.filter((tweet) => {
+        return tweet.UserId !== userId;
+      });
+    },
+    // created
+    followingsFilter() {
+      console.log("followingsId");
+      let newTweet = [];
+      for (let tweet of this.tweets) {
+        if (tweet.UserId == this.currentUser.id) {
+          newTweet.push(tweet);
+        }
+        for (let user of this.followings) {
+          if (tweet.UserId == user.userId) {
+            newTweet.push(tweet);
+          }
+        }
+      }
+      this.newTweets = newTweet;
     },
   },
 };
