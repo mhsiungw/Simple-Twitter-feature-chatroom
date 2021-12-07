@@ -34,14 +34,10 @@
             src="../assets/imgs/camera_inside.png"
             alt=""
           />
-          <img
+          <div
             class="icon cross"
-            src="../assets/imgs/cross.png"
-            alt=""
             @click.stop.prevent="cancelModalClick()"
-          />
-
-          <img class="icon camera-two" src="../assets/imgs/camera.png" alt="" />
+          ></div>
 
           <div
             class="photo"
@@ -388,9 +384,23 @@ $divider: #e6ecf0;
         color: #657786;
       }
       .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         position: absolute;
         height: 20px;
         width: 20px;
+        &::before {
+          content: "";
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: block;
+          position: absolute;
+          border: 1.5px dashed lightgray;
+          animation: rotate 10s linear infinite;
+        }
       }
       .inside-one,
       .inside-two {
@@ -403,12 +413,15 @@ $divider: #e6ecf0;
         background: url(../assets/imgs/camera.png) no-repeat center;
         background-size: contain;
         cursor: pointer;
+        transform-origin: center;
+
         .avatarFile {
           padding-right: 30px;
           padding-bottom: 30px;
           width: 30px;
           height: 30px;
           opacity: 0;
+          z-index: 1;
           cursor: pointer;
         }
       }
@@ -419,10 +432,12 @@ $divider: #e6ecf0;
       }
 
       .camera-two {
+        background: url(../assets/imgs/camera.png) no-repeat center;
+        background-size: contain;
+
         top: 90px;
         left: 262px;
         cursor: pointer;
-        //z-index: 999;
         .coverFile {
           width: 100%;
           height: 100%;
@@ -439,10 +454,20 @@ $divider: #e6ecf0;
       }
 
       .cross {
+        background: url(../assets/imgs/cross.png) no-repeat center;
+        background-size: contain;
         cursor: pointer;
-        top: 92px;
-        left: 318.5px;
+        top: 90px;
+        left: 320px;
       }
+    }
+  }
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 }
