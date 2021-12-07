@@ -52,7 +52,7 @@
             <h5 v-if="follower" class="account">{{ follower.account }}</h5>
             <p v-if="follower" class="content">{{ follower.introduction }}</p>
           </div>
-          <div>
+          <div v-if="follower.name !== currentUser.name">
             <button
               v-show="follower.isFollowed"
               class="btn-follow unfollow"

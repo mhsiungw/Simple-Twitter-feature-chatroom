@@ -78,7 +78,7 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-        // ("addfollow", data);
+        //console.log("addfollow", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -94,9 +94,7 @@ export default {
             };
           }
         });
-        //min
-        this.$emit("after-following", userId);
-        this.busForTrends(userId);
+        this.$emit("after-cancel-following", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -107,7 +105,7 @@ export default {
     async deleteFollowing(userId) {
       try {
         const { data } = await followshipsAPI.deleteFollowing({ userId });
-        // ("deleteFollow", data);
+        //  console.log("deleteFollow", data;)
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -123,8 +121,7 @@ export default {
             };
           }
         });
-        this.$emit("after-cancel-following", userId);
-        this.busForTrends(userId);
+        this.$emit("after-following", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
