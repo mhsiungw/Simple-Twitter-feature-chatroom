@@ -14,7 +14,9 @@ export default new Vuex.Store({
       email: '',
       image: '',
       cover: '',
-      isAdmin: false
+      isAdmin: false,
+      password: '',
+      checkPassword: ''
     },
     isAuthenticated: false,
     token: ''
