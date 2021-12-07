@@ -14,7 +14,9 @@ export default new Vuex.Store({
       email: '',
       image: '',
       cover: '',
-      isAdmin: false
+      isAdmin: false,
+      password: '',
+      checkPassword: ''
     },
     isAuthenticated: false,
     token: ''
@@ -44,7 +46,6 @@ export default new Vuex.Store({
         })
         return true
       } catch (error) {
-        console.log(error)
         console.error('cannot fetch user info')
       }
     },
@@ -56,7 +57,6 @@ export default new Vuex.Store({
           id, name, email, image, account, cover, isAdmin: role === 'user' ? false : true
         })
       } catch (error) {
-        console.log(error)
         console.error('cannot fetch user info')
       }
     }

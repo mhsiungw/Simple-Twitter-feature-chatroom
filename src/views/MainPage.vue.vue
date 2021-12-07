@@ -16,7 +16,7 @@
       @after-dislike-clicked="handleAfterDislikeClick"
       @after-cancel-click="handleAfterTweetCancel"
       @after-comment-click="handleAfterCommentClicked"
-      :tweets="reverseTweet"
+      :tweets="tweets"
       :initial-current-user="currentUser"
       :is-tweet-clicked="isTweetClicked"
     />
@@ -35,10 +35,8 @@ import MainSection from "../components/MainSection.vue";
 import ModalForReplyTweet from "../components/ModalForReplyTweet.vue";
 import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
-import usersAPI from "../apis/users";
+// import usersAPI from "../apis/users";
 import { mapState } from "vuex";
-import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../utils/helpers";
 
 export default {
@@ -61,39 +59,21 @@ export default {
   },
   async created() {
     await this.fetchTweets();
-    this.followingsFilter();
+    // this.followingsFilter();
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
-    // 把推文按照發文時間顯示（越近發的越先顯示）
-    reverseTweet() {
-      return [...this.newTweets].sort((a, b) => {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      });
-    },
   },
   methods: {
     async fetchTweets() {
       // API
       try {
         let tweetResponse = await tweetsAPI.getTweets();
-        let userResponse = await usersAPI.getFollowings({
-          userId: this.currentUser.id,
-        });
         if (tweetResponse.statusText !== "OK") {
           throw new Error(tweetResponse.status);
         }
-        if (userResponse.statusText !== "OK") {
-          throw new Error(userResponse.status);
-        }
-        for (let user of userResponse.data) {
-          this.followings.push({ userId: user.followingId });
-        }
-        return (this.tweets = tweetResponse.data);
+        this.tweets = tweetResponse.data;
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法顯示資料，請稍後再試",
@@ -103,48 +83,29 @@ export default {
 
     async handleAfterSubmit(newDescription) {
       try {
-        console.log(newDescription);
-        let newInput = {
-          Likes: [],
-          Replies: [],
-          User: {
-            avatar: this.currentUser.image,
-            name: this.currentUser.name,
-            account: this.currentUser.name,
-          },
-          UserId: this.currentUser.id,
-          id: uuidv4(),
-          createdAt: moment().format(),
-          description: newDescription,
-        };
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
-          UserId: newInput.UserId,
+          UserId: this.currentUser.id,
           description: newDescription,
         });
-        console.log(data);
         if (data.status !== "success") {
           throw new Error(data.status);
         }
-
-        //頁面即時更新
-        //this.tweets.push(newInput);
-        // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
         this.$router.go(0);
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     async handleAfterLikeClick(tweetId) {
       try {
-        console.log("handleAfterLikeClick", tweetId);
-
         // 發送 API
         let response = await likeAPI.likeTweet({ tweetId });
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        console.log(response);
         //頁面即時更新
         // 先 render 找出符合 tweetId 的 tweet
         this.tweets.filter((tweet) => {
@@ -154,12 +115,14 @@ export default {
               !tweet.Likes.some((Like) => Like.UserId === this.currentUser.id)
             ) {
               tweet.Likes.push({ UserId: this.currentUser.id });
-              //如果使用者按過讚，就 return
             }
           }
         });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     async handleAfterDislikeClick(tweetId) {
@@ -169,7 +132,6 @@ export default {
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
         }
-        console.log("handleAfterDislikeClick", tweetId);
         // 頁面即時更新;
         this.tweets.filter((tweet) => {
           if (tweet.id === tweetId) {
@@ -179,7 +141,10 @@ export default {
           }
         });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法處理請求，請稍後再試。錯誤原因：${error}`,
+        });
       }
     },
     handleAfterTweetClick() {
@@ -203,25 +168,21 @@ export default {
           });
           return;
         }
-        console.log(typeof this.clickedTweet.id);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
-        //console.log(data)
         if (data.status !== "success") {
           throw new Error(data.message);
         }
         this.isPostClicked = false;
         this.$router.go(0);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "回覆推文失敗，請稍後再試",
+          title: `回覆推文失敗，請稍後再試。錯誤原因：${error}`,
         });
       }
     },
     //同步更新
     handleAfterFollowing(userId) {
-      console.log("handleAfterFollowing");
       for (let tweet of this.tweets) {
         if (tweet.UserId == userId) {
           this.newTweets.push(tweet);
@@ -235,7 +196,6 @@ export default {
     },
     // created
     followingsFilter() {
-      console.log("followingsId");
       let newTweet = [];
       for (let tweet of this.tweets) {
         if (tweet.UserId == this.currentUser.id) {

@@ -28,13 +28,11 @@ export default {
     async fetchAllUsers() {
       try {
         let { data } = await adminAPI.getAllUsers();
-        console.log(data);
         this.userData = data;
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法取得資料，請稍後再試",
+          title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
         });
       }
     },

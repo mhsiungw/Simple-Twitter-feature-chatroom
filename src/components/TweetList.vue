@@ -92,30 +92,6 @@ export default {
         this.$router.push(`/reply_list/${tweet.id}`);
       }
     },
-    // async replyTweet(comment) {
-    //   const tweetId = this.$route.params.id;
-    //   try {
-    //     if (!comment) {
-    //       Toast.fire({
-    //         icon: "error",
-    //         title: "請輸入內容",
-    //       });
-    //       return;
-    //     }
-    //     const { data } = await tweetsAPI.addReply({ tweetId, comment });
-    //     //console.log(data)
-    //     if (data.status !== "success") {
-    //       throw new Error(data.message);
-    //     }
-    //     this.showNewReplyModal = false;
-    //   } catch (error) {
-    //     console.log(error);
-    //     Toast.fire({
-    //       icon: "error",
-    //       title: "回覆推文失敗，請稍後再試",
-    //     });
-    //   }
-    // },
     async likeTweet(tweetId) {
       try {
         const { data } = await likesAPI.likeTweet({ tweetId });

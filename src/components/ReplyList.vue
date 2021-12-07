@@ -39,7 +39,7 @@
                 .push(`/users/${tweet.User ? tweet.User.id : '/'}`)
                 .catch(() => {})
             "
-            >{{ tweet.User ? tweet.User.account : "" }}</span
+            >＠{{ tweet.User ? tweet.User.account : "" }}</span
           >
         </div>
       </div>
@@ -49,7 +49,7 @@
     <hr />
     <div class="counts">
       <span class="reply-counts">{{ replyCount }} 回覆</span>
-      <span class="like-counts">{{ likes.Count }} 喜歡次數</span>
+      <span class="like-counts">{{ likesCount }} 喜歡次數</span>
     </div>
     <hr />
     <div class="icons">
@@ -102,15 +102,18 @@
                   .push(`/users/${row.User ? row.User.id : '/'}`)
                   .catch(() => {})
               "
-              >{{ row.User ? row.User.account : "" }}</span
+              >＠{{ row.User ? row.User.account : "" }}</span
             >
             <span class="time">・{{ row.User.createdAt | fromNow }}</span>
           </div>
           <span class="to-whom"
             >回覆
-            <span class="receiver">{{
-              tweet.User ? tweet.User.account : ""
-            }}</span></span
+            <span
+              class="receiver"
+              @click="$router.push(`/users/${tweet.User.id}`)"
+            >
+              ＠{{ tweet.User ? tweet.User.account : "" }}</span
+            ></span
           >
           <p class="reply-item">{{ row.comment }}</p>
         </div>
@@ -149,6 +152,7 @@ export default {
       likes: {},
       comments: {},
       replyCount: 0,
+      likesCount: 0,
     };
   },
   computed: {
@@ -168,9 +172,10 @@ export default {
     async fetchTweet(tweetId) {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
+        //console.log("getTweet123", data);
 
         this.tweet = { ...data, currentUser: this.currentUser };
-
+        this.likes = { ...data.Likes, isLiked: data.isLiked };
         this.replies = { ...data.Replies };
       } catch (error) {
         Toast.fire({
@@ -179,6 +184,7 @@ export default {
         });
       }
       this.replyCount = Object.keys(this.replies).length;
+      this.likesCount = Object.keys(this.likes).length;
     },
     async replyTweet(comment) {
       const tweetId = this.$route.params.id;
@@ -190,7 +196,7 @@ export default {
           });
           return;
         }
-        console.log(typeof tweetId);
+       // console.log(typeof tweetId);
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
         //console.log(data)
         if (data.status !== "success") {
