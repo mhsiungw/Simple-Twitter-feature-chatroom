@@ -147,7 +147,6 @@ export default {
           this.$router.push({ name: "Login" });
         }
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
           title: `無法註冊，請稍後再試 \n 錯誤原因：${error}`,
