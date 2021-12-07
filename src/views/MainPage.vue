@@ -63,6 +63,8 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
+
+
     // 把推文按照發文時間顯示（越近發的越先顯示）
     // reverseTweet() {
     //   return [...this.newTweets].sort((a, b) => {
@@ -71,12 +73,19 @@ export default {
     //     );
     //   });
     // },
+
   },
   methods: {
     async fetchTweets() {
       // API
       try {
         let tweetResponse = await tweetsAPI.getTweets();
+
+        if (tweetResponse.statusText !== "OK") {
+          throw new Error(tweetResponse.status);
+        }
+        this.tweets = tweetResponse.data;
+
         // let userResponse = await usersAPI.getFollowings({
         //   userId: this.currentUser.id,
         // });
@@ -91,6 +100,7 @@ export default {
         //   this.followings.push({ userId: user.followingId });
         // }
         return (this.tweets = tweetResponse.data);
+
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -101,6 +111,7 @@ export default {
 
     async handleAfterSubmit(newDescription) {
       try {
+
         // let newInput = {
         //   Likes: [],
         //   Replies: [],
@@ -115,6 +126,7 @@ export default {
         //   description: newDescription,
         // };
         // console.log(newDescription);
+
         // 發送 API
         let { data } = await tweetsAPI.postTweet({
           UserId: this.currentUser.id,
@@ -123,10 +135,6 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.status);
         }
-
-        //頁面即時更新
-        //this.tweets.push(newInput);
-        // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
         this.$router.go(0);
       } catch (error) {
         Toast.fire({
@@ -137,8 +145,6 @@ export default {
     },
     async handleAfterLikeClick(tweetId) {
       try {
-        // console.log("handleAfterLikeClick", tweetId);
-
         // 發送 API
         let response = await likeAPI.likeTweet({ tweetId });
         if (response.statusText !== "OK") {
@@ -153,7 +159,6 @@ export default {
               !tweet.Likes.some((Like) => Like.UserId === this.currentUser.id)
             ) {
               tweet.Likes.push({ UserId: this.currentUser.id });
-              //如果使用者按過讚，就 return
             }
           }
         });
