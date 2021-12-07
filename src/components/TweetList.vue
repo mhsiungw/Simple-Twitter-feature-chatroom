@@ -103,7 +103,7 @@ export default {
     //       return;
     //     }
     //     const { data } = await tweetsAPI.addReply({ tweetId, comment });
-    //     //console.log(data)
+    //     //(data)
     //     if (data.status !== "success") {
     //       throw new Error(data.message);
     //     }

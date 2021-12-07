@@ -38,14 +38,16 @@ export default {
         }
         this.tweets = response.data;
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `暫時無法取得資料，請稍後再試。 \n 錯誤原因：${error}`,
+        });
       }
     },
     async adminDeleteTweet(tweetId) {
       try {
         // 發送 API，後端刪除推文
         let response = await adminAPI.deleteTweet(tweetId);
-        console.log(response);
         //如果刪除失敗
         if (response.statusText !== "OK") {
           throw new Error(response.statusText);
@@ -59,10 +61,9 @@ export default {
           title: "刪除成功",
         });
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "刪除失敗，請稍後再試",
+          title: `刪除失敗，請稍後再試。 \n 錯誤原因：${error}`,
         });
       }
     },
