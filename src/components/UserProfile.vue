@@ -195,11 +195,11 @@ export default {
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
-  created() {
-    this.fetchProfile();
-    this.fetchUserTweets();
-    this.fetchUserReplies();
-    this.fetchUserLikes();
+  async created() {
+    await this.fetchProfile();
+    await this.fetchUserTweets();
+    await this.fetchUserReplies();
+    await this.fetchUserLikes();
   },
   methods: {
     selectTab(event) {
@@ -208,10 +208,13 @@ export default {
         : event.target.innerText;
       switch (this.tabOption) {
         case "推文":
+          this.fetchUserTweets();
           break;
         case "推文與回覆":
+          this.fetchUserReplies();
           break;
         case "喜歡的內容":
+          this.fetchUserLikes();
           break;
       }
     },
@@ -250,7 +253,7 @@ export default {
         this.userTweets = this.userTweets.map((tweet) => ({
           id: tweet.id,
           TweetId: tweet.id,
-          UserId: tweet.UserId,
+          UserId: tweet.User.id,
           name: tweet.User.name,
           avatar: tweet.User.avatar,
           account: tweet.User.account,
@@ -310,7 +313,7 @@ export default {
 
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
-          UserId: item.UserId,
+          UserId: item.Tweet.UserId,
           TweetId: item.TweetId,
           name: item.userName,
           avatar: item.userAvatar,
@@ -323,7 +326,7 @@ export default {
           likedAt: item.createdAt,
         }));
 
-        console.log("this.user.userLikes====>:", this.userLikes);
+        //  console.log("this.user.userLikes====>:", this.userLikes);
         this.userLikes.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });

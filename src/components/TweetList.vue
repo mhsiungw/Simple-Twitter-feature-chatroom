@@ -1,12 +1,17 @@
 <template>
   <div class="tweet-list" v-if="tweets">
-    <div v-for="tweet in tweets" :key="tweet.id" class="list-item">
+    <div
+      v-for="tweet in tweets"
+      :key="tweet.id"
+      class="list-item"
+      @click.stop.prevent="routeToTweet(tweet.TweetId)"
+    >
       <div
         class="avatar"
         :style="{
           background: `url(${tweet.avatar}) no-repeat center/cover`,
         }"
-        @click="$router.push(`/users/${tweet.UserId}`).catch(() => {})"
+        @click.stop.prevent="routeToUser(tweet.UserId)"
       ></div>
       <div class="tweet-wrapper">
         <div class="info">
@@ -33,10 +38,7 @@
           <span class="title">回覆 </span>
           <span class="name">@{{ tweet.replyTo }}</span>
         </div>
-        <div
-          class="content"
-          @click="$router.push(`/reply_list/${tweet.TweetId}`)"
-        >
+        <div class="content">
           {{ tweet.description }}
         </div>
         <div class="action" v-show="tweet.type !== 'reply'">
@@ -48,12 +50,12 @@
             <div
               v-if="!tweet.isLiked"
               class="icon like"
-              @click="likeTweet(tweet.TweetId)"
+              @click.stop.prevent="likeTweet(tweet.TweetId)"
             ></div>
             <div
               v-if="tweet.isLiked"
               class="icon like liked"
-              @click="unlikeTweet(tweet.TweetId)"
+              @click.stop.prevent="unlikeTweet(tweet.TweetId)"
             ></div>
             <span class="number">{{ tweet.likeTweetCount }}</span>
           </div>
@@ -100,7 +102,7 @@ export default {
         }
 
         this.tweets.filter((tweet) => {
-          console.log(tweet);
+          // console.log(tweet);
           if (tweet.TweetId === tweetId) {
             tweet.isLiked = true;
             tweet.likeTweetCount =
@@ -138,6 +140,14 @@ export default {
         });
       }
     },
+    routeToTweet(TweetId) {
+      //console.log("TweetId", TweetId);
+      this.$router.push(`/reply_list/${TweetId}`);
+    },
+    routeToUser(UserId) {
+      //console.log("UserId", UserId);
+      this.$router.push(`/users/${UserId}`);
+    },
   },
 };
 </script>
@@ -164,6 +174,7 @@ $divider: #e6ecf0;
       backdrop-filter: brightness(0.95);
     }
     .avatar {
+      z-index: 2;
       margin: 3px 0 0 15px;
       height: 50px;
       min-width: 50px;
