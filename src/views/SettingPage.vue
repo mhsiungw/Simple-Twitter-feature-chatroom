@@ -68,7 +68,6 @@ export default {
     async handleAfterSave(newInfo) {
       try {
         let { data } = await userAPI.editUserInfo(this.currentUser.id, newInfo);
-        console.log(data);
         if (data.status == "error") {
           throw new Error(data.message);
         } else {

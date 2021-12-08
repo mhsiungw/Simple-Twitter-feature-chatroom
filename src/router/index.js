@@ -79,8 +79,13 @@ router.beforeEach((to, from, next) => {
   const tokenInLocalStorage = localStorage.getItem('simpleTwitter-token')
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
+
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
-    isAuthenticated = store.dispatch('fetchCurrentUser')
+    if (to.name === "AdminUserPage" || to.name === "AdminTweetPage") {
+      isAuthenticated = store.dispatch('fetchCurrentAdmin')
+    } else {
+      isAuthenticated = store.dispatch('fetchCurrentUser')
+    }
   }
 
 

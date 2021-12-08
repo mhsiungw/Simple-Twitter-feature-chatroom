@@ -1,30 +1,33 @@
 <template>
-  <div class="mainPage-container">
-    <ModalForReplyTweet
-      @after-click-cross="handleAfterTweetCancel"
-      @replyTweet="handleAfterReplyTweet"
-      :tweet="clickedTweet"
-      v-if="isPostClicked"
-    />
-    <UserSidebar
-      @after-tweet-click="handleAfterTweetClick"
-      class="user-sidebar"
-    />
-    <MainSection
-      @after-tweet-submit="handleAfterSubmit"
-      @after-like-clicked="handleAfterLikeClick"
-      @after-dislike-clicked="handleAfterDislikeClick"
-      @after-cancel-click="handleAfterTweetCancel"
-      @after-comment-click="handleAfterCommentClicked"
-      :tweets="tweets"
-      :initial-current-user="currentUser"
-      :is-tweet-clicked="isTweetClicked"
-    />
-    <Trends
-      @after-following="handleAfterFollowing"
-      @after-cancel-following="handleAfterCacenlFollowing"
-      class="trend-section"
-    />
+  <div>
+    <Loading :is-loading="isLoading" v-if="isLoading" />
+    <div v-else class="mainPage-container">
+      <ModalForReplyTweet
+        @after-click-cross="handleAfterTweetCancel"
+        @replyTweet="handleAfterReplyTweet"
+        :tweet="clickedTweet"
+        v-if="isPostClicked"
+      />
+      <UserSidebar
+        @after-tweet-click="handleAfterTweetClick"
+        class="user-sidebar"
+      />
+      <MainSection
+        @after-tweet-submit="handleAfterSubmit"
+        @after-like-clicked="handleAfterLikeClick"
+        @after-dislike-clicked="handleAfterDislikeClick"
+        @after-cancel-click="handleAfterTweetCancel"
+        @after-comment-click="handleAfterCommentClicked"
+        :tweets="tweets"
+        :initial-current-user="currentUser"
+        :is-tweet-clicked="isTweetClicked"
+      />
+      <Trends
+        @after-following="handleAfterFollowing"
+        @after-cancel-following="handleAfterCacenlFollowing"
+        class="trend-section"
+      />
+    </div>
   </div>
 </template>
 
@@ -33,9 +36,9 @@ import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import MainSection from "../components/MainSection.vue";
 import ModalForReplyTweet from "../components/ModalForReplyTweet.vue";
+import Loading from "../components/Loading.vue";
 import tweetsAPI from "../apis/tweets";
 import likeAPI from "../apis/likes";
-// import usersAPI from "../apis/users";
 import { mapState } from "vuex";
 import { Toast } from "../utils/helpers";
 
@@ -46,6 +49,7 @@ export default {
     Trends,
     MainSection,
     ModalForReplyTweet,
+    Loading,
   },
   data() {
     return {
@@ -55,11 +59,11 @@ export default {
       isTweetClicked: false,
       isPostClicked: false,
       clickedTweet: {},
+      isLoading: true,
     };
   },
-  async created() {
-    await this.fetchTweets();
-    // this.followingsFilter();
+  created() {
+    this.fetchTweets();
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
@@ -73,7 +77,9 @@ export default {
           throw new Error(tweetResponse.status);
         }
         this.tweets = tweetResponse.data;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法顯示資料，請稍後再試",
@@ -235,7 +241,6 @@ export default {
   }
   .trend-section {
     top: 15px;
-    right: 0%;
   }
 
   .user-sidebar {

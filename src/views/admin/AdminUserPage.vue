@@ -1,7 +1,11 @@
 <template>
   <div class="user-page-container">
     <AdminSidebar class="sidebar-section" />
-    <AdminUserSection :user-data="userData" class="user-section" />
+    <AdminUserSection
+      :is-loading="isLoading"
+      :user-data="userData"
+      class="user-section"
+    />
   </div>
 </template>
 
@@ -19,6 +23,7 @@ export default {
   data() {
     return {
       userData: [],
+      isLoading: true,
     };
   },
   created() {
@@ -29,7 +34,9 @@ export default {
       try {
         let { data } = await adminAPI.getAllUsers();
         this.userData = data;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: `暫時無法處理請求，請稍後再試。 \n 錯誤原因：${error}`,
@@ -53,6 +60,8 @@ export default {
     flex: 1;
   }
   .sidebar-section {
+    position: sticky;
+    top: 0;
     width: 26.7%;
     padding-left: 95px;
   }
