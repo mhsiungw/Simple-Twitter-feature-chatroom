@@ -323,7 +323,7 @@ export default {
           likeTweetCount: item.likeTweetCount,
           replyTweetCount: item.replyTweetCount,
           isLiked: item.isLiked,
-          likedAt: item.createdAt,
+          likedAt: item.Tweet.createdAt,
         }));
 
         //  console.log("this.user.userLikes====>:", this.userLikes);
@@ -633,7 +633,7 @@ $bitdark: #657786;
     .intro {
       margin: 10px 0 0 15px;
       width: 570px;
-      height: 20px;
+      height: 35px;
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;

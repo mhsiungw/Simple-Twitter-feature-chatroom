@@ -49,21 +49,21 @@
             <h5 v-if="follower" class="title">
               {{ follower.name }}
             </h5>
-            <h5 v-if="follower" class="account">{{ follower.account }}</h5>
+            <h5 v-if="follower" class="account">＠{{ follower.account }}</h5>
             <p v-if="follower" class="content">{{ follower.introduction }}</p>
           </div>
           <div v-if="follower.name !== currentUser.name">
             <button
               v-show="follower.isFollowed"
               class="btn-follow unfollow"
-              @click="deleteFollowing(follower.id)"
+              @click="deleteFollowing(follower.UserId)"
             >
               正在跟隨
             </button>
             <button
               v-show="!follower.isFollowed"
               class="btn-follow"
-              @click="addFollowing(follower.id)"
+              @click="addFollowing(follower.UserId)"
             >
               跟隨
             </button>
@@ -96,7 +96,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"]),
+    ...mapState(["currentUser", "isAuthenticated", "followers", "followings"]),
   },
   watch: {
     initialFollowers: function () {
@@ -111,11 +111,19 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
-
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.user.isFollowed = true;
+
+        this.followers.filter((user) => {
+          if (user.followerId === userId) {
+            user.isFollowed = true;
+          }
+          if (user.followingId === userId) {
+            user.isFollowed = true;
+          }
+        });
+        // this.$store.commit("setFollowingList", this.followers);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -130,7 +138,15 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.user.isFollowed = false;
+        this.followers.filter((user) => {
+          if (user.followerId === userId) {
+            user.isFollowed = false;
+          }
+          if (user.followingId === userId) {
+            user.isFollowed = false;
+          }
+        });
+        // this.$store.commit("setFollowingList", this.followers);
       } catch (error) {
         Toast.fire({
           icon: "error",

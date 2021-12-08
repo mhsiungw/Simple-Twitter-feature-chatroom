@@ -19,7 +19,10 @@ export default new Vuex.Store({
       checkPassword: ''
     },
     isAuthenticated: false,
-    token: ''
+    token: '',
+    followers: [],
+    followings: [],
+    topUsers: []
   },
   mutations: {
     setCurrentUser(state, currentUser) {
@@ -34,6 +37,11 @@ export default new Vuex.Store({
       state.currentUser = {}
       state.isAuthenticated = false
       localStorage.removeItem('simpleTwitter-token')
+    },
+    setFollowingList(state, data) {
+      state.topUsers = [...data]
+      state.followers = [...data],
+        state.followings = [...data]
     }
   },
   actions: {
@@ -59,7 +67,16 @@ export default new Vuex.Store({
       } catch (error) {
         console.error('cannot fetch user info')
       }
-    }
+    },
+    async fetchTopUsers({ commit }) {
+      try {
+        const { data } = await usersAPI.getTopUsers();
+        console.log(commit, data)
+
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
   modules: {
   }

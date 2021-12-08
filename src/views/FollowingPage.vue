@@ -76,7 +76,6 @@ export default {
           replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
           isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
-        this.tabOption = "推文";
       } catch (error) {
         console.log(error);
       }
@@ -90,47 +89,17 @@ export default {
       try {
         const followersData = await usersAPI.getFollowers({ userId });
         this.followers = followersData.data;
-        //console.log("followersData", this.followers);
-
-        this.followers = this.followers.map((user) => {
-          if (user.Followship.followingId === this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-            };
-          }
-        });
+        //
+        console.log("followersData", this.followers);
 
         this.followers.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
 
         const followingsData = await usersAPI.getFollowings({ userId });
-        // console.log("followingsData", followingsData);
-        this.followings = followingsData.data;
 
-        this.followings = this.followings.map((user) => {
-          if (user.Followship.followingId !== this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-            };
-          }
-        });
+        this.followings = followingsData.data;
+        //console.log("followingsData", this.followings);
 
         this.followings.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
