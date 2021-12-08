@@ -168,7 +168,6 @@ export default {
   }
   .trend-section {
     top: 15px;
-    right: 0%;
   }
 
   .user-sidebar {

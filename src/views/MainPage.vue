@@ -8,19 +8,14 @@
         :tweet="clickedTweet"
         v-if="isPostClicked"
       />
-      <UserSidebar
-        @after-tweet-click="handleAfterTweetClick"
-        class="user-sidebar"
-      />
+      <UserSidebar class="user-sidebar" />
       <MainSection
         @after-tweet-submit="handleAfterSubmit"
         @after-like-clicked="handleAfterLikeClick"
         @after-dislike-clicked="handleAfterDislikeClick"
-        @after-cancel-click="handleAfterTweetCancel"
         @after-comment-click="handleAfterCommentClicked"
         :tweets="tweets"
         :initial-current-user="currentUser"
-        :is-tweet-clicked="isTweetClicked"
       />
       <Trends
         @after-following="handleAfterFollowing"
@@ -56,7 +51,6 @@ export default {
       tweets: [],
       newTweets: [],
       followings: [],
-      isTweetClicked: false,
       isPostClicked: false,
       clickedTweet: {},
       isLoading: true,
@@ -153,17 +147,6 @@ export default {
         });
       }
     },
-    handleAfterTweetClick() {
-      this.isTweetClicked = true;
-    },
-    handleAfterTweetCancel() {
-      this.isTweetClicked = false;
-      this.isPostClicked = false;
-    },
-    handleAfterCommentClicked(clickedComment) {
-      this.isPostClicked = true;
-      this.clickedTweet = clickedComment;
-    },
     async handleAfterReplyTweet(comment) {
       const tweetId = this.clickedTweet.id.toString();
       try {
@@ -187,6 +170,13 @@ export default {
         });
       }
     },
+    handleAfterTweetCancel() {
+      this.isPostClicked = false;
+    },
+    handleAfterCommentClicked(clickedComment) {
+      this.isPostClicked = true;
+      this.clickedTweet = clickedComment;
+    },
     //同步更新
     handleAfterFollowing(userId) {
       for (let tweet of this.tweets) {
@@ -199,21 +189,6 @@ export default {
       this.newTweets = this.newTweets.filter((tweet) => {
         return tweet.UserId !== userId;
       });
-    },
-    // created
-    followingsFilter() {
-      let newTweet = [];
-      for (let tweet of this.tweets) {
-        if (tweet.UserId == this.currentUser.id) {
-          newTweet.push(tweet);
-        }
-        for (let user of this.followings) {
-          if (tweet.UserId == user.userId) {
-            newTweet.push(tweet);
-          }
-        }
-      }
-      this.newTweets = newTweet;
     },
   },
 };
