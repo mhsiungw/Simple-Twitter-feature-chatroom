@@ -29,11 +29,12 @@
         <button class="tweet-button" type="submit">推文</button>
       </form>
     </div>
+
     <div
+      class="part post-part"
       v-for="tweet in tweets"
       :key="tweet.id"
       @click.stop.prevent="oneClick(tweet.id)"
-      class="part post-part"
     >
       <img
         class="avatar"
@@ -85,8 +86,8 @@
 
 <script>
 import { fromNowFilter, emptyImageFilter } from "../utils/mixins.js";
-import ModalForTweet from "./ModalForTweet.vue";
 import { Toast } from "../utils/helpers";
+import ModalForTweet from "./ModalForTweet.vue";
 
 export default {
   components: {
@@ -128,7 +129,6 @@ export default {
     },
     handleLikeClick(tweetId) {
       //把資料傳到父層，讓父層串 API
-      console.log("handleLikeClick");
       this.$emit("after-like-clicked", tweetId);
     },
     handleDislikeClick(tweetId) {

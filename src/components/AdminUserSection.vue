@@ -1,8 +1,10 @@
 <template>
   <div class="user-section">
     <div class="title">使用者列表</div>
+
     <div class="user-cards">
-      <div v-for="user in userData" :key="user.id" class="card-item">
+      <p class="loading" v-if="isLoading">載入中...</p>
+      <div v-else v-for="user in userData" :key="user.id" class="card-item">
         <img :src="user.cover | emptyImage" alt="cover" class="cover" />
         <div class="description">
           <div class="description-title">
@@ -37,6 +39,7 @@
 <script>
 import { mapState } from "vuex";
 import { emptyImageFilter } from "../utils/mixins";
+
 export default {
   computed: {
     ...mapState(["currentUser"]),
@@ -45,6 +48,10 @@ export default {
   props: {
     userData: {
       type: Array,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
       required: true,
     },
   },

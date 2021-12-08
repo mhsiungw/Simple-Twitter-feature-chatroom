@@ -85,6 +85,8 @@ export default {
     flex: 1;
   }
   .sidebar-section {
+    position: sticky;
+    top: 0;
     width: 26.7%;
     padding-left: 95px;
   }
