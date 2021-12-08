@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-container">
+  <div @click.self="handleCancelClick()" class="modal-container">
     <div class="tweet-modal">
       <button @click.stop.prevent="handleCancelClick()" class="cancel-button">
         X
@@ -86,10 +86,9 @@ $divider: #e6ecf0;
   width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+  z-index: 888;
 }
 // modal 本身
-
 .tweet-modal {
   position: relative;
   right: 42px;
@@ -100,6 +99,7 @@ $divider: #e6ecf0;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
+  z-index: 999;
   .cancel-button {
     align-self: flex-start;
     border: none;
