@@ -111,19 +111,19 @@ export default {
     async addFollowing(userId) {
       try {
         const { data } = await followshipsAPI.addFollowing({ userId });
+
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
         this.followers.filter((user) => {
-          if (user.followerId === userId) {
-            user.isFollowed = true;
-          }
-          if (user.followingId === userId) {
+          if (user.UserId === userId) {
             user.isFollowed = true;
           }
         });
-        // this.$store.commit("setFollowingList", this.followers);
+
+        // emit透過物件事件傳送
+        this.$bus.$emit("toastMessage");
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -139,14 +139,13 @@ export default {
           throw new Error(data.message);
         }
         this.followers.filter((user) => {
-          if (user.followerId === userId) {
-            user.isFollowed = false;
-          }
-          if (user.followingId === userId) {
+          if (user.UserId === userId) {
             user.isFollowed = false;
           }
         });
-        // this.$store.commit("setFollowingList", this.followers);
+
+        // emit透過物件事件傳送
+        this.$bus.$emit("toastMessage");
       } catch (error) {
         Toast.fire({
           icon: "error",

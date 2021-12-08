@@ -612,7 +612,7 @@ $bitdark: #657786;
     .intro {
       margin: 10px 0 0 15px;
       width: 570px;
-      height: 35px;
+      height: 40px;
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;

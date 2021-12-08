@@ -57,6 +57,16 @@ export default {
   },
   created() {
     this.fetchTopUsers();
+    // 在 created 鉤開始監聽 toastMessage 事件
+    this.$bus.$on("toastMessage", () => {
+      // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
+      console.log("test event bus");
+      this.fetchTopUsers();
+    });
+  },
+  beforeDestroy() {
+    // 元件銷毀前要取消監聽
+    this.$bus.$off("toastMessage");
   },
   mixins: [emptyImageFilter],
   methods: {
