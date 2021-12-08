@@ -140,7 +140,6 @@ $lightgray: #f5f8fa;
 $bitdark: #657786;
 $divider: #e6ecf0;
 .recommend-users {
-  z-index: -1;
   width: 100%;
   max-width: 350px;
   height: 100%;

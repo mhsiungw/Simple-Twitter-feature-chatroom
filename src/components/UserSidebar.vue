@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sidebar-container">
     <ModalForTweet
       v-if="isModalShow"
       @after-tweet-modal-click="afterTweetModalClick"
@@ -78,7 +78,7 @@ export default {
       this.isModalShow = true;
       this.$emit("after-tweet-click");
     },
-    //收到 tweet modal 回傳的事件後...
+    //收到 tweet modal 回傳的 $emit 事件後...
     afterTweetModalClick(action, input = "") {
       // 如果點擊 X 就關掉 modal
       if (action == "tweet-cancel") {
@@ -98,7 +98,11 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.status);
         }
-        this.$router.push("/");
+        if (this.$route.name === "MainPage") {
+          this.$router.go(0);
+        } else {
+          this.$router.push("/");
+        }
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -112,6 +116,10 @@ export default {
 
 <style lang="scss" scoped>
 $orange: #ff6600;
+.sidebar-container {
+  z-index: 999;
+}
+
 .sidebar-section {
   background-color: #fff;
   display: flex;
