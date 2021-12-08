@@ -70,13 +70,12 @@ export default {
         let { data } = await userAPI.editUserInfo(this.currentUser.id, newInfo);
         if (data.status == "error") {
           throw new Error(data.message);
-        } else {
-          Toast.fire({
-            icon: "success",
-            title: `更改成功`,
-          });
-          return this.$router.go(0);
         }
+        Toast.fire({
+          icon: "success",
+          title: `更改成功`,
+        });
+        return this.$router.go(0);
       } catch (error) {
         Toast.fire({
           icon: "error",

@@ -7,6 +7,7 @@
 <script>
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+// import ModalForTweet from "./components/ModalForReplyTweet.vue";
 
 export default {
   name: "App",
