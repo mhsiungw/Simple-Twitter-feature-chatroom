@@ -210,17 +210,11 @@ export default {
     margin-right: 30px;
   }
 
-  .trend-section,
-  .user-sidebar {
+  .trend-section {
     position: sticky;
   }
   .trend-section {
     top: 15px;
-  }
-
-  .user-sidebar {
-    top: 0;
-    left: 0%;
   }
 }
 </style>

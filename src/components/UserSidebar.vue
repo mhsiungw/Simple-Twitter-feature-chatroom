@@ -124,6 +124,8 @@ $orange: #ff6600;
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: 0;
   /** 高還不確定要寫絕對還是相對% **/
   height: 100vh;
   width: 235px;
