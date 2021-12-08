@@ -178,7 +178,7 @@ export default {
     async fetchTweet(tweetId) {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
-        //console.log("getTweet123", data);
+        console.log("getTweet====>", data);
 
         this.tweet = { ...data, currentUser: this.currentUser };
         this.likes = { ...data.Likes, isLiked: data.isLiked };
