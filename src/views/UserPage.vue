@@ -1,9 +1,6 @@
 <template>
   <div class="page-container">
-    <UserSidebar
-      class="user-sidebar"
-      @after-tweet-click="handleAfterTweetClick"
-    />
+    <UserSidebar class="user-sidebar" />
     <UserProfile class="user-profile-section" />
     <Trends class="trend-section" />
   </div>

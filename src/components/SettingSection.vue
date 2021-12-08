@@ -39,6 +39,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { Toast } from "../utils/helpers";
 
 export default {
   props: {
@@ -102,10 +103,16 @@ export default {
     },
     async handleSave() {
       if (this.isEmptyValue) {
-        return window.alert("請填寫所有欄位在儲存");
+        return Toast.fire({
+          icon: "warning",
+          title: "請填寫所有欄位在儲存",
+        });
       }
       if (!this.isPasswordSame) {
-        return window.alert("密碼請一致");
+        return Toast.fire({
+          icon: "warning",
+          title: "密碼請一致",
+        });
       }
       this.$emit("after-save", this.settingInfo);
     },
