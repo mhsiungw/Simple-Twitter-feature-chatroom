@@ -76,7 +76,6 @@ export default {
           replyTweetCount: tweet.Replies ? tweet.Replies.length : 0,
           isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
-        this.tabOption = "推文";
       } catch (error) {
         console.log(error);
       }
@@ -90,20 +89,22 @@ export default {
       try {
         const followersData = await usersAPI.getFollowers({ userId });
         this.followers = followersData.data;
-        //console.log("followersData", this.followers);
+        console.log("followersData", this.followers);
 
         this.followers = this.followers.map((user) => {
-          if (user.Followship.followingId === this.currentUser.id) {
+          if (user.Followship.followingId !== this.currentUser.id) {
             return {
               ...user,
               followerCount: user.followerCount + 1,
               isFollowed: true,
+              UserId: user.followerId,
             };
           } else {
             return {
               ...user,
               followerCount: user.followerCount - 1,
               isFollowed: false,
+              UserId: user.followerId,
             };
           }
         });
@@ -113,8 +114,9 @@ export default {
         });
 
         const followingsData = await usersAPI.getFollowings({ userId });
-        // console.log("followingsData", followingsData);
+
         this.followings = followingsData.data;
+        console.log("followingsData", this.followings);
 
         this.followings = this.followings.map((user) => {
           if (user.Followship.followingId !== this.currentUser.id) {
@@ -122,12 +124,14 @@ export default {
               ...user,
               followerCount: user.followerCount + 1,
               isFollowed: true,
+              UserId: user.followingId,
             };
           } else {
             return {
               ...user,
               followerCount: user.followerCount - 1,
               isFollowed: false,
+              UserId: user.followingId,
             };
           }
         });
@@ -168,6 +172,7 @@ export default {
   }
   .trend-section {
     top: 15px;
+    right: 0%;
   }
 
   .user-sidebar {
