@@ -1,10 +1,5 @@
 <template>
   <div class="setting-section">
-    <ModalForTweet
-      @after-cancel-click="handleAfterTweetCancel"
-      @after-tweet-submit="handleAfterTweetSubmit"
-      v-if="isTweetClicked"
-    />
     <div class="title">帳戶設定</div>
     <form @submit.stop.prevent="handleSave" class="setting-form">
       <div class="input">
@@ -43,14 +38,9 @@
 </template>
 
 <script>
-import ModalForTweet from "./ModalForTweet.vue";
 import { mapState } from "vuex";
-// import store from "../store";
 
 export default {
-  components: {
-    ModalForTweet,
-  },
   props: {
     isTweetClicked: {
       type: Boolean,
@@ -115,16 +105,9 @@ export default {
         return window.alert("請填寫所有欄位在儲存");
       }
       if (!this.isPasswordSame) {
-        console.log(456);
         return window.alert("密碼請一致");
       }
       this.$emit("after-save", this.settingInfo);
-    },
-    handleAfterTweetCancel() {
-      this.$emit("after-cancel-click");
-    },
-    handleAfterTweetSubmit(newTWeet) {
-      this.$emit("after-tweet-submit", newTWeet);
     },
   },
 };

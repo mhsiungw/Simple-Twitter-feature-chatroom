@@ -1,7 +1,7 @@
 <template>
-  <div class="modal-container">
+  <div @click.self="handleCancelClick()" class="modal-container">
     <div class="tweet-modal">
-      <button @click.stop.prevent="handleCancelClick" class="cancel-button">
+      <button @click.stop.prevent="handleCancelClick()" class="cancel-button">
         X
       </button>
       <hr />
@@ -18,7 +18,7 @@
             type="textarea"
             placeholder="有什麼新鮮事？"
           ></textarea>
-          <button @click.stop.prevent="handleTweetClick" class="tweet-button">
+          <button @click.stop.prevent="handleTweetClick()" class="tweet-button">
             推文
           </button>
         </form>
@@ -30,10 +30,17 @@
 <script>
 import { mapState } from "vuex";
 import { emptyImageFilter } from "../utils/mixins.js";
+import { Toast } from "../utils/helpers";
 
 export default {
   computed: {
     ...mapState(["currentUser"]),
+  },
+  props: {
+    isModalShow: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -42,14 +49,21 @@ export default {
   },
   mixins: [emptyImageFilter],
   methods: {
+    //點擊左上角 X
     handleCancelClick() {
-      this.$emit("after-cancel-click");
+      // this.$emit("after-cancel-click");
+      this.$emit("after-tweet-modal-click", "tweet-cancel");
     },
+    //點擊右下角 推文
     handleTweetClick() {
       if (this.tweetInput === "") {
-        return window.alert("內容不可空白");
+        return Toast.fire({
+          icon: "warning",
+          title: "內容不可空白",
+        });
       }
-      this.$emit("after-tweet-submit", this.tweetInput);
+      // this.$emit("after-tweet-submit", this.tweetInput);
+      this.$emit("after-tweet-modal-click", "tweet-save", this.tweetInput);
       this.tweetInput = "";
     },
   },
@@ -72,10 +86,9 @@ $divider: #e6ecf0;
   width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+  z-index: 888;
 }
 // modal 本身
-
 .tweet-modal {
   position: relative;
   right: 42px;
@@ -86,6 +99,7 @@ $divider: #e6ecf0;
   border-radius: 14px;
   display: flex;
   flex-direction: column;
+  z-index: 999;
   .cancel-button {
     align-self: flex-start;
     border: none;

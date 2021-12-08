@@ -4,12 +4,7 @@
       class="user-sidebar"
       @after-tweet-click="handleAfterTweetClick"
     />
-    <UserProfile
-      @after-tweet-submit="handleAfterSubmit"
-      @after-cancel-click="handleAfterTweetCancel"
-      :is-tweet-clicked="isTweetClicked"
-      class="user-profile-section"
-    />
+    <UserProfile class="user-profile-section" />
     <Trends class="trend-section" />
   </div>
 </template>
@@ -18,9 +13,7 @@
 import UserSidebar from "../components/UserSidebar.vue";
 import Trends from "../components/Trends.vue";
 import UserProfile from "../components/UserProfile.vue";
-import tweetsAPI from "../apis/tweets";
 import { mapState } from "vuex";
-import { Toast } from "../utils/helpers";
 
 export default {
   name: "UserPage",
@@ -29,42 +22,8 @@ export default {
     Trends,
     UserProfile,
   },
-  data() {
-    return {
-      isTweetClicked: false,
-    };
-  },
   computed: {
     ...mapState(["currentUser"]),
-  },
-  methods: {
-    async handleAfterSubmit(newDescription) {
-      try {
-        // 發送 API
-        let { data } = await tweetsAPI.postTweet({
-          UserId: this.currentUser.id,
-          description: newDescription,
-        });
-        if (data.status !== "success") {
-          throw new Error(data.status);
-        }
-        //頁面即時更新
-        // this.tweets.push(newInput);
-        // workaround 如果可以知道我們要穿什麼 id 過去，或者後端的 id 可以由前端傳過去...
-        this.$router.push("/");
-      } catch (error) {
-        Toast.fire({
-          icon: "error",
-          title: `暫時無法送出。 \n 錯誤原因：${error}`,
-        });
-      }
-    },
-    handleAfterTweetClick() {
-      this.isTweetClicked = true;
-    },
-    handleAfterTweetCancel() {
-      this.isTweetClicked = false;
-    },
   },
 };
 </script>

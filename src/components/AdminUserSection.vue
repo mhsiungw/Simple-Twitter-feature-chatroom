@@ -1,12 +1,14 @@
 <template>
   <div class="user-section">
     <div class="title">使用者列表</div>
+
     <div class="user-cards">
-      <div v-for="user in userData" :key="user.id" class="card-item">
+      <p class="loading" v-if="isLoading">載入中...</p>
+      <div v-else v-for="user in userData" :key="user.id" class="card-item">
         <img :src="user.cover | emptyImage" alt="cover" class="cover" />
+        <img :src="user.avatar | emptyImage" alt="avatar" class="avatar" />
         <div class="description">
           <div class="description-title">
-            <img :src="user.avatar | emptyImage" alt="avatar" class="avatar" />
             <div class="name-account">
               <p class="name">{{ user.name }}</p>
               <p class="account">@{{ user.account }}</p>
@@ -37,6 +39,7 @@
 <script>
 import { mapState } from "vuex";
 import { emptyImageFilter } from "../utils/mixins";
+
 export default {
   computed: {
     ...mapState(["currentUser"]),
@@ -45,6 +48,10 @@ export default {
   props: {
     userData: {
       type: Array,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
       required: true,
     },
   },
@@ -62,56 +69,58 @@ export default {
     font-family: monospace;
   }
   .user-cards {
-    // border: 1px solid red;
     margin-top: 30px;
     margin-left: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(245px, 245px));
-    grid-auto-rows: 314px;
+    grid-auto-rows: minmax(314px, auto);
     grid-gap: 15px;
     .card-item {
       display: flex;
       flex-direction: column;
+      position: relative;
       .cover {
         width: 245px;
         height: 140px;
         object-fit: cover;
-        // border: 1px solid red;
         border-radius: 10px 10px 0 0;
       }
+      .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        outline: 4px solid #fff;
+        // 調整 title 位置
+        position: absolute;
+        top: 68px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
       .description {
-        // border: 1px solid gray;
         background: #f6f7f8;
         border-radius: 0 0 10px 10px;
         flex: 1;
         display: flex;
         flex-direction: column;
-        position: relative;
         justify-content: flex-end;
+        padding: 4px;
         .description-title {
-          // border: 1px solid black;
           display: flex;
           flex-direction: column;
-          // 調整 title 位置
-          position: absolute;
-          bottom: 60%;
-          left: 50%;
-          transform: translateX(-50%);
-          .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            outline: 4px solid #fff;
-          }
+          position: relative;
+          margin-top: 35px;
           .name-account {
             flex: 1;
             font-size: 15px;
+            text-align: center;
             .name,
             .account {
-              text-align: center;
-              // border: 1px solid black;
               margin: 0;
+              word-break: break-all;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             }
             .name {
               font-weight: 900;
@@ -123,7 +132,6 @@ export default {
           }
         }
         .detail {
-          // border: 1px solid black;
           align-self: center;
           text-align: center;
           margin-top: 15px;

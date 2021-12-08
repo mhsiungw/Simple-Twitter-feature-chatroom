@@ -1,10 +1,5 @@
 <template>
   <div class="main-section">
-    <ModalForTweet
-      @after-cancel-click="handleAfterTweetCancel"
-      @after-tweet-submit="handleAfterTweetSubmit"
-      v-if="isTweetClicked"
-    />
     <div class="title">首頁</div>
     <div class="part tweet-part">
       <img
@@ -29,11 +24,12 @@
         <button class="tweet-button" type="submit">推文</button>
       </form>
     </div>
+
     <div
+      class="part post-part"
       v-for="tweet in tweets"
       :key="tweet.id"
-      @click.stop.prevent="oneClick(tweet.id)"
-      class="part post-part"
+      @click.stop.prevent="dbclick(tweet.id)"
     >
       <img
         class="avatar"
@@ -85,13 +81,9 @@
 
 <script>
 import { fromNowFilter, emptyImageFilter } from "../utils/mixins.js";
-import ModalForTweet from "./ModalForTweet.vue";
 import { Toast } from "../utils/helpers";
 
 export default {
-  components: {
-    ModalForTweet,
-  },
   props: {
     tweets: {
       type: Array,
@@ -99,10 +91,6 @@ export default {
     },
     initialCurrentUser: {
       type: Object,
-      required: true,
-    },
-    isTweetClicked: {
-      type: Boolean,
       required: true,
     },
   },
@@ -128,25 +116,16 @@ export default {
     },
     handleLikeClick(tweetId) {
       //把資料傳到父層，讓父層串 API
-      console.log("handleLikeClick");
       this.$emit("after-like-clicked", tweetId);
     },
     handleDislikeClick(tweetId) {
       //把資料傳到父層，讓父層串 API
       this.$emit("after-dislike-clicked", tweetId);
     },
-    /** Modal control start **/
-    handleAfterTweetCancel() {
-      this.$emit("after-cancel-click");
-    },
-    handleAfterTweetSubmit(newTWeet) {
-      this.$emit("after-tweet-submit", newTWeet);
-    },
-    /** Modal control end **/
     handleTweetClick(tweetId) {
       this.$router.push({ name: "Tweet", params: { id: `${tweetId}` } });
     },
-    oneClick(tweetId) {
+    dbclick(tweetId) {
       this.clicks++;
       if (this.clicks === 1) {
         this.timer = setTimeout(function () {

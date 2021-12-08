@@ -65,7 +65,7 @@ export default new Vuex.Store({
           id, name, email, image, account, cover, isAdmin: role === 'user' ? false : true
         })
       } catch (error) {
-        console.error('cannot fetch user info')
+        console.error('cannot fetch admin user info')
       }
     },
     async fetchTopUsers({ commit }) {
