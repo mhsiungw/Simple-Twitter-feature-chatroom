@@ -41,7 +41,7 @@ import followshipsAPI from "@/apis/followships";
 import { emptyImageFilter } from "../utils/mixins";
 import { Toast } from "@/utils/helpers";
 import { mapState } from "vuex";
-import store from "./../store";
+// import store from "./../store";
 
 export default {
   name: "Trends",
@@ -71,7 +71,7 @@ export default {
   mixins: [emptyImageFilter],
   methods: {
     async fetchTopUsers() {
-      store.dispatch("fetchTopUsers");
+      // store.dispatch("fetchTopUsers");
       try {
         const { data } = await usersAPI.getTopUsers();
         //console.log("topuser===>", data);

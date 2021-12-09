@@ -1,10 +1,6 @@
 <template>
   <div class="setting-page-container">
-    <UserSidebar
-      @after-tweet-click="handleAfterTweetClick"
-      :is-tweet-clicked="isTweetClicked"
-      class="sidebar-section"
-    />
+    <UserSidebar :is-tweet-clicked="isTweetClicked" class="sidebar-section" />
     <SettingSection @after-save="handleAfterSave" class="setting-section" />
   </div>
 </template>
