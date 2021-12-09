@@ -76,7 +76,6 @@ export default {
     //點擊 Navbar 上的 推文
     handleTweetClick() {
       this.isModalShow = true;
-      this.$emit("after-tweet-click");
     },
     //收到 tweet modal 回傳的 $emit 事件後...
     afterTweetModalClick(action, input = "") {

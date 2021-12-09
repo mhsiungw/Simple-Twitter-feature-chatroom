@@ -51,6 +51,11 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
   },
+  beforeRouteLeave(to, from, next) {
+    this.account = "";
+    this.password = "";
+    next();
+  },
   methods: {
     async handleSubmit() {
       if (!this.account || !this.password) {
