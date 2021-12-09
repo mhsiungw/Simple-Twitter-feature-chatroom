@@ -20,9 +20,6 @@ export default new Vuex.Store({
     },
     isAuthenticated: false,
     token: '',
-    // followers: [],
-    // followings: [],
-    // topUsers: []
   },
   mutations: {
     setCurrentUser(state, currentUser) {
@@ -38,11 +35,6 @@ export default new Vuex.Store({
       state.isAuthenticated = false
       localStorage.removeItem('simpleTwitter-token')
     },
-    // setFollowingList(state, data) {
-    //   state.topUsers = [...data]
-    //   state.followers = [...data],
-    //     state.followings = [...data]
-    // }
   },
   actions: {
     async fetchCurrentUser({ commit }) {
@@ -68,15 +60,6 @@ export default new Vuex.Store({
         console.error('cannot fetch admin user info')
       }
     },
-    // async fetchTopUsers({ commit }) {
-    //   try {
-    //     const { data } = await usersAPI.getTopUsers();
-    //     console.log(commit, data)
-
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // },
   },
   modules: {
   }
