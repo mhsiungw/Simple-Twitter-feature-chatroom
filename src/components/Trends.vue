@@ -59,7 +59,6 @@ export default {
     // 在 created 鉤開始監聽 toastMessage 事件
     this.$bus.$on("toastMessage", () => {
       // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
-     // console.log("test event bus");
       this.fetchTopUsers();
     });
   },
@@ -205,6 +204,11 @@ $divider: #e6ecf0;
           line-height: 15px;
           font-weight: 700;
           cursor: pointer;
+          // 超出字數顯示刪節號
+          width: 100px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           &:hover {
             text-decoration: underline;
           }
@@ -216,6 +220,11 @@ $divider: #e6ecf0;
           font-weight: 700;
           color: $bitdark;
           cursor: pointer;
+          // 超出字數顯示刪節號
+          width: 100px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           &:hover {
             text-decoration: underline;
           }

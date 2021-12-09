@@ -56,7 +56,10 @@ export default {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchUserTweets(userId) {
@@ -77,7 +80,10 @@ export default {
           isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchFollowList() {
@@ -139,11 +145,10 @@ export default {
         this.followings.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "無法取得資料，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },
