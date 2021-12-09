@@ -89,7 +89,7 @@ export default {
       try {
         const followersData = await usersAPI.getFollowers({ userId });
         this.followers = followersData.data;
-        console.log("followersData", this.followers);
+        //console.log("followersData", this.followers);
 
         this.followers = this.followers.map((user) => {
           if (user.Followship.followingId !== this.currentUser.id) {
@@ -116,7 +116,7 @@ export default {
         const followingsData = await usersAPI.getFollowings({ userId });
 
         this.followings = followingsData.data;
-        console.log("followingsData", this.followings);
+        //console.log("followingsData", this.followings);
 
         this.followings = this.followings.map((user) => {
           if (user.Followship.followingId !== this.currentUser.id) {
