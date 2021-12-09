@@ -37,13 +37,17 @@
             :src="follower.avatar"
             alt=""
             @click="
-              $router.push(`/users/${follower.followerId}`).catch(() => {})
+              $route.name === 'FollowerPage'
+                ? $router.push(`/users/${follower.followerId}`).catch(() => {})
+                : $router.push(`/users/${follower.followingId}`).catch(() => {})
             "
           />
           <div
             class="text"
             @click="
-              $router.push(`/users/${follower.followerId}`).catch(() => {})
+              $route.name === 'FollowerPage'
+                ? $router.push(`/users/${follower.followerId}`).catch(() => {})
+                : $router.push(`/users/${follower.followingId}`).catch(() => {})
             "
           >
             <h5 v-if="follower" class="title">
@@ -56,14 +60,22 @@
             <button
               v-show="follower.isFollowed"
               class="btn-follow unfollow"
-              @click="deleteFollowing(follower.UserId)"
+              @click="
+                $route.name === 'FollowerPage'
+                  ? deleteFollowing(follower.followerId)
+                  : deleteFollowing(follower.followingId)
+              "
             >
               正在跟隨
             </button>
             <button
               v-show="!follower.isFollowed"
               class="btn-follow"
-              @click="addFollowing(follower.UserId)"
+              @click="
+                $route.name === 'FollowerPage'
+                  ? addFollowing(follower.followerId)
+                  : addFollowing(follower.followingId)
+              "
             >
               跟隨
             </button>
@@ -96,7 +108,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated", "followers", "followings"]),
+    ...mapState(["currentUser", "isAuthenticated"]),
   },
   watch: {
     initialFollowers: function () {
@@ -110,17 +122,25 @@ export default {
   methods: {
     async addFollowing(userId) {
       try {
+        console.log("addFollowing");
+        console.log(userId);
         const { data } = await followshipsAPI.addFollowing({ userId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
-        this.followers.filter((user) => {
-          if (user.UserId === userId) {
-            user.isFollowed = true;
-          }
-        });
+        this.$route.name === "FollowerPage"
+          ? this.followers.filter((user) => {
+              if (user.followerId === userId) {
+                user.isFollowed = true;
+              }
+            })
+          : this.followers.filter((user) => {
+              if (user.followingId === userId) {
+                user.isFollowed = true;
+              }
+            });
 
         // emit透過物件事件傳送
         this.$bus.$emit("toastMessage");
@@ -133,16 +153,24 @@ export default {
     },
     async deleteFollowing(userId) {
       try {
+        console.log("deleteFollowing");
+        console.log(userId);
         const { data } = await followshipsAPI.deleteFollowing({ userId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.followers.filter((user) => {
-          if (user.UserId === userId) {
-            user.isFollowed = false;
-          }
-        });
+        this.$route.name === "FollowerPage"
+          ? this.followers.filter((user) => {
+              if (user.followerId === userId) {
+                user.isFollowed = false;
+              }
+            })
+          : this.followers.filter((user) => {
+              if (user.followingId === userId) {
+                user.isFollowed = false;
+              }
+            });
 
         // emit透過物件事件傳送
         this.$bus.$emit("toastMessage");

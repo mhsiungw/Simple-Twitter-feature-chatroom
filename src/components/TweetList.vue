@@ -84,9 +84,6 @@ export default {
     },
     isReply: Boolean,
   },
-  data() {
-    return {};
-  },
   methods: {
     tweetDetail(tweet) {
       if (this.isReply) {
@@ -110,33 +107,23 @@ export default {
           }
         });
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法按讚推文，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },
     async unlikeTweet(tweetId) {
       try {
         const { data } = await likesAPI.unlikeTweet({ tweetId });
-        //console.log("unlikeTweet", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        this.tweets.filter((tweet) => {
-          if (tweet.TweetId === tweetId) {
-            tweet.isLiked = false;
-            tweet.likeTweetCount =
-              tweet.likeTweetCount - 1 <= 0 ? 0 : tweet.likeTweetCount - 1;
-          }
-        });
+        this.$emit("after-unlike-tweet", tweetId);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法按讚推文，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },
@@ -188,14 +175,13 @@ $divider: #e6ecf0;
       }
     }
     .tweet-wrapper {
-      margin-left: 10px;
+      margin: 0 10px 0 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       .info {
-        height: 22px;
-        line-height: 22px;
         display: flex;
-        flex-direction: row;
         font-size: 15px;
-        font-weight: 700;
         .name {
           font-weight: 700;
           margin-right: 5px;
@@ -207,6 +193,7 @@ $divider: #e6ecf0;
         .account-and-post-time {
           color: $bitdark;
           cursor: pointer;
+          white-space: nowrap;
           .account {
             &:hover {
               text-decoration: underline;
@@ -251,7 +238,6 @@ $divider: #e6ecf0;
         flex-direction: row;
         justify-content: space-between;
         color: $bitdark;
-        z-index: 999;
         .icon {
           max-width: 15px;
           width: 100%;
