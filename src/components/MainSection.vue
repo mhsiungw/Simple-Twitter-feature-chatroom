@@ -70,7 +70,7 @@
             @click.stop.prevent="handleLikeClick(tweet.id)"
             class="action-item action-dislike"
           >
-            <font-awesome-icon class="icon" :icon="['far', 'heart']" />
+            <font-awesome-icon class="icon notliked" :icon="['far', 'heart']" />
             <span>{{ tweet.Likes.length }}</span>
           </div>
         </div>
@@ -223,6 +223,7 @@ $orange: #ff6600;
   border: 1px solid #e6ecf0;
   display: flex;
   cursor: pointer;
+  word-break: break-all;
   .post {
     margin: 0 10px 0 10px;
     display: flex;
@@ -232,7 +233,7 @@ $orange: #ff6600;
       display: flex;
       font-size: 15px;
       .name {
-        font-weight: 500;
+        font-weight: 700;
         margin-right: 5px;
       }
       .account-name,

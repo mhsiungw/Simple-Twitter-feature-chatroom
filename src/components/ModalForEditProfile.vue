@@ -1,5 +1,5 @@
 <template>
-  <div class="modal edit">
+  <div @click.self="cancelModalClick()" class="modal edit">
     <div class="modal-content">
       <form @submit.stop.prevent="handleSubmit" enctype="multipart/form-data">
         <div class="modal-header">
@@ -129,7 +129,6 @@ export default {
     },
     coverChange(e) {
       const { files } = e.target;
-      // console.log("files", files[0]);
       if (files !== 0) {
         const coverUrl = window.URL.createObjectURL(files[0]);
         this.editUserCover = coverUrl;
@@ -137,7 +136,6 @@ export default {
     },
     avatarChange(e) {
       const { files } = e.target;
-      //console.log("files", files);
 
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);
@@ -178,9 +176,6 @@ export default {
 
         const form = e.target;
         const formData = new FormData(form);
-        // for (let [name, value] of formData.entries()) {
-        //  // console.log(name + ": " + value);
-        // }
         this.updateUser(formData);
       } catch (error) {
         Toast.fire({
@@ -195,7 +190,6 @@ export default {
           userId: this.currentUser.id,
           formData,
         });
-        //console.log("data==>", data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal reply">
+  <div @click.self="cancelModalClick" class="modal reply">
     <div class="modal-content">
       <div class="modal-header">
         <img
@@ -45,7 +45,7 @@
                   "
                   >{{ tweet.User.account }}</span
                 >
-                <span style="margin: 0 2px; color: #657786"> &bull;</span>
+                <span style="margin: 0 2px; color: #657786">．</span>
                 <span class="time"> {{ tweet.createdAt | fromNow }}</span>
               </div>
 
@@ -69,13 +69,13 @@
             v-model="replyContent"
             type="textarea"
             placeholder="推你的回覆"
-            maxlength="200"
+            maxlength="140"
           ></textarea>
           <div
             class="word-count"
-            :class="{ 'word-limit': replyContent.length === 200 }"
+            :class="{ 'word-limit': replyContent.length === 140 }"
           >
-            {{ replyContent.length }}/200
+            {{ replyContent.length }}/140
           </div>
 
           <button @click.prevent="replyTweet">推文</button>
@@ -191,14 +191,14 @@ $divider: #e6ecf0;
           .text-wrap {
             display: flex;
             flex-direction: column;
+            width: 500px;
             .title-wrap {
-              // outline: red solid;
               display: flex;
               flex-direction: row;
               justify-content: flex-start;
-              // margin: 15px 0 0 0;
               height: 22px;
               margin-bottom: 6px;
+              white-space: nowrap;
               .name {
                 font-family: Noto Sans TC;
                 font-style: normal;
@@ -207,6 +207,11 @@ $divider: #e6ecf0;
                 line-height: 22px;
                 margin-right: 5px;
                 cursor: pointer;
+                // 超出字數顯示刪節號
+                width: 100px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 &:hover {
                   text-decoration: underline;
                 }
@@ -233,12 +238,7 @@ $divider: #e6ecf0;
               }
             }
             p {
-              display: -webkit-box;
-              max-width: 510px;
-              -webkit-line-clamp: 4;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              text-align: start;
+              word-break: break-all;
             }
 
             .to-whom {

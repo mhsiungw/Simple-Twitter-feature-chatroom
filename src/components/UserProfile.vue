@@ -134,6 +134,7 @@
       v-if="tabOption === '喜歡的內容'"
       :tweets="userLikes"
       :isReply="false"
+      @after-unlike-tweet="handleUnlikeTweet"
     ></TweetList>
     <ModalForEditProfile
       :user="user"
@@ -155,7 +156,7 @@ import followshipsAPI from "@/apis/followships";
 import { mapState } from "vuex";
 
 export default {
-  name: "Profile",
+  name: "UserProfile",
   components: {
     Loading,
     TweetList,
@@ -224,7 +225,10 @@ export default {
         }
         this.fetchUserTweets();
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchUserTweets() {
@@ -257,7 +261,10 @@ export default {
         });
         this.tabOption = "推文";
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchUserReplies() {
@@ -285,7 +292,10 @@ export default {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchUserLikes() {
@@ -297,7 +307,6 @@ export default {
         const userLikes = await usersAPI.getUserLikes({ userId });
         this.userLikes = userLikes.data;
         //console.log("1this.user.userLikes====>:", this.userLikes);
-
         this.userLikes = this.userLikes.map((item) => ({
           id: item.id,
           UserId: item.Tweet.UserId,
@@ -305,20 +314,18 @@ export default {
           name: item.userName,
           avatar: item.userAvatar,
           account: item.userAccount,
-          createdAt: item.createdAt,
+          createdAt: item.Tweet.createdAt,
           description: item.Tweet.description,
           likeTweetCount: item.likeTweetCount,
           replyTweetCount: item.replyTweetCount,
           isLiked: item.isLiked,
-          likedAt: item.Tweet.createdAt,
+          likedAt: item.createdAt,
         }));
-
-        //  console.log("this.user.userLikes====>:", this.userLikes);
-        this.userLikes.sort((a, b) => {
-          return a.createdAt < b.createdAt ? 1 : -1;
-        });
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async addFollowing(userId) {
@@ -358,14 +365,20 @@ export default {
       try {
         // console.log("addSubscribe");
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async deleteSubscribe() {
       try {
         // console.log("deleteSubscribe");
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     afterClickEditProfile() {
@@ -389,6 +402,14 @@ export default {
     uploading(status) {
       this.isLoading = status;
     },
+    handleUnlikeTweet(tweetId) {
+      this.userLikes = this.userLikes.filter((tweet) => {
+        if (tweet.TweetId === tweetId) {
+          return;
+        }
+        return { ...tweet };
+      });
+    },
   },
 };
 </script>
@@ -407,8 +428,8 @@ $bitdark: #657786;
   border: 1px solid $divider;
   max-width: 600px;
   padding: 0;
+  word-break: break-all;
   .header {
-    height: 55px;
     display: flex;
     flex-direction: row;
     .arrow {
@@ -431,13 +452,16 @@ $bitdark: #657786;
       margin: 5px 0 0 40px;
       text-align: left;
       .name {
-        height: 24px;
         font-size: 19px;
         line-height: 28px;
         font-weight: 900;
+        // 超出字數顯示刪節號
+        width: 100px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .tweet-count {
-        height: 19px;
         font-size: 13px;
         line-height: 19px;
         font-weight: 500;
@@ -447,7 +471,6 @@ $bitdark: #657786;
   }
   .user-info {
     width: 100%;
-    height: 375px;
     position: relative;
     .cover-photo {
       height: 200px;
@@ -595,7 +618,6 @@ $bitdark: #657786;
     .name {
       margin: 70px 0 0 15px;
       text-align: left;
-      height: 24px;
       font-weight: 900;
       font-size: 19px;
       line-height: 28px;
@@ -603,16 +625,13 @@ $bitdark: #657786;
     .account {
       margin-left: 15px;
       text-align: left;
-      height: 22px;
       font-weight: 500;
       font-size: 15px;
       line-height: 22px;
       color: $bitdark;
     }
     .intro {
-      margin: 10px 0 0 15px;
-      width: 570px;
-      height: 40px;
+      margin: 10px 5px 0 15px;
       font-weight: normal;
       font-size: 14px;
       line-height: 20px;

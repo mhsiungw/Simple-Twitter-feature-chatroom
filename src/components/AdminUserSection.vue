@@ -117,7 +117,6 @@ export default {
             .name,
             .account {
               margin: 0;
-              word-break: break-all;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
