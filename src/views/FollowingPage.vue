@@ -95,52 +95,13 @@ export default {
       try {
         const followersData = await usersAPI.getFollowers({ userId });
         this.followers = followersData.data;
-        //console.log("followersData", this.followers);
-
-        this.followers = this.followers.map((user) => {
-          if (user.Followship.followingId !== this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-              UserId: user.followerId,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-              UserId: user.followerId,
-            };
-          }
-        });
 
         this.followers.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
 
         const followingsData = await usersAPI.getFollowings({ userId });
-
         this.followings = followingsData.data;
-        //console.log("followingsData", this.followings);
-
-        this.followings = this.followings.map((user) => {
-          if (user.Followship.followingId !== this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-              UserId: user.followingId,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-              UserId: user.followingId,
-            };
-          }
-        });
 
         this.followings.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
