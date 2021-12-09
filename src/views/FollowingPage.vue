@@ -39,16 +39,27 @@ export default {
       followings: [],
       user: {},
       userId: "",
+      topUsers: [],
     };
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
+    // 在 created 鉤開始監聽 toastMessage 事件
+    this.$bus.$on("changeFromTrends", () => {
+      // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
+      console.log("test bus on catch event");
+      this.fetchFollowList();
+    });
     this.userId = this.$route.params.id;
     this.fetchFollowList(this.userId);
     this.fetchProfile(this.userId);
     this.fetchUserTweets(this.userId);
+  },
+  beforeDestroy() {
+    // 元件銷毀前要取消監聽
+    this.$bus.$off("changeFromTrends");
   },
   methods: {
     async fetchProfile(userId) {
@@ -101,7 +112,7 @@ export default {
         });
 
         const followingsData = await usersAPI.getFollowings({ userId });
-        this.followings = followingsData.data;
+        this.followings = [...followingsData.data];
 
         this.followings.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;

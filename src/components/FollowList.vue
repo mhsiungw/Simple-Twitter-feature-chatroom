@@ -43,7 +43,7 @@
             "
           />
           <div
-            class="text"
+            class="content-container"
             @click="
               $route.name === 'FollowerPage'
                 ? $router.push(`/users/${follower.followerId}`).catch(() => {})
@@ -54,7 +54,9 @@
               {{ follower.name }}
             </h5>
             <h5 v-if="follower" class="account">＠{{ follower.account }}</h5>
-            <p v-if="follower" class="content">{{ follower.introduction }}</p>
+            <div v-if="follower" class="content">
+              {{ follower.introduction }}
+            </div>
           </div>
           <div v-if="follower.name !== currentUser.name">
             <button
@@ -110,14 +112,15 @@ export default {
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
+  created() {
+    this.userId = this.$route.params.id;
+    this.followers = this.initialFollowers;
+  },
+
   watch: {
     initialFollowers: function () {
       this.followers = this.initialFollowers;
     },
-  },
-  created() {
-    this.userId = this.$route.params.id;
-    this.followers = this.initialFollowers;
   },
   methods: {
     async addFollowing(userId) {
@@ -141,7 +144,9 @@ export default {
             });
 
         // emit透過物件事件傳送
-        this.$bus.$emit("toastMessage");
+        this.$nextTick(() => {
+          this.$bus.$emit("changeFromList");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -169,7 +174,9 @@ export default {
             });
 
         // emit透過物件事件傳送
-        this.$bus.$emit("toastMessage");
+        this.$nextTick(() => {
+          this.$bus.$emit("changeFromList");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -278,12 +285,13 @@ $divider: #e6ecf0;
         object-fit: cover;
         margin: 15px 10px 0 15px;
       }
-      .text {
+      .content-container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         margin-top: 10px;
         margin-bottom: 10px;
+
         .title {
           font-family: Noto Sans TC;
           font-style: normal;
@@ -318,6 +326,8 @@ $divider: #e6ecf0;
           line-height: 22px;
           text-align: start;
           margin: 0 15px 0 0;
+          white-space: wrap;
+          text-overflow: ellipsis;
         }
       }
       .btn-follow {

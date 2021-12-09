@@ -3,10 +3,7 @@
     <div class="modal-content">
       <form @submit.stop.prevent="handleSubmit" enctype="multipart/form-data">
         <div class="modal-header">
-          <div
-            class="icon cross"
-            @click.stop.prevent="cancelModalClick()"
-          ></div>
+          <div class="icon cross" @click.stop.prevent="cancelModalClick"></div>
           <span class="title">編輯個人資料</span>
           <button class="save" type="submit">儲存</button>
         </div>
@@ -34,10 +31,7 @@
             src="../assets/imgs/camera_inside.png"
             alt=""
           />
-          <div
-            class="icon cross"
-            @click.stop.prevent="cancelModalClick()"
-          ></div>
+          <div class="icon cross" @click.stop.prevent="clearCoverImg()"></div>
 
           <div
             class="photo"
@@ -136,11 +130,15 @@ export default {
     },
     avatarChange(e) {
       const { files } = e.target;
-
       if (files !== 0) {
         const avatarUrl = window.URL.createObjectURL(files[0]);
         this.editUserAvatar = avatarUrl;
       }
+    },
+    clearCoverImg() {
+      this.$emit("uploading", false);
+      const coverUrl = "https://i.ytimg.com/vi/KYV0tMXhxUg/maxresdefault.jpg";
+      this.editUserCover = coverUrl;
     },
     async handleSubmit(e) {
       try {
@@ -172,7 +170,6 @@ export default {
           });
           return;
         }
-        this.$emit("uploading", true);
 
         const form = e.target;
         const formData = new FormData(form);
@@ -185,6 +182,8 @@ export default {
       }
     },
     async updateUser(formData) {
+      this.$emit("uploading", true);
+
       try {
         const { data } = await usersAPI.updateUser({
           userId: this.currentUser.id,
