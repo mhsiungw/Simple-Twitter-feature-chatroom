@@ -39,16 +39,27 @@ export default {
       followings: [],
       user: {},
       userId: "",
+      topUsers: [],
     };
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
+    // 在 created 鉤開始監聽 toastMessage 事件
+    this.$bus.$on("changeFromTrends", () => {
+      // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
+      console.log("test bus on catch event");
+      this.fetchFollowList();
+    });
     this.userId = this.$route.params.id;
     this.fetchFollowList(this.userId);
     this.fetchProfile(this.userId);
     this.fetchUserTweets(this.userId);
+  },
+  beforeDestroy() {
+    // 元件銷毀前要取消監聽
+    this.$bus.$off("changeFromTrends");
   },
   methods: {
     async fetchProfile(userId) {
@@ -56,7 +67,10 @@ export default {
         const getProfile = await usersAPI.getProfile({ userId });
         this.user = { ...getProfile.data };
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchUserTweets(userId) {
@@ -77,7 +91,10 @@ export default {
           isLiked: tweet.isLiked ? tweet.isLiked : true,
         }));
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
+        });
       }
     },
     async fetchFollowList() {
@@ -89,61 +106,21 @@ export default {
       try {
         const followersData = await usersAPI.getFollowers({ userId });
         this.followers = followersData.data;
-        //console.log("followersData", this.followers);
-
-        this.followers = this.followers.map((user) => {
-          if (user.Followship.followingId !== this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-              UserId: user.followerId,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-              UserId: user.followerId,
-            };
-          }
-        });
 
         this.followers.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
 
         const followingsData = await usersAPI.getFollowings({ userId });
-
-        this.followings = followingsData.data;
-        //console.log("followingsData", this.followings);
-
-        this.followings = this.followings.map((user) => {
-          if (user.Followship.followingId !== this.currentUser.id) {
-            return {
-              ...user,
-              followerCount: user.followerCount + 1,
-              isFollowed: true,
-              UserId: user.followingId,
-            };
-          } else {
-            return {
-              ...user,
-              followerCount: user.followerCount - 1,
-              isFollowed: false,
-              UserId: user.followingId,
-            };
-          }
-        });
+        this.followings = [...followingsData.data];
 
         this.followings.sort((a, b) => {
           return a.createdAt < b.createdAt ? 1 : -1;
         });
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "無法取得資料，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },

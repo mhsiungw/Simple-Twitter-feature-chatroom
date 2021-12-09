@@ -86,15 +86,16 @@
         />
         <div class="reply-content">
           <div class="title">
-            <span
+            <div
               class="name"
               @click="
                 $router
                   .push(`/users/${row.User ? row.User.id : '/'}`)
                   .catch(() => {})
               "
-              >{{ row.User ? row.User.name : "" }}</span
             >
+              {{ row.User ? row.User.name : "" }}
+            </div>
             <span
               class="account"
               @click="
@@ -178,7 +179,6 @@ export default {
     async fetchTweet(tweetId) {
       try {
         const { data } = await tweetsAPI.getTweet({ tweetId });
-        console.log("getTweet====>", data);
 
         this.tweet = { ...data, currentUser: this.currentUser };
         this.likes = { ...data.Likes, isLiked: data.isLiked };
@@ -202,19 +202,17 @@ export default {
           });
           return;
         }
-        // console.log(typeof tweetId);
+
         const { data } = await tweetsAPI.addReply({ tweetId, comment });
-        //console.log(data)
         if (data.status !== "success") {
           throw new Error(data.message);
         }
         await this.fetchTweet(this.tweetId);
         this.showNewReplyModal = false;
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "回覆推文失敗，請稍後再試",
+          title: `無法註冊，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },
@@ -228,10 +226,9 @@ export default {
         this.likes.isLiked = true;
         this.fetchTweet(this.tweetId);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法按讚推文，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
       await this.fetchTweet(this.tweetId);
@@ -246,10 +243,9 @@ export default {
         this.likes.isLiked = false;
         this.fetchTweet(this.tweetId);
       } catch (error) {
-        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法取消按讚，請稍後再試",
+          title: `無法處理請求，請稍後再試 \n 錯誤原因：${error}`,
         });
       }
     },
@@ -429,11 +425,12 @@ $divider: #e6ecf0;
     background: #ffffff;
     border-top: 1px solid #e6ecf0;
     border-bottom: 1px solid #e6ecf0;
-    // box-sizing: border-box;
+
     .single-reply {
       display: flex;
       flex-direction: row;
       border-bottom: 1px solid #e6ecf0;
+      word-break: break-all;
       img {
         min-width: 50px;
         height: 50px;
@@ -463,6 +460,7 @@ $divider: #e6ecf0;
           .account {
             color: $bitdark;
             cursor: pointer;
+            white-space: nowrap;
             &:hover {
               text-decoration: underline;
             }
@@ -473,6 +471,7 @@ $divider: #e6ecf0;
             line-height: 22px;
             color: #657786;
             text-align: start;
+            white-space: nowrap;
           }
         }
         .to-whom {

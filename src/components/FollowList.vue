@@ -37,33 +37,47 @@
             :src="follower.avatar"
             alt=""
             @click="
-              $router.push(`/users/${follower.followerId}`).catch(() => {})
+              $route.name === 'FollowerPage'
+                ? $router.push(`/users/${follower.followerId}`).catch(() => {})
+                : $router.push(`/users/${follower.followingId}`).catch(() => {})
             "
           />
           <div
-            class="text"
+            class="content-container"
             @click="
-              $router.push(`/users/${follower.followerId}`).catch(() => {})
+              $route.name === 'FollowerPage'
+                ? $router.push(`/users/${follower.followerId}`).catch(() => {})
+                : $router.push(`/users/${follower.followingId}`).catch(() => {})
             "
           >
             <h5 v-if="follower" class="title">
               {{ follower.name }}
             </h5>
             <h5 v-if="follower" class="account">＠{{ follower.account }}</h5>
-            <p v-if="follower" class="content">{{ follower.introduction }}</p>
+            <div v-if="follower" class="content">
+              {{ follower.introduction }}
+            </div>
           </div>
           <div v-if="follower.name !== currentUser.name">
             <button
               v-show="follower.isFollowed"
               class="btn-follow unfollow"
-              @click="deleteFollowing(follower.UserId)"
+              @click="
+                $route.name === 'FollowerPage'
+                  ? deleteFollowing(follower.followerId)
+                  : deleteFollowing(follower.followingId)
+              "
             >
               正在跟隨
             </button>
             <button
               v-show="!follower.isFollowed"
               class="btn-follow"
-              @click="addFollowing(follower.UserId)"
+              @click="
+                $route.name === 'FollowerPage'
+                  ? addFollowing(follower.followerId)
+                  : addFollowing(follower.followingId)
+              "
             >
               跟隨
             </button>
@@ -96,16 +110,17 @@ export default {
     },
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated", "followers", "followings"]),
-  },
-  watch: {
-    initialFollowers: function () {
-      this.followers = this.initialFollowers;
-    },
+    ...mapState(["currentUser", "isAuthenticated"]),
   },
   created() {
     this.userId = this.$route.params.id;
     this.followers = this.initialFollowers;
+  },
+
+  watch: {
+    initialFollowers: function () {
+      this.followers = this.initialFollowers;
+    },
   },
   methods: {
     async addFollowing(userId) {
@@ -116,14 +131,22 @@ export default {
           throw new Error(data.message);
         }
 
-        this.followers.filter((user) => {
-          if (user.UserId === userId) {
-            user.isFollowed = true;
-          }
-        });
+        this.$route.name === "FollowerPage"
+          ? this.followers.filter((user) => {
+              if (user.followerId === userId) {
+                user.isFollowed = true;
+              }
+            })
+          : this.followers.filter((user) => {
+              if (user.followingId === userId) {
+                user.isFollowed = true;
+              }
+            });
 
         // emit透過物件事件傳送
-        this.$bus.$emit("toastMessage");
+        this.$nextTick(() => {
+          this.$bus.$emit("changeFromList");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -138,14 +161,22 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.followers.filter((user) => {
-          if (user.UserId === userId) {
-            user.isFollowed = false;
-          }
-        });
+        this.$route.name === "FollowerPage"
+          ? this.followers.filter((user) => {
+              if (user.followerId === userId) {
+                user.isFollowed = false;
+              }
+            })
+          : this.followers.filter((user) => {
+              if (user.followingId === userId) {
+                user.isFollowed = false;
+              }
+            });
 
         // emit透過物件事件傳送
-        this.$bus.$emit("toastMessage");
+        this.$nextTick(() => {
+          this.$bus.$emit("changeFromList");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -254,12 +285,13 @@ $divider: #e6ecf0;
         object-fit: cover;
         margin: 15px 10px 0 15px;
       }
-      .text {
+      .content-container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         margin-top: 10px;
         margin-bottom: 10px;
+
         .title {
           font-family: Noto Sans TC;
           font-style: normal;
@@ -294,6 +326,8 @@ $divider: #e6ecf0;
           line-height: 22px;
           text-align: start;
           margin: 0 15px 0 0;
+          white-space: wrap;
+          text-overflow: ellipsis;
         }
       }
       .btn-follow {

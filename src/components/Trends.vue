@@ -44,7 +44,6 @@ import { mapState } from "vuex";
 
 export default {
   name: "Trends",
-
   data() {
     return {
       topUsers: [],
@@ -54,18 +53,21 @@ export default {
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
-  created() {
-    this.fetchTopUsers();
+  mounted() {
     // 在 created 鉤開始監聽 toastMessage 事件
-    this.$bus.$on("toastMessage", () => {
+
+    this.$bus.$on("changeFromList", () => {
+      console.log("test");
       // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
-     // console.log("test event bus");
       this.fetchTopUsers();
     });
   },
+  created() {
+    this.fetchTopUsers();
+  },
   beforeDestroy() {
     // 元件銷毀前要取消監聽
-    this.$bus.$off("toastMessage");
+    this.$bus.$off("changeFromList");
   },
   mixins: [emptyImageFilter],
   methods: {
@@ -105,6 +107,10 @@ export default {
           }
         });
         this.$emit("after-cancel-following", userId);
+        // emit透過物件事件傳送
+        this.$nextTick(function () {
+          this.$bus.$emit("changeFromTrends");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -132,6 +138,10 @@ export default {
           }
         });
         this.$emit("after-following", userId);
+        // emit透過物件事件傳送
+        this.$nextTick(function () {
+          this.$bus.$emit("changeFromTrends");
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -205,6 +215,11 @@ $divider: #e6ecf0;
           line-height: 15px;
           font-weight: 700;
           cursor: pointer;
+          // 超出字數顯示刪節號
+          width: 100px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           &:hover {
             text-decoration: underline;
           }
@@ -216,6 +231,11 @@ $divider: #e6ecf0;
           font-weight: 700;
           color: $bitdark;
           cursor: pointer;
+          // 超出字數顯示刪節號
+          width: 100px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           &:hover {
             text-decoration: underline;
           }

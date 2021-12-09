@@ -13,7 +13,14 @@
         <label for="password">密碼</label>
         <input v-model="password" type="password" id="password" />
       </div>
-      <button class="sign-in-button" type="submit">登入</button>
+      <button
+        :disabled="isProcessing"
+        :class="{ 'disabled-style': isProcessing }"
+        class="sign-in-button"
+        type="submit"
+      >
+        {{ isProcessing ? "不要一直按，會壞掉啦" : "登入" }}
+      </button>
       <div class="other-links">
         <router-link v-if="!isAdminLogin" to="/register"
           >註冊 Alphitter</router-link
@@ -40,6 +47,8 @@ export default {
       password: "",
       //用來辨別是否為後台登入頁面
       isAdminLogin: this.$route.path === "/admin/login",
+      // 擋使用者重複按登入按鈕
+      isProcessing: false,
     };
   },
   watch: {
@@ -51,34 +60,39 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
   },
+  beforeRouteLeave(to, from, next) {
+    this.account = "";
+    this.password = "";
+    next();
+  },
   methods: {
     async handleSubmit() {
-      if (!this.account || !this.password) {
-        Toast.fire({
-          icon: "warning",
-          title: "請輸入帳號或密碼",
-        });
-      }
-      /************     
-      因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
-      ************/
-      let { data } = this.isAdminLogin
-        ? await adminAPI.adminLogin({
-            account: this.account,
-            password: this.password,
-          })
-        : await authorizationAPI.logIn({
-            account: this.account,
-            password: this.password,
+      try {
+        if (!this.account || !this.password) {
+          return Toast.fire({
+            icon: "warning",
+            title: "請輸入帳號或密碼",
           });
-      // 如果登入失敗
-      if (data.status !== "success") {
-        Toast.fire({
-          icon: "error",
-          title: data.message,
-        });
-        throw new Error(data.status);
-      } else {
+        }
+        /************     
+        因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
+        ************/
+        this.isProcessing = true;
+        let { data } = this.isAdminLogin
+          ? await adminAPI.adminLogin({
+              account: this.account,
+              password: this.password,
+            })
+          : await authorizationAPI.logIn({
+              account: this.account,
+              password: this.password,
+            });
+        // 如果登入失敗
+        if (data.status !== "success") {
+          this.isProcessing = false;
+          throw new Error(data.status);
+        }
+        // 如果登入成功
         Toast.fire({
           icon: "success",
           title: "登入成功",
@@ -88,13 +102,18 @@ export default {
         // 存取 token 並轉到 MainPage
         localStorage.setItem("simpleTwitter-token", data.token);
         /************     
-        因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
-        ************/
+          因為後台登入和前台登入都在同一個頁面，所以要做一個判斷式判斷現在登入的使用者是否為後台管理者
+          ************/
         if (this.isAdminLogin === false) {
           this.$router.push("/");
         } else if (this.isAdminLogin === true) {
           this.$router.push("/admin/users");
         }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: `無法登入，請稍後再試。錯誤原因：${error}`,
+        });
       }
     },
   },
@@ -103,6 +122,10 @@ export default {
 
 <style scoped lang="scss">
 $orange: #ff6600;
+
+.disabled-style {
+  background: linear-gradient(to right, blue, $orange) !important;
+}
 
 .sign-in-section {
   margin: 100px auto;
