@@ -90,7 +90,7 @@ export default {
         // 如果登入失敗
         if (data.status !== "success") {
           this.isProcessing = false;
-          throw new Error(data.status);
+          throw new Error(data.message);
         }
         // 如果登入成功
         Toast.fire({

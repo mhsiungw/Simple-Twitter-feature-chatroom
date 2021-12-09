@@ -122,8 +122,6 @@ export default {
   methods: {
     async addFollowing(userId) {
       try {
-        console.log("addFollowing");
-        console.log(userId);
         const { data } = await followshipsAPI.addFollowing({ userId });
 
         if (data.status !== "success") {
@@ -153,8 +151,6 @@ export default {
     },
     async deleteFollowing(userId) {
       try {
-        console.log("deleteFollowing");
-        console.log(userId);
         const { data } = await followshipsAPI.deleteFollowing({ userId });
 
         if (data.status !== "success") {
