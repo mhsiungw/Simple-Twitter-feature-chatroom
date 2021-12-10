@@ -55,7 +55,6 @@ export default {
   },
   mounted() {
     // 在 created 鉤開始監聽 toastMessage 事件
-
     this.$bus.$on("changeFromList", () => {
       console.log("test");
       // 並將接收到的資訊傳給 messageSetting 去觸發 toast 事件。
