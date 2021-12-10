@@ -8,6 +8,9 @@
 git clone https://github.com/CHLin13/twitter-front-end.git
 ```
 ```
+cd twitter-front-end
+```
+```
 npm ci
 ```
 ```
