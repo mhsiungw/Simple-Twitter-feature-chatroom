@@ -3,7 +3,7 @@
     <div class="upper">
       <img
         class="arrow"
-        src="../assets/imgs/vector@2x.png"
+        src="../assets/imgs/Vector@2x.png"
         alt="Vector"
         @click="$router.go(-1)"
       />
