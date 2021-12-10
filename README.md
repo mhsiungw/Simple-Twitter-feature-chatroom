@@ -45,7 +45,7 @@ email: root@example.com
 password: 12345678
 ```
 
-## Installing-本地端專案建置
+## Installing-後端本地專案建置
 
 1. 請在終端機輸入
 
@@ -58,7 +58,7 @@ npm install
 2. 建立.env
 
 ```
-PORT='3000'
+PORT=3000
 JWT_SECRET=alphacamp
 SESSION_SECRET=SECRET
 IMGUR_CLIENT_ID=YOUR ID
@@ -78,11 +78,14 @@ npx sequelize db:seed:all
 ```
 
 5. 在終端機輸入以下指令，啟動後端專案
-
+### 在OS環境上
 ```
 npm run dev
 ```
-
+### 在Window環境上
+```
+nodemon app.js
+```
 ### 開發人員
 
 > 後端
