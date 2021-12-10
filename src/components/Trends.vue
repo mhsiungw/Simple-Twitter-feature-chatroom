@@ -276,7 +276,6 @@ $divider: #e6ecf0;
     margin-bottom: auto;
     height: 22px;
     line-height: 22px;
-    max-width: 60px;
     margin: 12px 0 12px 15px;
     text-align: left;
     font-weight: normal;
