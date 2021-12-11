@@ -13,6 +13,11 @@ const routes = [
     component: MainPage
   },
   {
+    path: '/chatroom',
+    name: 'ChatRoomPage',
+    component: () => import('../views/ChatRoomPage.vue')
+  },
+  {
     path: '/reply_list/:id',
     name: 'Tweet',
     component: () => import('../views/Tweet.vue')
@@ -67,6 +72,11 @@ const routes = [
     path: '/chat',
     name: 'chat',
     component: () => import('../views/Chat.vue'),
+  },
+  {
+    path: '/privateChat/:id',
+    name: 'inbox',
+    component: () => import('../views/Private.vue'),
   },
   {
     path: '*',

@@ -36,8 +36,16 @@
         class="other-button-wrapper"
         v-if="this.$route.path !== `/users/${currentUser.id}`"
       >
-        <div class="btn-messege">
-          <a v-if="user"><div class="icon messege"></div></a>
+        <div
+          class="btn-messege"
+          @click="$router.push(`/privateChat/${user.id}`).catch(() => {})"
+        >
+          <a
+            v-if="user"
+            @click="$router.push(`/privateChat/${user.id}`).catch(() => {})"
+          >
+            <div class="icon messege"></div
+          ></a>
         </div>
         <div v-if="user">
           <div

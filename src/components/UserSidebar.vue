@@ -28,6 +28,17 @@
           </li>
           <li class="list-item">
             <router-link
+              :to="{ name: 'ChatRoomPage' }"
+              :class="{
+                focus: this.$route.path === `/chatroom`,
+              }"
+            >
+              <font-awesome-icon class="icon" icon="cog" />
+              <span>公開聊天室</span>
+            </router-link>
+          </li>
+          <li class="list-item">
+            <router-link
               :to="{ name: 'SettingPage', params: { id: currentUser.id } }"
               :class="{
                 focus: this.$route.path === `/setting`,
@@ -49,6 +60,17 @@
                 src="../assets/svgs/icon_msg_noti.svg"
               />
               公開聊天室
+            </router-link>
+          </li>
+          <li class="list-item">
+            <router-link
+              :to="{ name: 'inbox' }"
+              :class="{
+                focus: $route.path === '/privateChat',
+              }"
+            >
+              <div class="icon messages"></div>
+              私人訊息
             </router-link>
           </li>
         </ul>
@@ -203,5 +225,8 @@ $orange: #ff6600;
     font-weight: 800;
     font-family: "Noto Sans TC";
   }
+}
+.icon.messages {
+  mask: url(../assets/svgs/icon_msg.svg) no-repeat center;
 }
 </style>
