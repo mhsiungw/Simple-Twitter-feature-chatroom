@@ -37,6 +37,20 @@
               <span>設定</span>
             </router-link>
           </li>
+          <li class="list-item">
+            <router-link
+              :to="{ name: 'chat' }"
+              :class="{
+                focus: $route.path === '/chat',
+              }"
+            >
+              <img
+                class="icon msg-noti"
+                src="../assets/svgs/icon_msg_noti.svg"
+              />
+              公開聊天室
+            </router-link>
+          </li>
         </ul>
         <button @click.stop.prevent="handleTweetClick" class="tweet-button">
           推文

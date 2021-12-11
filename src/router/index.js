@@ -64,6 +64,11 @@ const routes = [
     component: () => import('../views/admin/AdminTweetPage.vue')
   },
   {
+    path: '/chat',
+    name: 'chat',
+    component: () => import('../views/Chat.vue'),
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')
