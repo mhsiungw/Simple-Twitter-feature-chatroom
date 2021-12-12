@@ -9,7 +9,7 @@ import store from './store'
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 
-const socketConnection = SocketIO('https://chatroom-2021.herokuapp.com/');
+const socketConnection = SocketIO('https://fast-fortress-15170.herokuapp.com');
 
 Vue.use(new VueSocketIO({
   debug: true,
