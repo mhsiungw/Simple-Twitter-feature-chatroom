@@ -2,32 +2,49 @@
   <div class="chat-room-section">
     <div class="online-users">
       <div class="title">
-        上線使用者<span class="online-user-count">({{ users.length }})</span>
+        上線使用者<span class="online-user-count"
+          >({{ onlineUsers.length }})</span
+        >
       </div>
       <div class="user-list">
-        <div v-for="user of users" :key="user.id" class="user-item">
-          <img :src="user.avatar | emptyImage" class="avatar" alt="avatar" />
-          <div class="name">{{ user.name }}</div>
-          <div class="account">@{{ user.account }}</div>
+        <div v-for="user of onlineUsers" :key="user.id" class="user-item">
+          <img
+            :src="user.User.avatar | emptyImage"
+            class="avatar"
+            alt="avatar"
+          />
+          <div class="name">{{ user.User.name }}</div>
+          <div class="account">@{{ user.User.account }}</div>
         </div>
       </div>
     </div>
     <div class="chat-room">
       <div class="title">公開聊天室</div>
-      <div class="chat-display-section">
-        <div class="other dialogue">
-          <img :src="false | emptyImage" class="avatar" alt="avatar" />
-          <div class="desc">
-            <div class="input">Hello</div>
-            <div class="time">下午 6:01</div>
+      <div class="chat-room-container">
+        <div class="chat-display-section">
+          <div
+            v-for="textObj in textObjs"
+            :key="textObj.id"
+            class="dialogue"
+            :class="
+              textObj.User2Id === currentUser.id ? 'currentuser' : 'others'
+            "
+          >
+            <img
+              v-if="textObj.User2Id !== currentUser.id"
+              :src="textObj.User2.avatar | emptyImage"
+              class="avatar"
+              alt="avatar"
+            />
+            <div class="desc">
+              <div class="input">{{ textObj.message }}</div>
+              <div class="time">{{ textObj.createdAt | fromNow }}</div>
+            </div>
           </div>
         </div>
-        <div class="currentuser dialogue">
-          <div class="input">{{ selfMsg }}</div>
-          <div class="time">下午 6:01</div>
-        </div>
       </div>
-      <form @click.stop.prevent="afterSendText" class="input-form">
+
+      <form @submit.stop.prevent="afterSendText" class="input-form">
         <input v-model="text" class="input" type="text" />
         <button class="submit-button" type="submit">>></button>
       </form>
@@ -39,11 +56,20 @@
 <script>
 import usersAPI from "../apis/users";
 import { emptyImageFilter } from "../utils/mixins";
+import { fromNowFilter } from "../utils/mixins";
+import { mapState } from "vuex";
 
 export default {
   props: {
-    selfMsg: {
-      type: String,
+    textObjs: {
+      type: Array,
+      required: true,
+      default: function () {
+        return [];
+      },
+    },
+    onlineUsers: {
+      type: Array,
       required: true,
     },
   },
@@ -51,16 +77,12 @@ export default {
     return {
       users: [],
       text: "",
-      textObj: [
-        {
-          userId: 11,
-          msg: "Hello",
-          createdAt: "下午 6:12",
-        },
-      ],
     };
   },
-  mixins: [emptyImageFilter],
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  mixins: [emptyImageFilter, fromNowFilter],
   created() {
     this.fetchUsers();
   },
@@ -69,14 +91,22 @@ export default {
       let { data } = await usersAPI.getTopUsers();
       this.users = data;
     },
-    async afterSendText() {
+    // 把資料傳給 ChatRoomPage.vue
+    afterSendText() {
       this.$emit("after-sent-text", this.text);
+      this.text = "";
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.chat-room-container {
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+}
+
 .chat-room-section {
   border: 1px solid #e6ecf0;
   display: flex;
@@ -127,6 +157,7 @@ export default {
   .chat-room {
     display: flex;
     flex-direction: column;
+    overflow: scroll;
     flex: 1;
     .title {
       border-bottom: 1px solid #e6ecf0;
@@ -137,7 +168,6 @@ export default {
     }
     .chat-display-section {
       padding: 15px;
-      flex: 1;
       .dialogue {
         display: flex;
         margin-bottom: 15px;
@@ -146,9 +176,12 @@ export default {
           font-size: 13px;
         }
       }
-      .other {
+      .others {
         .avatar {
           margin-right: 10px;
+        }
+        .desc {
+          text-align: left;
         }
         .input {
           background: #e6ecf0;
@@ -161,16 +194,17 @@ export default {
       .currentuser {
         display: flex;
         flex-direction: column;
-        & > div {
+        .desc {
           align-self: flex-end;
-        }
-        .input {
-          background: #ff6600;
-          color: white;
-          padding: 5px 10px;
-          border-radius: 10px;
-          font-size: 15px;
-          letter-spacing: 1px;
+          text-align: right;
+          .input {
+            background: #ff6600;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 15px;
+            letter-spacing: 1px;
+          }
         }
       }
 

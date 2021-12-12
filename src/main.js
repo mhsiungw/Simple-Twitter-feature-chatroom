@@ -7,6 +7,24 @@ import { faComment, faHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import store from './store'
 import io from "socket.io-client";
+import VueSocketIO from 'vue-socket.io'
+import SocketIO from 'socket.io-client'
+
+const socketConnection = SocketIO('http://localhost:3000');
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: socketConnection,
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  },
+  options: {
+    autoConnect: true,
+    forceNew: true,
+  }
+}));
 
 library.add(faCog, faUser, faHome, faComment, faHeart, fasHeart)
 
