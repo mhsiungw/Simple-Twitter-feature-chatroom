@@ -9,15 +9,11 @@
 
 <script>
 import UserSidebar from "../components/UserSidebar.vue";
-import { mapState } from "vuex";
 import PrivateChatroom from "@/components/PrivateChatroom.vue";
 export default {
   components: {
     UserSidebar,
     PrivateChatroom,
-  },
-  computed: {
-    ...mapState(["currentUser", "isAuthenticated"]),
   },
 };
 </script>

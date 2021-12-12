@@ -5,33 +5,28 @@
         <div class="info">
           <div
             class="name"
-            @click="
-              $router.push(`/user/other/${userChatTo.id}`).catch(() => {})
-            "
+            @click="$router.push(`/user/other/${userId}`).catch(() => {})"
           >
-            {{ userChatTo.name }}
+            {{ "test.name" }}
           </div>
           <div
             class="account"
-            @click="
-              $router.push(`/user/other/${userChatTo.id}`).catch(() => {})
-            "
+            @click="$router.push(`/user/other/${userId}`).catch(() => {})"
           >
-            {{ userChatTo.account }}
+            {{ "test.account" }}
           </div>
         </div>
       </div>
-      <div ref="boardWrapper" class="board-wrapper" @click="scrollToBottom">
+      <div ref="boardWrapper" class="board-wrapper">
         <div class="messages">
-          <div v-for="(message, index) in messages" :key="`msg-${index}`">
+          <div v-for="message in messages" :key="message.id">
             <div
               class="broacast-message-wrapper"
-              v-if="
-                message.type === 'userComein' &&
-                currentUser.id !== message.UserId
-              "
+              v-if="currentUser.id !== message.UserId"
             >
-              <div class="broacast-message">{{ message.message }}</div>
+              <div class="broacast-message">
+                {{ message.createdAt | fromNow }}
+              </div>
             </div>
             <div
               class="other message"
@@ -60,7 +55,7 @@
           </div>
         </div>
       </div>
-      <form @submit.prevent="sendMessage" @click="scrollToBottom">
+      <form @submit.prevent="sendMessage">
         <div class="text-wrapper">
           <input
             v-model="message"
@@ -75,7 +70,7 @@
         </div>
       </form>
     </div>
-    <div v-show="!messages" class="no-message-noti">
+    <div v-show="messages.length === 0" class="no-message-noti">
       <div>你沒有任何訊息</div>
     </div>
   </div>
@@ -88,9 +83,6 @@ import { fromNowFilter } from "../utils/mixins.js";
 
 export default {
   props: {
-    userChatTo: {
-      type: Object,
-    },
     messages: {
       type: Array,
     },
@@ -108,8 +100,8 @@ export default {
     this.$socket.on("private_msg_from_backend", (data) => {
       console.log("private_msg", data);
       this.$emit("sendPrivateMessage", {
-        UserId: data.UserId,
-        ReceiverId: data.receiverId,
+        SenderId: data.SenderId,
+        ReceiverId: data.ReceiverId,
         message: data.message,
         createdAt: data.createdAt,
         targetChannel: data.targetChannel,
@@ -117,36 +109,17 @@ export default {
     });
     this.$socket.on("unread_msg", (data) => {
       console.log("unread_msg===>", data);
-      if (
-        data.UserId === this.currentUser.id &&
-        data.UserId !== this.userChatTo.id
-      ) {
+      if (data.UserId === this.currentUser.id) {
         this.$bus.$emit("updateChatUsers", data);
       }
     });
   },
   beforeDestroy() {},
-  watch: {
-    messages() {
-      this.scrollToBottom();
-    },
-    userChatTo() {
-      this.scrollToBottom();
-    },
-    targetChannel() {
-      this.scrollToBottom();
-    },
-  },
-  updated() {
-    this.scrollToBottom();
-  },
+  watch: {},
   computed: {
     ...mapState(["currentUser", "isAuthenticated"]),
   },
   methods: {
-    scrollToBottom() {
-      console.log("scrollToBottom");
-    },
     sendMessage(e) {
       e.preventDefault();
       if (this.message.trim() === "") {
@@ -157,8 +130,8 @@ export default {
         return;
       }
       this.$socket.emit("private message", {
-        UserId: this.currentUser.id,
-        receiverId: this.$route.params.id,
+        SenderId: this.currentUser.id,
+        ReceiverId: this.$route.params.id,
         message: this.message,
         targetChannel: this.targetChannel,
       });

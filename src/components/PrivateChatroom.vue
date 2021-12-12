@@ -5,14 +5,13 @@
         訊息
         <div class="icon messege"></div>
       </div>
-      <div class="list-group" v-if="historyChatUsers.length > 0">
+      <div class="list-group">
         <div
-          v-for="(user, idx) in historyChatUsers"
-          :key="`${user.id + Math.random()}`"
+          v-for="user in historyChatUsers"
+          :key="user.id"
           class="list-group-item"
-          @click="controlActive(user, idx)"
         >
-          <div v-show="messengeActive[idx]" class="active-bar"></div>
+          <div class="active-bar"></div>
           <div
             class="avatar"
             @click="$router.push(`/user/other/${user.id}`).catch(() => {})"
@@ -43,8 +42,7 @@
       </div>
     </div>
     <PrivateMessengeBoard
-      :userChatTo="userChatTo"
-      :messages="histroyMessages"
+      :messages="historyMessages"
       :targetChannel="targetChannel"
       @sendPrivateMessage="receiveMessage"
     >
@@ -58,22 +56,19 @@ import { mapState } from "vuex";
 import usersAPI from "@/apis/users";
 import chatAPI from "@/apis/chats";
 import PrivateMessengeBoard from "@/components/PrivateMessengeBoard.vue";
+
 export default {
   components: {
     PrivateMessengeBoard,
   },
   data() {
     return {
-      messengeActive: [],
-      userChatTo: {},
-      historyChatUsers: [],
-      historyChatUserId: [],
       allHistoryMessages: [],
-      histroyMessages: [],
-      unreadMessages: [],
+      historyMessages: [],
       targetChannel: "",
       users: [],
       privateRoomData: {},
+      historyChatUsers: {},
     };
   },
   mounted() {
@@ -81,13 +76,13 @@ export default {
     console.log("userId", userId);
     this.$bus.$on("updateChatUsers", (message) => {
       this.updateChatUsers(message);
-      this.readMessages(this.userChatTo.id);
     });
     this.targetChannel =
       Number(userId) > Number(this.currentUser.id)
         ? `${this.currentUser.id}_${userId}`
         : `${userId}_${this.currentUser.id}`;
     console.log(this.targetChannel);
+
     return Promise.all([
       this.fetchUsers(userId),
       this.fetchPrivateChatroom(userId),
@@ -99,7 +94,6 @@ export default {
   },
   beforeDestroy() {
     this.$socket.emit("leave private chatroom", this.targetChannel);
-    this.readMessages(this.userChatTo.id);
     this.$bus.$off("updateChatUsers");
   },
   computed: {
@@ -111,26 +105,15 @@ export default {
   methods: {
     receiveMessage(message) {
       this.allHistoryMessages = [...this.allHistoryMessages, message];
-      this.histroyMessages = this.allHistoryMessages;
-    },
-    controlActive(user, index) {
-      console.log("controlActive", user, index);
+      this.historyMessages = this.allHistoryMessages;
     },
     async fetchPrivateChatroom(userId) {
-      console.log("userId====>", userId);
       try {
         const { data } = await chatAPI.getPrivateChatRoom({ userId });
         console.log("getPrivateChatRoom==>", data);
         this.privateRoomData = data;
         this.allHistoryMessages = [...data];
-        this.histroyMessages = [...data];
-
-        // this.histroyMessages = this.histroyMessages.map((r) => {
-        //   if (r.SenderId === this.currentUser.id) {
-        //     r.ReceiverId = String(r.ReceiverId);
-        //   }
-        //   return r;
-        // });
+        this.historyMessages = [...data];
         return this.privateRoomData;
       } catch (error) {
         console.log(error);
@@ -151,17 +134,6 @@ export default {
         Toast.fire({
           icon: "error",
           title: "目前無法取得資料，請稍候",
-        });
-      }
-    },
-    async readMessages(userId) {
-      try {
-        console.log(userId);
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "目前無法已讀訊息，請稍候",
         });
       }
     },

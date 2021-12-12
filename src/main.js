@@ -18,8 +18,8 @@ const socket = io('http://localhost:3000')
 Vue.prototype.$socket = socket
 // 發送一個 "sendMessage" 事件
 socket.emit("sendMessage", {
-  name: "ttest",
-  message: "hello everyone"
+  name: "msg====>",
+  message: "client connect to backend"
 })
 // 監聽來自 server 的 "allMessage" 事件
 socket.on("allMessage", function (message) {
