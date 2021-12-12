@@ -69,7 +69,15 @@
                 focus: $route.path === '/privateChat',
               }"
             >
-              <div class="icon messages"></div>
+              <div class="unread-noti">
+                {{ 15 }}
+              </div>
+
+              <img
+                class="icon message"
+                src="../assets/svgs/icon_msg_noti.svg"
+              />
+
               私人訊息
             </router-link>
           </li>
@@ -177,6 +185,10 @@ $orange: #ff6600;
     list-style: none;
     padding-left: 0;
     .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      position: relative;
       margin-top: 31px;
       .icon {
         width: 20px;
@@ -191,6 +203,19 @@ $orange: #ff6600;
         &.focus {
           color: $orange;
         }
+      }
+      .unread-noti {
+        z-index: 999;
+        padding-left: 2px;
+        position: absolute;
+        font-size: 12px;
+        top: -7px;
+        left: 12px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: $orange;
+        color: #f8f2f2;
       }
     }
   }
