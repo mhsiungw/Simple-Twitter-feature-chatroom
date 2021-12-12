@@ -12,23 +12,21 @@ library.add(faCog, faUser, faHome, faComment, faHeart, fasHeart)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
-//socket.io-----
-// const socket = require('socket.io-client')('http://localhost:3000');
+//---------------socket.io---------------
 const socket = io('http://localhost:3000')
 Vue.prototype.$socket = socket
 // 發送一個 "sendMessage" 事件
 socket.emit("sendMessage", {
-  name: "msg====>",
-  message: "client connect to backend"
+  name: "test-socket",
+  message: "client emit to backend"
 })
 // 監聽來自 server 的 "allMessage" 事件
 socket.on("allMessage", function (message) {
-  console.log(message)
+  console.log('Message from server ===>', message)
 })
-//---------------------
+//----------socket.io-----------
 
 Vue.config.productionTip = false
-
 // event bus
 Vue.prototype.$bus = new Vue();
 
