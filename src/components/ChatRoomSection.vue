@@ -43,7 +43,6 @@
           </div>
         </div>
       </div>
-
       <form @submit.stop.prevent="afterSendText" class="input-form">
         <input v-model="text" class="input" type="text" />
         <button class="submit-button" type="submit">>></button>

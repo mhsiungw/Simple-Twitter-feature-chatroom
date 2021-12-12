@@ -56,20 +56,10 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    console.log(to, from);
     this.$socket.emit("leave", this.id);
     next();
   },
   sockets: {
-    connect() {
-      console.log("socket connected");
-    },
-    disconnect() {
-      console.log("socket disconnected");
-    },
-    error() {
-      console.log("socket error");
-    },
     historyTexts(data) {
       this.$store.commit("SOCKET_fetchHistoryTexts", data);
     },
@@ -79,7 +69,6 @@ export default {
     single_thread(data) {
       // emit 資料到後端後，後端廣播回來的資料從這裡拿
       this.textObjs.push(data[0]);
-    },
   },
 };
 </script>

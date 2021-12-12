@@ -10,7 +10,7 @@ import io from "socket.io-client";
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 
-const socketConnection = SocketIO('http://localhost:3000');
+const socketConnection = SocketIO('https://fast-fortress-15170.herokuapp.com');
 
 Vue.use(new VueSocketIO({
   debug: true,
@@ -31,7 +31,7 @@ library.add(faCog, faUser, faHome, faComment, faHeart, fasHeart)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 //---------------socket.io---------------
-const socket = io('http://localhost:3000')
+const socket = io('https://fast-fortress-15170.herokuapp.com')
 Vue.prototype.$socket = socket
 // 發送一個 "sendMessage" 事件
 socket.emit("sendMessage", {
