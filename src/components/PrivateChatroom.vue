@@ -73,7 +73,7 @@ export default {
   },
   mounted() {
     const userId = this.$route.params.id;
-    console.log("userId", userId);
+
     this.$bus.$on("updateChatUsers", (message) => {
       this.updateChatUsers(message);
     });
@@ -81,14 +81,11 @@ export default {
       Number(userId) > Number(this.currentUser.id)
         ? `${this.currentUser.id}_${userId}`
         : `${userId}_${this.currentUser.id}`;
-    console.log(this.targetChannel);
 
     return Promise.all([
       this.fetchUsers(userId),
       this.fetchPrivateChatroom(userId),
     ]).then(() => {
-      console.log("done Promise");
-
       this.$socket.emit("private chatroom", this.targetChannel);
     });
   },
@@ -124,7 +121,6 @@ export default {
       }
     },
     async fetchUsers(userId) {
-      console.log(userId);
       try {
         const { data } = await usersAPI.getProfile({ userId });
         this.users = data;
@@ -138,7 +134,7 @@ export default {
       }
     },
     async updateChatUsers(message) {
-      console.log(message);
+      console.log("updateChatUsers", message);
     },
   },
 };

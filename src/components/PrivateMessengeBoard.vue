@@ -98,7 +98,7 @@ export default {
   },
   mounted() {
     this.$socket.on("private_msg_from_backend", (data) => {
-      console.log("private_msg", data);
+      console.log("private_msg==>", data);
       this.$emit("sendPrivateMessage", {
         SenderId: data.SenderId,
         ReceiverId: data.ReceiverId,
