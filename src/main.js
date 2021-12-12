@@ -9,12 +9,20 @@ import store from './store'
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 
-const socketConnection = SocketIO('http://localhost:3000');
+const socketConnection = SocketIO('https://chatroom-2021.herokuapp.com/');
 
 Vue.use(new VueSocketIO({
   debug: true,
   connection: socketConnection,
-  // options: { path: "/api" }
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  },
+  options: {
+    autoConnect: true,
+    forceNew: true,
+  }
 }));
 
 library.add(faCog, faUser, faHome, faComment, faHeart, fasHeart)
