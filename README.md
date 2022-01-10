@@ -1,9 +1,33 @@
-# 前端 Simple-Twitter 
+# Demo 網址
 
+[Simple-Twitter-Demo](https://mhsiungw.github.io/Simple-Twitter-feature-chatroom)
+
+<br />
+
+使用者可以使用以下帳號分別登入系統前台、後台：
+
+前台測試帳號：
+
+```
+email: user1@example.com
+password: 12345678
+```
+
+後台測試帳號：
+
+```
+email: root@example.com
+password: 12345678
+```
+
+
+<br />
+
+# 本地端專案建置
 ## 前端
-[Github Repo](https://github.com/CHLin13/twitter-front-end)
 
-## 本地端專案建置
+<br />
+
 ```
 git clone https://github.com/CHLin13/twitter-front-end.git
 ```
@@ -17,35 +41,16 @@ npm ci
 npm run serve
 ```
 
-# 後端Simple Twitter API 
+<br />
 
-### Demo 網址
+## 後端
 
-[Simple-Twitter-Demo](https://chlin13.github.io/twitter-front-end)
+### [API Base URL](https://thawing-taiga-98720.herokuapp.com/api)
+### [後端 GitHub repo](https://github.com/CHLin13/twitter-api-2020)
 
-### API URL
+<br />
 
-https://thawing-taiga-98720.herokuapp.com/api
 
-### Demo 帳號
-
-使用者可以使用以下帳號分別登入系統前台、後台。
-
-## 前台測試帳號：
-
-```
-email: user1@example.com
-password: 12345678
-```
-
-## 後台測試帳號：
-
-```
-email: root@example.com
-password: 12345678
-```
-
-## Installing-後端本地專案建置
 
 1. 請在終端機輸入
 
@@ -86,7 +91,7 @@ npm run dev
 ```
 nodemon app.js
 ```
-### 開發人員
+# 開發人員
 
 > 後端
 
