@@ -6,14 +6,30 @@
 
 使用者可以使用以下帳號分別登入系統前台和後台：
 
+<<<<<<< HEAD
 前台測試帳號：
+=======
+<<<<<<< HEAD
+前台測試帳號：
+=======
+### 前台測試帳號：
+>>>>>>> 5e321b22f25e1e789fe5d749426775a143d986cf
+>>>>>>> c507d0580086dbaf0ed68ea077a9b6153e8728ae
 
 ```
 email: user1@example.com
 password: 12345678
 ```
 
+<<<<<<< HEAD
 後台測試帳號：
+=======
+<<<<<<< HEAD
+後台測試帳號：
+=======
+### 後台測試帳號：
+>>>>>>> 5e321b22f25e1e789fe5d749426775a143d986cf
+>>>>>>> c507d0580086dbaf0ed68ea077a9b6153e8728ae
 
 ```
 email: root@example.com
@@ -23,8 +39,21 @@ password: 12345678
 
 <br />
 
+<<<<<<< HEAD
 # 本地端專案建置
 ## 前端
+=======
+<<<<<<< HEAD
+# 本地端專案建置
+## 前端
+=======
+# 前端
+
+[前端 Github Repo](https://github.com/CHLin13/twitter-front-end)
+
+<br />
+>>>>>>> 5e321b22f25e1e789fe5d749426775a143d986cf
+>>>>>>> c507d0580086dbaf0ed68ea077a9b6153e8728ae
 
 <br />
 
@@ -43,6 +72,10 @@ npm run serve
 
 <br />
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> c507d0580086dbaf0ed68ea077a9b6153e8728ae
 ## 後端
 
 ### [API Base URL](https://thawing-taiga-98720.herokuapp.com/api)
@@ -50,6 +83,18 @@ npm run serve
 
 <br />
 
+<<<<<<< HEAD
+=======
+=======
+# 後端
+
+## API Base URL
+
+https://thawing-taiga-98720.herokuapp.com/api
+
+<br />
+>>>>>>> 5e321b22f25e1e789fe5d749426775a143d986cf
+>>>>>>> c507d0580086dbaf0ed68ea077a9b6153e8728ae
 
 
 1. 請在終端機輸入
